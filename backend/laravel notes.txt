@@ -1,0 +1,128 @@
+https://medium.com/@1415sandalanka/laravel-11-rest-api-crud-with-best-practices-fcc26505e0d2
+
+1. CREATE MODEL
+ 	- php artisan make:model Product -a
+ In database/migrations/YYYY_MM_DD_HHMMSS_create_products_table.php 
+	###to run migration after edit -php artisan migrate
+	###to add columns or update table -php artisan make:migration add_col_to_proponents --table=proponents
+
+ In app/Models/Product
+
+/**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'contact_number',
+        'establishment',
+        'address',
+        'area_occupied',
+        'capital_declaration',
+    ];
+
+
+2. CREATE INTERFACE
+	- php artisan make:interface /Interfaces/ProductRepositoryInterface
+ In app/Interfaces folder, put inside code:
+	public function index();
+	public function getById($id);
+	public function store(array $data);
+	public function update(array $data,$id);
+    	public function delete($id);
+3. CREATE REPOSITORY CLASS
+	- php artisan make:class /Repositories/ProductRepository
+In app/Repositories folder, sample code: 
+
+namespace App\Repository;
+use App\Models\Product;
+use App\Interfaces\ProductRepositoryInterface;
+class ProductReposiotry implements ProductRepositoryInterface
+{
+    public function index(){
+        return Product::all();
+    }
+
+    public function getById($id){
+       return Product::findOrFail($id);
+    }
+
+    public function store(array $data){
+       return Product::create($data);
+    }
+
+    public function update(array $data,$id){
+       return Product::whereId($id)->update($data);
+    }
+    
+    public function delete($id){
+       Product::destroy($id);
+    }
+}
+
+4. BIND INTERFACE AND THE IMPLEMENTATION
+	- php artisan make:provider RepositoryServiceProvider
+  On register function: $this->app->bind(ProductRepositoryInterface::class,ProductReposiotry::class);
+
+5. REQUEST VALIDATION
+	we have two request StoreProductRequest and UpdateProductRequest in app\http\Requests
+
+public function rules(): array
+    {
+        return [
+            'name' => 'required',
+            'details' => 'required'
+        ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'message'   => 'Validation errors',
+            'data'      => $validator->errors()
+        ]));
+    }
+6.CREATE COMMON APIRESPONSECLASS
+  This common response class is the best practice thing. Because you can response send con function use.
+	- php artisan make:class /Classes/ApiResponseClass
+
+7. CREATE MODEL RESOURCE
+	- php artisan make:resource ProductResource
+
+public function toArray(Request $request): array
+    {
+        return [
+            'id' =>$this->id,
+            'name' => $this->name,
+            'details' => $this->details
+        ];
+    }
+
+8. MODELCONTROLLER CLASS
+	With our repository in place, let’s add some code to our controller. Open app/Http/Controllers/ProductController.php and update
+9. API ROUTE
+ Executing the subsequent command allows you to publish the API route file:
+	- php artisan install:api
+
+
+====== OTHERS
+
+CREATE REQUEST
+php artisan make:request Auth/UserRegisterRequest 
+
+php artisan route:list -v
+
+php artisan config:publish cors
+
+php artisan config:clear
+
+php artisan cache:clear
+
+
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
