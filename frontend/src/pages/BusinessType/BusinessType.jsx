@@ -11,6 +11,8 @@ import { useModal } from '../../hooks/useModal';
 import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
+import { ApiClient } from '../../_utils/axios';
+import { toast } from "react-toastify"
 
 const headers = [
   {key: "id", value: "ID"},
@@ -28,17 +30,17 @@ const BusinessType = () => {
 
   const {isLoading, isError, data: result, error } = useQuery({
     queryKey: ["businessTypes"],
-    queryFn: fetchBusinessTypes
+    queryFn: () => ApiClient.get("business-types").then((response) => response.data)
   });
 
   const deleteMutation = useMutation({ 
-    mutationFn: deleteBusinessType,
+    mutationFn: ({id}) => ApiClient.delete(`business-types/${id || 0}`).then((response) => response.data),
     onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["businessTypes"] });
       if(data.success){
-        toast.success(data.data, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
+        toast.success(data?.message, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
         } });
       } else {
         toast.error("Business Type Error!", { position: "bottom-right" });

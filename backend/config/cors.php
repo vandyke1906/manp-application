@@ -16,19 +16,11 @@ return [
     */
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
-
     'allowed_methods' => ['*'],
-
-    'allowed_origins' => ['*'],
-
+    'allowed_origins' => ['*'], // Allow React frontend
+    'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'],
     'allowed_origins_patterns' => [],
-
-    'allowed_headers' => ['*'],
-
     'exposed_headers' => [],
-
     'max_age' => 0,
-
     'supports_credentials' => true, //default is false
-
 ];

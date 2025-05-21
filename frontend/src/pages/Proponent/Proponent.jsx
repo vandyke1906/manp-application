@@ -7,10 +7,11 @@ import { useNavigate  } from "react-router";
 import GenericTable from '../../components/tables/GenericTable';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useModal } from '../../hooks/useModal';
-import { deleteProponent, fetchProponents } from '../../_utils/api/ApiProponent';
 import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
+import { ApiClient } from '../../_utils/axios';
+import { toast } from "react-toastify"
 
 const headers = [
   {key: "id", value: "ID"},
@@ -31,17 +32,17 @@ const Proponent = () => {
 
   const {isLoading, isError, data: result, error } = useQuery({
     queryKey: ["proponents"],
-    queryFn: fetchProponents
+    queryFn: () => ApiClient.get("proponents").then((response) => response.data)
   });
 
   const deleteMutation = useMutation({ 
-    mutationFn: deleteProponent,
+    mutationFn: ({id}) => ApiClient.delete(`proponents/${id || 0}`).then((response) => response.data),
     onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["proponents"] });
       if(data.success){
-        toast.success(data.data, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
+        toast.success(data?.message, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
         } });
       } else {
         toast.error("Proponent Type Error!", { position: "bottom-right" });

@@ -100,6 +100,6 @@ class BusinessTypeController extends Controller
     public function destroy($id)
     {
         $this->interface->delete($id);
-        return ApiResponseClass::sendResponse($id, 'Proponent details deleted successfully.',204);
+        return ApiResponseClass::sendResponse($id, 'Proponent details deleted successfully.',201);
     }
 }

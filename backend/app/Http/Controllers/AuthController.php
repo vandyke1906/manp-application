@@ -52,10 +52,6 @@ class AuthController extends Controller
                 'password' => $request->password,
             ];
             $result = $this->interface->login($data);
-
-            if(!$request->tokenize){
-                $request->session()->regenerate();
-            }
             return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 201);
 
         }catch(\Exception $ex){
@@ -65,27 +61,28 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request){
-        $token = $request->token;
-        if (!$token) {
-            throw new \ErrorException("Token not provided");
-        }
-        $user = Auth::user();
+       $user = $request->user(); // Get the authenticated user via token
+       Log::debug($user);
         if ($user) {
-            Auth::logout();
-            return ApiResponseClass::sendResponse([],'Logout successful.', 201);
+            $user->tokens()->delete(); // Revoke all tokens for the user
+
+            return ApiResponseClass::sendResponse([], 'Logout successful.', 200);
         }
-        return ApiResponseClass::sendResponse([], "Invalid token,", 401, false);
+        return ApiResponseClass::sendResponse([], 'Invalid token.', 401, false);
     }
 
-    public function authCheck(Request $request){
-        $checked = Auth::check();
-        Log::debug($checked);
-        $result = [ "authenticated" => $checked];
-        if ($checked) {
-            return ApiResponseClass::sendResponse($result ,'Authenticated.', 201);
+
+    public function authCheck(Request $request)
+    {
+        $user = $request->user(); // Get the authenticated user via Sanctum token
+        Log::debug($user ? 'Authenticated' : 'Not authenticated');
+        $result = ["authenticated" => (bool) $user];
+        if ($user) {
+            return ApiResponseClass::sendResponse($result, 'Authenticated.', 200);
         }
-        return ApiResponseClass::sendResponse($result , "Failed,", 401, false);
+        return ApiResponseClass::sendResponse($result, 'Failed.', 401, false);
     }
+
 
     // public function login(LoginRequest $request)
     // {

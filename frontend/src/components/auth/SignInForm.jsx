@@ -6,6 +6,7 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { ApiBasic, ApiClient } from "../../_utils/axios";
+import useUserStore from "../../_utils/store/useUserStore";
 
 
 export default function SignInForm() {
@@ -13,38 +14,25 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [loginError, setLoginError] = useState(null);
+  const { setUser } = useUserStore();
 
   const handleLogin = (e) => {
     event.preventDefault();
     const formData = new FormData(event.target); // Creates a FormData object from the form
     const credentials = Object.fromEntries(formData.entries()); // Converts FormData to
 
-    try {
-      // Get CSRF token
-      ApiBasic.get('/sanctum/csrf-cookie', {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }).then(() => {
-        ApiClient.post('/login', credentials, {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
+        ApiBasic.post('/api/login', credentials, {
         }).then((response) => {
-          console.log('Login successful!', response.data?.token);
-          // localStorage.setItem("token", response?.data?.data?.token);
-          navigate("/");
+          console.log('Login successful!', response.data);
+          if(response.data){
+            setUser(response.data); 
+            navigate("/");
+          } else {
+            navigate("/signin");
+          }
         }).catch((error) => {
           setLoginError(error.response?.data?.message || 'Login failed!');
         });
-      }).catch((error) => {
-        setLoginError(error.response?.data?.message || 'Login failed!');
-      });
-    } catch (error) {
-      setLoginError(error.response?.data?.message || 'Login failed!');
-    }
   };
 
 

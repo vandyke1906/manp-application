@@ -1,7 +1,10 @@
+import { ApiClient } from "../axios";
 import { API_URL } from "./Common";
 
+
 export function fetchProponents(){
-    return fetch(`${API_URL}/proponents`).then((response) => response.json());
+    //return fetch(`${API_URL}/proponents`).then((response) => response.json());
+    return ApiClient.get("proponents").then((response) => response.data);
 }
 
 export function getProponent(id){

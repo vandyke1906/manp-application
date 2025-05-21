@@ -14,6 +14,8 @@ import { toast } from 'react-toastify';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 
+import { ApiClient } from '../../_utils/axios';
+
 const headers = [
   {key: "id", value: "ID"},
   {key: "name", value: "Name"},
@@ -30,17 +32,17 @@ const Zoning = () => {
 
   const {isLoading, isError, data: result, error } = useQuery({
     queryKey: ["zonings"],
-    queryFn: fetchZoning
+    queryFn: () => ApiClient.get("zonings").then((response) => response.data)
   });
 
   const deleteMutation = useMutation({ 
-    mutationFn: deleteZoning,
+    mutationFn: ({id}) => ApiClient.delete(`zonings/${id || 0}`).then((response) => response.data),
     onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["zonings"] });
       if(data.success){
-        toast.success(data.data, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
+        toast.success(data?.message, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
         } });
       } else {
         toast.error("Zoning Error!", { position: "bottom-right" });

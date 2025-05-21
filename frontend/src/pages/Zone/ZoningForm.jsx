@@ -13,6 +13,8 @@ import TextArea from '../../components/form/input/TextArea';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 
+import { ApiClient } from '../../_utils/axios';
+
 const ZoningForm = ({title=""}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -22,7 +24,7 @@ const ZoningForm = ({title=""}) => {
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["zoning", id], 
-    queryFn: () => getZoning(id),
+    queryFn: () => ApiClient.get(`zonings/${id}`).then((response) => response.data),
     enabled: !!id, // Only run the query if `id` exists
   });
 
@@ -39,7 +41,7 @@ const ZoningForm = ({title=""}) => {
   }, [isSuccess, result, isError, error, navigate]);
 
   const createMutation = useMutation({ 
-    mutationFn: createZoning,
+    mutationFn: (data) => ApiClient.post("zonings", data).then((response) => response.data),
     onError:(error) => console.log({error}),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["zoning"] });
@@ -57,9 +59,8 @@ const ZoningForm = ({title=""}) => {
   
     // Mutation for updating
     const updateMutation = useMutation({
-      mutationFn: updateZoning,
+      mutationFn: (data) => ApiClient.put(`zonings/${data?.id || 0}`, data).then((response) => response.data),
       onSuccess: (data) => {
-        console.log({data});
         queryClient.invalidateQueries({ queryKey: ["businessType"] });
         if(data.success){
           toast.success(data.message, {

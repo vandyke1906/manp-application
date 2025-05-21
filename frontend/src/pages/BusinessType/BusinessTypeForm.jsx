@@ -13,6 +13,8 @@ import TextArea from '../../components/form/input/TextArea';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 
+import { ApiClient } from '../../_utils/axios';
+
 const BusinessTypeForm = ({title=""}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -22,7 +24,7 @@ const BusinessTypeForm = ({title=""}) => {
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["businessType", id],
-      queryFn: () => getBusinessType(id),
+      queryFn: () => ApiClient.get(`business-types/${id}`).then((response) => response.data),
       enabled: !!id, // Only run the query if `id` exists
     });
 
@@ -35,7 +37,7 @@ const BusinessTypeForm = ({title=""}) => {
 
 
   const createMutation = useMutation({ 
-    mutationFn: createBusinessType,
+    mutationFn: (data) => ApiClient.post("business-types", data).then((response) => response.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["businessType"] });
       if(data.success){
@@ -51,7 +53,7 @@ const BusinessTypeForm = ({title=""}) => {
 
   // Mutation for updating
   const updateMutation = useMutation({
-    mutationFn: updateBusinessType,
+    mutationFn: (data) => ApiClient.put(`business-types/${data?.id || 0}`, data).then((response) => response.data),
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries({ queryKey: ["businessType"] });

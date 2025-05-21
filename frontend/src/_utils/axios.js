@@ -2,18 +2,22 @@ import axios from 'axios';
 
 const ApiClient = axios.create({
   baseURL: 'http://localhost:8080/api', // Laravel API base URL
-  withCredentials: true,
-  withXSRFToken: true,
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
 });
+
+// Automatically add the Bearer token to requests
+ApiClient.interceptors.request.use((config) => {
+  const userData = JSON.parse(sessionStorage.getItem("user")); // Retrieve user data from session storage
+  const token = userData?.data?.token; // Extract the token correctly
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => Promise.reject(error));
+
 
 const ApiBasic = axios.create({
   baseURL: 'http://localhost:8080', // Laravel API base URL
-  withCredentials: true,
-  withXSRFToken: true,
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',

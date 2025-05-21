@@ -103,6 +103,6 @@ class ZoningController extends Controller
     public function destroy($id)
     {
         $this->interface->delete($id);
-        return ApiResponseClass::sendResponse($id, 'Zoning classification deleted successfully.',204);
+        return ApiResponseClass::sendResponse($id, 'Zoning classification deleted successfully.',201);
     }
 }

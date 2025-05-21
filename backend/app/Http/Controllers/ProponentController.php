@@ -119,6 +119,6 @@ class ProponentController extends Controller
     public function destroy($id)
     {
         $this->proponentRepositryInterface->delete($id);
-        return ApiResponseClass::sendResponse($id,'Proponent deleted successfully.',204);
+        return ApiResponseClass::sendResponse($id,'Proponent deleted successfully.',201);
     }
 }

@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import useUserStore from "../../_utils/store/useUserStore";
+import Button from "../ui/button/Button";
+import { ApiBasic, ApiClient } from "../../_utils/axios";
 
 export default function UserDropdown() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [logoutError, setLogOutError] = useState("");
+  const { clearUser } = useUserStore();
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -18,6 +23,7 @@ export default function UserDropdown() {
   
 
   const handleSignOut = () => {
+    console.log("send");
     try {
       // Get CSRF token
       ApiBasic.get('/sanctum/csrf-cookie', {
@@ -31,17 +37,18 @@ export default function UserDropdown() {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
-        }).then((response) => {
-          console.log('LogOut successful!', response.data?.token);
-          navigate("/");
+        }).then(() => {
+          clearUser();
+          console.log('Logout successful!');
+          navigate("/signin");
         }).catch((error) => {
-          setLogOutError(error.response?.data?.message || 'LogOut failed!');
+        console.error({error});
         });
       }).catch((error) => {
-        setLogOutError(error.response?.data?.message || 'LogOut failed!');
+        console.error({error});
       });
     } catch (error) {
-      setLogOutError(error.response?.data?.message || 'LogOut failed!');
+        console.error({error});
     }
   };
 
@@ -167,8 +174,7 @@ export default function UserDropdown() {
             </DropdownItem>
           </li>
         </ul>
-        <Link
-          to="/signin"
+        <a href="#" onClick={() => handleSignOut()}
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg
@@ -187,7 +193,7 @@ export default function UserDropdown() {
             />
           </svg>
           Sign out
-        </Link>
+        </a>
       </Dropdown>
     </div>
   );

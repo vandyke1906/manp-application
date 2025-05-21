@@ -15,6 +15,8 @@ import { createProponent, updateProponent, getProponent } from '../../_utils/api
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 
+import { ApiClient } from '../../_utils/axios';
+
 const ProponentForm = ({title=""}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -24,18 +26,18 @@ const ProponentForm = ({title=""}) => {
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["proponent", id],
-    queryFn: () => getProponent(id),
+    queryFn: () => ApiClient.get(`propponents/${id}`).then((response) => response.data),
     enabled: !!id, // Only run the query if `id` exists
   });
 
   const zoningQuery = useQuery({
     queryKey: ["zonings"],
-    queryFn: fetchZoning
+    queryFn: () => ApiClient.get(`zonings`).then((response) => response.data),
   });
 
   const businessTypeQuery = useQuery({
     queryKey: ["businessTypes"],
-    queryFn: fetchBusinessTypes
+    queryFn: () => ApiClient.get(`business-types`).then((response) => response.data),
   });
 
     useEffect(() => {
@@ -57,7 +59,7 @@ const ProponentForm = ({title=""}) => {
   })) || [];
 
   const createMutation = useMutation({ 
-    mutationFn: createProponent,
+    mutationFn: (data) => ApiClient.post("proponents", data).then((response) => response.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["proponent"] });
       if(data.success){
@@ -73,7 +75,7 @@ const ProponentForm = ({title=""}) => {
 
   // Mutation for updating
   const updateMutation = useMutation({
-    mutationFn: updateProponent,
+    mutationFn: (data) => ApiClient.put(`proponents/${data?.id || 0}`, data).then((response) => response.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["proponent"] });
       console.info({data});
