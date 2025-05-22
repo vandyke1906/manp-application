@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Log;
+use App\Constants\Roles;
+use Illuminate\Support\Str;
+use App\Jobs\SendVerificationEmail;
 
 class UserRepository implements AuthInterface
 {
@@ -20,8 +23,14 @@ class UserRepository implements AuthInterface
     }
 
     public function register(array $data){
+        $role = Roles::PROPONENTS;
         $data["password"] = Hash::make($data["password"]);
-        return User::create($data);
+        $data["role"] = $role;
+        $data["verification_code"] = Str::random(6);
+        $user = User::create($data);
+        Log::debug($user->verification_code);
+        dispatch(new SendVerificationEmail($user->email, $user->verification_code));
+        return $user;
     }
 
     public function login(array $data){
@@ -48,6 +57,11 @@ class UserRepository implements AuthInterface
     }
 
     public function authCheck(){
+    }
+    
+    public function sendVerificationEmail(){
+    }
 
+    public function verifyCode(){
     }
 }

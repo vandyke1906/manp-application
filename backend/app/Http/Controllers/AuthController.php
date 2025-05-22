@@ -15,7 +15,10 @@ use App\Classes\ApiResponseClass;
 use App\Interfaces\AuthInterface;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\RegistrationResource;
-
+use App\Constants\Roles;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerificationEmail;
 
 class AuthController extends Controller
 {
@@ -27,18 +30,19 @@ class AuthController extends Controller
     
     public function register(UserRegisterRequest $request)
     {
+        $role = Roles::PROPONENTS;
         $data =[
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'role' => "user"
+            'role' => $role
         ];
         DB::beginTransaction();
         try{
-             $obj = $this->interface->register($data);
-             DB::commit();
-             return ApiResponseClass::sendResponse(new RegistrationResource($obj),'User registered successfully.',201);
-
+            $obj = $this->interface->register($data);
+            Log::debug($obj);
+            DB::commit();
+            return ApiResponseClass::sendResponse(new RegistrationResource($obj),'User registered successfully.',201);
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
         }
@@ -81,6 +85,29 @@ class AuthController extends Controller
             return ApiResponseClass::sendResponse($result, 'Authenticated.', 200);
         }
         return ApiResponseClass::sendResponse($result, 'Failed.', 401, false);
+    }
+
+
+    public function sendVerificationEmail(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return ApiResponseClass::sendResponse([], 'User not found', 404, false);
+        }
+        $verification_code = Str::random(6);
+        $user->update(['verification_code' => $verification_code]);
+        Mail::to($user->email)->send(new VerificationEmail($verification_code));
+        return ApiResponseClass::sendResponse([], 'Verification email sent.', 200);
+    }
+
+    public function verifyCode(Request $request)
+    {
+        $user = User::where('verification_code', $request->code)->first();
+        if ($user) {
+            $user->update(['email_verified_at' => now(), 'verification_code' => null]);
+            return response()->json(['success' => true, 'message' => 'Verification successful']);
+        }
+        return response()->json(['success' => false, 'message' => 'Invalid code'], 400);
     }
 
 

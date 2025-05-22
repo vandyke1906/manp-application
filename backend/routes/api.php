@@ -7,9 +7,12 @@ use App\Http\Controllers\ApplicationTypeController;
 use App\Http\Controllers\ZoningController;
 use App\Http\Controllers\ProponentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VerificationController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/send-verification', [AuthController::class, 'sendVerificationEmail']);
+Route::post('/verify', [AuthController::class, 'verifyCode']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/auth-check', [AuthController::class, 'authCheck']);

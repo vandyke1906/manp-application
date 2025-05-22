@@ -19,7 +19,7 @@ const ZoningForm = ({title=""}) => {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const formRef = useRef(null);
-    const [obj, setObj] = useState({});
+  const [obj, setObj] = useState({});
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["zoning", id], 

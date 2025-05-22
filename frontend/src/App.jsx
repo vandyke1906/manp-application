@@ -14,9 +14,10 @@ import ApplicationForm from './pages/Application/ApplicationForm';
 import Applications from './pages/Application/Applications';
 import ApplicationType from './pages/ApplicationType/ApplicationType';
 import ApplicationTypeForm from './pages/ApplicationType/ApplicationTypeForm';
+import PrivateRoute from './PrivateRoute';
 import SignIn from './pages/AuthPages/SignIn';
 import SignUp from './pages/AuthPages/SignUp';
-import PrivateRoute from './PrivateRoute';
+import Verification from './pages/AuthPages/Verification';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -61,6 +62,7 @@ function App() {
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/verify" element={<Verification />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

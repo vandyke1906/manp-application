@@ -15,30 +15,26 @@ const LayoutContent = () => {
   const navigate = useNavigate();
 
   const checkAuthStatus = async () => {
-    try {
-      const userData = JSON.parse(sessionStorage.getItem("user"));
-      const token = userData?.data?.token;
+   // try {
+      // const userData = JSON.parse(sessionStorage.getItem("user"));
+      // const token = userData?.data?.token;
 
-      if (!token) {
+      // if (!token) {
+      //   clearUser();
+      //   navigate("/signin");
+      //   return;
+      // }
+      ApiClient.get('/auth-check').then((response) => {
+        if (!response.data.authenticated) {
+          clearUser();
+          navigate("/signin");
+        } else {
+          setUser(userData); // Persist authenticated user
+        }
+      }).catch((error) => {
         clearUser();
         navigate("/signin");
-        return;
-      }
-
-      const response = await ApiClient.get('/api/auth-check', {
-        headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (!response.data.authenticated) {
-        clearUser();
-        navigate("/signin");
-      } else {
-        setUser(userData); // Persist authenticated user
-      }
-    } catch (error) {
-      clearUser();
-      navigate("/signin");
-    }
   };
 
 

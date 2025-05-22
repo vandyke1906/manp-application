@@ -1,10 +1,15 @@
-import React from 'react'
+import PageMeta from "../../components/common/PageMeta";
+import AuthLayout from "./AuthPageLayout";
+import SignUpForm from "../../components/auth/SignUpForm";
 
 const SignUp = () => {
   return (
-    <div>
-      
-    </div>
+    <>
+      <PageMeta title="SignUp"/>
+      <AuthLayout>
+        <SignUpForm />
+      </AuthLayout>
+    </>
   )
 }
 

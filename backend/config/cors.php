@@ -17,8 +17,8 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['*'], // Allow React frontend
-    'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'],
+    'allowed_origins' => ['http://localhost:5173'], // Allow React frontend
+    'allowed_headers' => ['*'],
     'allowed_origins_patterns' => [],
     'exposed_headers' => [],
     'max_age' => 0,

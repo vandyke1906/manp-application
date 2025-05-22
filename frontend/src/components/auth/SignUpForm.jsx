@@ -1,13 +1,43 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { ApiBasic } from '../../_utils/axios';
 
 export default function SignUpForm() {
+  const queryClient = useQueryClient();
+  const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
+  const registerMutation = useMutation({ 
+    mutationFn: (data) => ApiBasic.post("/api/register", data).then((response) => response.data),
+    onError:(error) => console.log({error}),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["register"] });
+      if(data.success){
+        formRef.current.reset();
+        toast.success(data.message, { position: "bottom-right", onClose: (reason) => {
+          if(!reason) navigate("/");
+        } });
+      } else {
+        toast.error("Register Error!", { position: "bottom-right" });
+      }
+    }
+  });
+
+  const handleRegister = (event) => {
+    event.preventDefault();
+    if(!isChecked) return;
+    const formData = new FormData(event.target); // Creates a FormData object from the form
+    const data = Object.fromEntries(formData.entries()); // Converts FormData to
+    registerMutation.mutate(data);
+  };
+
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
       <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
@@ -82,33 +112,18 @@ export default function SignUpForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form ref={formRef} onSubmit={handleRegister}>
               <div className="space-y-5">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {/* <!-- First Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      First Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="fname"
-                      name="fname"
-                      placeholder="Enter your first name"
-                    />
-                  </div>
-                  {/* <!-- Last Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      Last Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="lname"
-                      name="lname"
-                      placeholder="Enter your last name"
-                    />
-                  </div>
+                <div>
+                  <Label>
+                    Full Name<span className="text-error-500">*</span>
+                  </Label>
+                  <Input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your first name"
+                  />
                 </div>
                 {/* <!-- Email --> */}
                 <div>
@@ -129,6 +144,7 @@ export default function SignUpForm() {
                   </Label>
                   <div className="relative">
                     <Input
+                      name="password"
                       placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
                     />
@@ -164,7 +180,11 @@ export default function SignUpForm() {
                 </div>
                 {/* <!-- Button --> */}
                 <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
+                  <button 
+                    type="submit"
+                    disabled={!isChecked}
+                    className={`flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600${isChecked? "": " cursor-not-allowed"}`}
+                  >
                     Sign Up
                   </button>
                 </div>

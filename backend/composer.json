@@ -53,7 +53,7 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
+        "dev:orig": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names='server,queue,vite'"
         ],
@@ -66,8 +66,8 @@
             "@php artisan config:clear --ansi",
             "@php artisan test"
         ],
-        "ex": [
-            "php -S localhost:8080 -t public"
+        "dev": [
+            "php -S 127.0.0.1:8080 -t public"
         ]
     },
     "extra": {
