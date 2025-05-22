@@ -32,7 +32,7 @@ export default function SignInForm() {
               }
               else {
                 //console.log(data);
-                navigate("/verify", { state : { email: "test" } });
+                navigate("/verify", { state : { email: data.email || "" } });
               }
             }
           } else {
