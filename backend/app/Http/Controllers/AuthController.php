@@ -69,6 +69,7 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request){
+       Log::debug($request);
        $user = $request->user(); // Get the authenticated user via token
        Log::debug($user);
         if ($user) {
@@ -76,7 +77,7 @@ class AuthController extends Controller
 
             return ApiResponseClass::sendResponse([], 'Logout successful.', 200);
         }
-        return ApiResponseClass::sendResponse([], 'Invalid token.', 401, false);
+        return ApiResponseClass::sendResponse([], 'Failed to logout.', 401, false);
     }
 
 

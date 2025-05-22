@@ -4,7 +4,7 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link, useNavigate } from "react-router";
 import useUserStore from "../../_utils/store/useUserStore";
 import Button from "../ui/button/Button";
-import { ApiBasic, ApiClient } from "../../_utils/axios";
+import {  ApiClient } from "../../_utils/axios";
 
 export default function UserDropdown() {
   const navigate = useNavigate();
@@ -20,37 +20,14 @@ export default function UserDropdown() {
     setIsOpen(false);
   }
 
-  
-
   const handleSignOut = () => {
-    console.log("send");
-    try {
-      // Get CSRF token
-      ApiBasic.get('/sanctum/csrf-cookie', {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }).then(() => {
-        ApiClient.post('/logout', null, {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }).then(() => {
-          clearUser();
-          console.log('Logout successful!');
-          navigate("/signin");
-        }).catch((error) => {
-        console.error({error});
-        });
-      }).catch((error) => {
-        console.error({error});
-      });
-    } catch (error) {
-        console.error({error});
-    }
-  };
+    ApiClient.post('logout', {}).then(() => {
+      clearUser();
+      navigate("/signin");
+    }).catch((error) => {
+      console.error({error});
+    });
+  }
 
   return (
     <div className="relative">
@@ -174,7 +151,7 @@ export default function UserDropdown() {
             </DropdownItem>
           </li>
         </ul>
-        <a href="#" onClick={() => handleSignOut()}
+        <a href="#" onClick={handleSignOut}
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg
