@@ -14,12 +14,18 @@ class AuthResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
-            'email_verified_at' => $this->email_verified_at,
-            'token' => $this->token
         ];
+
+        if(isset($this->verified)){
+            $data["verified"] = $this->verified;
+        }
+         if(isset($this->token)){
+            $data["token"] = $this->token;
+        }
+        return $data;
     }
 }

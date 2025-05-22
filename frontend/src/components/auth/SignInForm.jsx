@@ -23,14 +23,18 @@ export default function SignInForm() {
 
         ApiBasic.post('/api/login', credentials, {
         }).then((response) => {
-          console.log('Login successful!', response.data);
-          if(response.data){
-            console.info(response.data);
-            setUser(response.data); 
-            if(response?.data?.email_verified_at)
-              navigate("/");
-            else
-              navigate("/verify", { data:response?.data });
+          const { data, success } = response.data;
+          if(data){
+            if(success){
+              setUser(data); 
+              if(data?.verified){
+                navigate("/");
+              }
+              else {
+                //console.log(data);
+                navigate("/verify", { state : { email: "test" } });
+              }
+            }
           } else {
             navigate("/signin");
           }

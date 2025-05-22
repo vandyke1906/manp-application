@@ -56,7 +56,11 @@ class AuthController extends Controller
                 'password' => $request->password,
             ];
             $result = $this->interface->login($data);
-            return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 201);
+            if($result->verified){
+                return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 200);
+            } else {
+                return ApiResponseClass::sendResponse(new AuthResource($result),'Required verification.', 201);
+            }
 
         }catch(\Exception $ex){
             $errorData = ['email' => $request->email];
@@ -79,8 +83,7 @@ class AuthController extends Controller
     public function authCheck(Request $request)
     {
         $user = $request->user(); // Get the authenticated user via Sanctum token
-        Log::debug($user ? 'Authenticated' : 'Not authenticated');
-        $result = ["authenticated" => (bool) $user];
+        $result = ["authenticated" => (bool) $user, "verified" => $user->verified ];
         if ($user) {
             return ApiResponseClass::sendResponse($result, 'Authenticated.', 200);
         }

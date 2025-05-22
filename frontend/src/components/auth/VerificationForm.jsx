@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -11,6 +11,8 @@ import useUserStore from "../../_utils/store/useUserStore";
 
 export default function VerificationForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { email = "" } = location.state || {}; 
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [loginError, setLoginError] = useState(null);
@@ -111,7 +113,7 @@ export default function VerificationForm() {
                   <Label>
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" name="email" isRequired={true} />
+                  <Input placeholder="info@gmail.com" name="email" type="email" isRequired={true} defaultValue={email} />
                 </div>
                 <div>
                   <Label>

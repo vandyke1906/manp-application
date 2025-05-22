@@ -28,8 +28,7 @@ class UserRepository implements AuthInterface
         $data["role"] = $role;
         $data["verification_code"] = Str::random(6);
         $user = User::create($data);
-        Log::debug($user->verification_code);
-        dispatch(new SendVerificationEmail($user->email, $user->verification_code));
+        //dispatch(new SendVerificationEmail($user->email, $user->verification_code));
         return $user;
     }
 
@@ -41,12 +40,23 @@ class UserRepository implements AuthInterface
             }
             
             $token = $user->createToken('manp-token')->plainTextToken;
-            $result = (object)[
-                "name" => $user->name, 
-                "email" => $user->email, 
-                "role" => $user->role, 
-                "token" => $token
-            ];
+            $result = null;
+            if(isset($user->email_verified_at)){
+                $result = (object)[
+                    "name" => $user->name, 
+                    "email" => $user->email, 
+                    "role" => $user->role, 
+                    "token" => $token,
+                    "verified" => true
+                ];
+            } else {
+                $result = (object)[
+                    "name" => $user->name, 
+                    "email" => $user->email, 
+                    "role" => $user->role, 
+                    "verified" => false
+                ];
+            }
             return $result;
         }catch(\Exception $ex){
             throw new \ErrorException($ex->getMessage());

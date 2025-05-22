@@ -25,11 +25,15 @@ const LayoutContent = () => {
       //   return;
       // }
       ApiClient.get('/auth-check').then((response) => {
-        if (!response.data.authenticated) {
+        const { authenticated, verified } = response?.data;
+        if (!authenticated) {
           clearUser();
           navigate("/signin");
         } else {
-          setUser(userData); // Persist authenticated user
+          if(verified)
+            setUser(userData); // Persist authenticated user
+          else 
+            navigate("/verify");
         }
       }).catch((error) => {
         clearUser();
