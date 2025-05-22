@@ -10,7 +10,7 @@ import { useModal } from '../../hooks/useModal';
 import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
-import { deleteApplication, fetchApplications } from '../../_utils/api/ApiApplications';
+import { ApiClient } from '../../_utils/axios';
 
 const headers = [
   {key: "id", value: "ID"},
@@ -31,11 +31,11 @@ const Applications = () => {
 
   const {isLoading, isError, data: result = { data: [] }, error } = useQuery({
     queryKey: ["applications"],
-    queryFn: fetchApplications
+    queryFn: ApiClient.get("applications").then((response) => response.data),
   });
 
   const deleteMutation = useMutation({ 
-    mutationFn: deleteApplication,
+    mutationFn: ({id}) => ApiClient.delete(`applications/${id || 0}`).then((response) => response.data),
     onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();

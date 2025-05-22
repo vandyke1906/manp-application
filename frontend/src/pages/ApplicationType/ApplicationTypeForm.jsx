@@ -11,7 +11,8 @@ import { toast } from 'react-toastify';
 import TextArea from '../../components/form/input/TextArea';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
-import { createApplicationType, getApplicationType, updateApplicationType } from '../../_utils/api/ApiApplicationTypes';
+import { ApiClient } from '../../_utils/axios';
+
 
 const ApplicationTypeForm = ({title=""}) => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const ApplicationTypeForm = ({title=""}) => {
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["applicationType", id],
-      queryFn: () => getApplicationType(id),
+      queryFn:  () => ApiClient.get(`application-types/${id}`).then((response) => response.data),
       enabled: !!id, // Only run the query if `id` exists
     });
 
@@ -35,7 +36,7 @@ const ApplicationTypeForm = ({title=""}) => {
 
 
   const createMutation = useMutation({ 
-    mutationFn: createApplicationType,
+    mutationFn: (data) => ApiClient.post("application-types", data).then((response) => response.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["applicationType"] });
       if(data.success){
@@ -51,7 +52,7 @@ const ApplicationTypeForm = ({title=""}) => {
 
   // Mutation for updating
   const updateMutation = useMutation({
-    mutationFn: updateApplicationType,
+    mutationFn: (data) => ApiClient.put(`application-types/${data?.id || 0}`, data).then((response) => response.data),
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries({ queryKey: ["applicationType"] });

@@ -8,10 +8,7 @@ import Input from '../../components/form/input/InputField';
 import Select from '../../components/form/Select';
 import TextArea from '../../components/form/input/TextArea';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchBusinessTypes } from '../../_utils/api/ApiBusinessTypes';
-import { fetchZoning } from '../../_utils/api/ApiZoning';
 import { useNavigate, useParams } from 'react-router';
-import { createProponent, updateProponent, getProponent } from '../../_utils/api/ApiProponent';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 

@@ -10,7 +10,8 @@ import { useModal } from '../../hooks/useModal';
 import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
-import { deleteApplicationType, fetchApplicationTypes } from '../../_utils/api/ApiApplicationTypes';
+import { ApiClient } from '../../_utils/axios';
+import { toast } from 'react-toastify';
 
 const headers = [
   {key: "id", value: "ID"},
@@ -28,11 +29,12 @@ const ApplicationType = () => {
 
   const {isLoading, isError, data: result, error } = useQuery({
     queryKey: ["applicationTypes"],
-    queryFn: fetchApplicationTypes
+    queryFn: () => ApiClient.get("application-types").then((response) => response.data),
+
   });
 
   const deleteMutation = useMutation({ 
-    mutationFn: deleteApplicationType,
+    mutationFn: ({id}) => ApiClient.delete(`application-types/${id || 0}`).then((response) => response.data),
     onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();

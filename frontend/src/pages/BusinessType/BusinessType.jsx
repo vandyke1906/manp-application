@@ -5,7 +5,6 @@ import ComponentCard from '../../components/common/ComponentCard';
 import Button from '../../components/ui/button/Button';
 import { useNavigate } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteBusinessType, fetchBusinessTypes } from '../../_utils/api/ApiBusinessTypes';
 import GenericTable from '../../components/tables/GenericTable';
 import { useModal } from '../../hooks/useModal';
 import { Modal } from '../../components/ui/modal';

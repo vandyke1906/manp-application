@@ -7,7 +7,6 @@ import Label from '../../components/form/Label';
 import Input from '../../components/form/input/InputField';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createBusinessType, updateBusinessType, getBusinessType } from '../../_utils/api/ApiBusinessTypes';
 import { toast } from 'react-toastify';
 import TextArea from '../../components/form/input/TextArea';
 import Spinner from '../../components/spinner/Spinner';

@@ -5,7 +5,6 @@ import ComponentCard from '../../components/common/ComponentCard';
 import Button from '../../components/ui/button/Button';
 import { useNavigate } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteZoning, fetchZoning } from '../../_utils/api/ApiZoning';
 import GenericTable from '../../components/tables/GenericTable';
 
 import { useModal } from "../../hooks/useModal";

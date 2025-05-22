@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import TextArea from '../../components/form/input/TextArea';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
-import { createApplication, getApplication, updateApplication } from '../../_utils/api/ApiApplications';
+import { ApiClient } from '../../_utils/axios';
 
 const ApplicationForm = ({title=""}) => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const ApplicationForm = ({title=""}) => {
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["application", id],
-      queryFn: () => getApplication(id),
+      queryFn: () => ApiClient.get(`applications/${id}`).then((response) => response.data),
       enabled: !!id, // Only run the query if `id` exists
     });
 
@@ -35,7 +35,7 @@ const ApplicationForm = ({title=""}) => {
 
 
   const createMutation = useMutation({ 
-    mutationFn: createApplication,
+    mutationFn: (data) => ApiClient.post("applications", data).then((response) => response.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["application"] });
       if(data.success){
@@ -51,7 +51,7 @@ const ApplicationForm = ({title=""}) => {
 
   // Mutation for updating
   const updateMutation = useMutation({
-    mutationFn: updateApplication,
+    mutationFn: ApiClient.put(`applications/${data?.id || 0}`, data).then((response) => response.data),
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries({ queryKey: ["application"] });
