@@ -6,6 +6,7 @@ import Button from '../../components/ui/button/Button';
 import Label from '../../components/form/Label';
 import Input from '../../components/form/input/InputField';
 import FileInput from '../../components/form/input/FileInput';
+import MultipleSelect from '../../components/form/MultipleSelect';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -14,6 +15,14 @@ import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
 import Checkbox from '../../components/form/input/Checkbox';
+
+const multiOptions = [
+  { value: "1", text: "Option 1", selected: false },
+  { value: "2", text: "Option 2", selected: false },
+  { value: "3", text: "Option 3", selected: false },
+  { value: "4", text: "Option 4", selected: false },
+  { value: "5", text: "Option 5", selected: false },
+];
 
 const ApplicationForm = ({title=""}) => {
   const navigate = useNavigate();
@@ -175,8 +184,17 @@ const ApplicationForm = ({title=""}) => {
                     </div>
 
                     <div className="sm:col-span-1">
-                      <Label htmlFor="mobile">Type of Applicant</Label>
-                      <Input type="text" id="mobile" name="name" placeholder="Name of Business" defaultValue={obj?.name} />
+                      {/* <Label htmlFor="mobile">Type of Applicant</Label>
+                      <Input type="text" id="mobile" name="name" placeholder="Name of Business" defaultValue={obj?.name} /> */}
+                      <MultipleSelect
+                        label="Type of Applican"
+                        options={multiOptions}
+                        defaultSelected={["1", "3"]}
+                        // onChange={(values) => setSelectedValues(values)}
+                      />
+                      {/* <p className="sr-only">
+                        Selected Values: {selectedValues.join(", ")}
+                      </p> */}
                     </div>
                   </div>
 
