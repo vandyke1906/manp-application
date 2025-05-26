@@ -90,7 +90,8 @@ class UserRepository implements AuthInterface
     public function logout(array $data){
     }
 
-    public function authCheck(){
+    public function authCheck(array $data){
+
     }
     
     public function sendVerificationEmail(){

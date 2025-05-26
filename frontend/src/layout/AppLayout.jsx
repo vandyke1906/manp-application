@@ -1,47 +1,14 @@
 import React, { useEffect } from 'react'
-import { Outlet, useNavigate } from "react-router";
+import { Outlet } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar"
 import { SidebarProvider, useSidebar } from '../context/SidebarContext';
 import { ToastContainer } from 'react-toastify';
-import useUserStore from '../_utils/store/useUserStore';
-
-const CHECK_INTERVAL = 5 * 60 * 1000; // Check every 5 minutes
 
 const LayoutContent = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  const { user, setUser, clearUser } = useUserStore();
-  const navigate = useNavigate();
 
-  const checkAuthStatus = () => {
-      console.log("checkAuthStatus");
-      ApiClient.get('/auth-check').then((response) => {
-        const { authenticated, verified } = response?.data;
-        if (!authenticated) {
-          clearUser();
-          navigate("/signin");
-        } else {
-          if(verified)
-            setUser(userData); // Persist authenticated user
-          else 
-            navigate("/verify");
-        }
-      }).catch((error) => {
-        clearUser();
-        navigate("/signin");
-      });
-  };
-
-
-  // ✅ Periodic authentication check
-  useEffect(() => {
-    const interval = setInterval(() => {
-      checkAuthStatus();
-    }, CHECK_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="min-h-screen xl:flex">

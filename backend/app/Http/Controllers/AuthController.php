@@ -107,13 +107,29 @@ class AuthController extends Controller
 
     public function authCheck(Request $request)
     {
-        $user = $request->user(); // Get the authenticated user via Sanctum token
-        Log::debug($user);
-        $result = ["authenticated" => (bool) $user, "verified" => $user->verified ];
+        $user = $request->user();
+        $result = null;
         if ($user) {
+            if(isset($user->email_verified_at)){
+                $result = (object)[
+                    "name" => $user->name, 
+                    "email" => $user->email, 
+                    "role" => $user->role, 
+                    "token" => $request->bearerToken(),
+                    "verified" => true
+                ];
+            } else {
+                $result = (object)[
+                    "name" => $user->name, 
+                    "email" => $user->email, 
+                    "role" => $user->role, 
+                    "verified" => false
+                ];
+            }
             return ApiResponseClass::sendResponse($result, 'Authenticated.', 200);
+        } else {
+            return ApiResponseClass::sendResponse($result, 'Invalid token or unauthorized.', 401, false);
         }
-        return ApiResponseClass::sendResponse($result, 'Failed.', 401, false);
     }
 
 
