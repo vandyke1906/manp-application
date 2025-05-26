@@ -12,6 +12,13 @@ const useUserStore = create((set) => ({
     sessionStorage.removeItem("user");
     set({ user: null });
   },
+  isSameUser: (data) => {
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+
+    if (!storedUser || !data) return false; // Return false if missing data
+    return JSON.stringify(storedUser) === JSON.stringify(data); // Deep comparison
+  }
+
 }));
 
 export default useUserStore;

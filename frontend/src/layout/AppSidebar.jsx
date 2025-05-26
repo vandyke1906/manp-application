@@ -17,15 +17,17 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import { hasRole } from "../_utils/helper";
 
 
 const navItems = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
+    roles:0x1 | 0x2 | 0x0F | 0xFF,
     subItems: [
-      { name: "Reports", path: "/", pro: false },
-      { name: "Applications", path: "/applications", pro: false },
+      { name: "Reports", path: "/", pro: false, roles: 0x0F | 0xFF },
+      { name: "Applications", path: "/applications", pro: false, roles: 0x0F | 0xFF },
     ],
   },
 ];
@@ -35,20 +37,24 @@ const primaryItems = [
     icon: <UserCircleIcon />,
     name: "Proponents",
     path: "/proponent",
+    roles: 0x2 | 0x0F | 0xFF
   }, {
     icon: <ListIcon />,
     name: "Application Types",
     path: "/application-type",
+    roles: 0x0F | 0xFF
   },
   {
     icon: <PageIcon />,
     name: "Business Types",
     path: "/business-type",
+    roles: 0x0F | 0xFF
   },
   {
     icon: <GridIcon />,
     name: "Zoning Classifications",
     path: "/zoning",
+    roles: 0x0F | 0xFF
   },
 ];
 
@@ -120,7 +126,7 @@ const AppSidebar = () => {
 
   const renderMenuItems = (items, menuType) => (
     <ul className="flex flex-col gap-4">
-      {items.map((nav, index) => (
+      {items.filter(nav => hasRole(nav.roles)).map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
             <button
