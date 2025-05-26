@@ -161,7 +161,7 @@ const ApplicationForm = ({title=""}) => {
               </div>
           </ComponentCard>
 
-          <ComponentCard title="Business / Project" className="mt-6">
+          <ComponentCard title="Business / Project Details" className="mt-6">
               <div className="space-y-6">
                   <div>
                       <Label htmlFor="mobile">Business Name</Label>
@@ -205,7 +205,7 @@ const ApplicationForm = ({title=""}) => {
           </ComponentCard>
 
 
-           <ComponentCard title="Required Documents or Files" className="mt-6">
+           <ComponentCard title="Required Documents" className="mt-6">
               <div className="space-y-6">
                   <div>
                       <Label htmlFor="mobile">Duly Signed Proof of Capitalization from the LGU</Label>
