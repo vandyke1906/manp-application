@@ -26,7 +26,7 @@ const navItems = [
     name: "Dashboard",
     roles: ROLES.PROPONENTS | ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR,
     subItems: [
-      { name: "New Application", path: "/new-application", pro: false, roles: ROLES.PROPONENTS },
+      { name: "New Application", path: "/application-form", pro: false, roles: ROLES.PROPONENTS },
       { name: "Reports", path: "/", pro: false, roles: ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR  },
       { name: "Applications", path: "/applications", pro: false, roles: ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR },
     ],
@@ -81,7 +81,6 @@ const AppSidebar = () => {
         items.filter(nav => hasRole(nav.roles)).forEach((nav, index) => {
         if (nav.subItems) {
             const allowedSubItems = nav.subItems.filter(subItem => hasRole(subItem.roles));
-            console.info({allowedSubItems});
             allowedSubItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
                 setOpenSubmenu({

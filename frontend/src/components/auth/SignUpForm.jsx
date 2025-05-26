@@ -122,7 +122,7 @@ export default function SignUpForm() {
                     type="text"
                     id="name"
                     name="name"
-                    placeholder="Enter your first name"
+                    placeholder="Enter your full name"
                   />
                 </div>
                 {/* <!-- Email --> */}

@@ -3,6 +3,7 @@ import AppLayout from './layout/AppLayout';
 import useUserStore from './_utils/store/useUserStore';
 import { useEffect, useState } from 'react';
 import { ApiClient } from './_utils/axios';
+import Spinner from './components/spinner/Spinner';
 
 const PrivateRoute = () => {
   const navigate = useNavigate();
@@ -26,11 +27,11 @@ const { user, setUser, isSameUser } = useUserStore();
         } else {
           navigate("/signin");
         }
-      }).catch(() => setUser(null)).finally(() => setLoading(false));
+      }).finally(() => setLoading(false));
   }, [location.pathname]);
 
     if (loading) {
-      return <div>Loading...</div>; // Show a loading state while verifying authentication
+      return <Spinner />; // Show a loading state while verifying authentication
     }
 
 
