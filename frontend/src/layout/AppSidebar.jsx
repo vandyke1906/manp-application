@@ -26,9 +26,8 @@ const navItems = [
     name: "Dashboard",
     roles: ROLES.PROPONENTS | ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR,
     subItems: [
-      { name: "New Application", path: "/application-form", pro: false, roles: ROLES.PROPONENTS },
       { name: "Reports", path: "/", pro: false, roles: ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR  },
-      { name: "Applications", path: "/applications", pro: false, roles: ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR },
+      { name: "Applications", path: "/applications", pro: false, roles: ROLES.PROPONENTS | ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR },
     ],
   },
 ];

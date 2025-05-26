@@ -18,6 +18,7 @@ import PrivateRoute from './PrivateRoute';
 import SignIn from './pages/AuthPages/SignIn';
 import SignUp from './pages/AuthPages/SignUp';
 import Verification from './pages/AuthPages/Verification';
+import UserProfile from './pages/UserProfile';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -30,6 +31,7 @@ function App() {
           {/* Dashboard Layout */}
           <Route element={<PrivateRoute />}>
             <Route index path="/" element={<Home />} />
+            <Route index path="/profile" element={<UserProfile />} />
             <Route index path="/applications" element={<Applications />} />
             <Route index path="/application-form" element={<ApplicationForm />} />
 

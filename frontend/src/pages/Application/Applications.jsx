@@ -50,7 +50,7 @@ const Applications = () => {
   });
 
   if(isLoading) return <Spinner />;
-  if(isError) return <SomethingWentWrong />;
+  // if(isError) return <SomethingWentWrong />;
 
   return (
     <>
