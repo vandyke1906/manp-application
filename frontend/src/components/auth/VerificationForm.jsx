@@ -32,6 +32,8 @@ export default function VerificationForm() {
         });
   };
 
+  console.log({email});
+
 
   return (
     <div className="flex flex-col flex-1">

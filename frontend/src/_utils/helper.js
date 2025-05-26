@@ -1,11 +1,17 @@
-
-
-const hasRole = (requiredRole) => {
+const hasRole = (permissions) => {
   const userData = JSON.parse(sessionStorage.getItem("user")); // Retrieve user data from session storage
   const userRole = userData?.role || 0;
-  return (userRole & requiredRole) === requiredRole; // Bitwise AND comparison
+   return (permissions & userRole) !== 0;
 };
 
 
 
-export { hasRole };
+const ROLES = {
+    PROPONENTS: 0x01,
+    RPS_TEAM: 0x02,
+    MANAGER: 0x04,
+    ADMINISTRATOR: 0x08,
+};
+
+
+export { hasRole, ROLES };

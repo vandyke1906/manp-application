@@ -17,17 +17,18 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { hasRole } from "../_utils/helper";
+import { hasRole, ROLES } from "../_utils/helper";
 
 
 const navItems = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    roles:0x1 | 0x2 | 0x0F | 0xFF,
+    roles: ROLES.PROPONENTS | ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR,
     subItems: [
-      { name: "Reports", path: "/", pro: false, roles: 0x0F | 0xFF },
-      { name: "Applications", path: "/applications", pro: false, roles: 0x0F | 0xFF },
+      { name: "New Application", path: "/new-application", pro: false, roles: ROLES.PROPONENTS },
+      { name: "Reports", path: "/", pro: false, roles: ROLES.RPS_TEAM | ROLES.MANAGER  },
+      { name: "Applications", path: "/applications", pro: false, roles: ROLES.RPS_TEAM | ROLES.MANAGER },
     ],
   },
 ];
@@ -37,24 +38,24 @@ const primaryItems = [
     icon: <UserCircleIcon />,
     name: "Proponents",
     path: "/proponent",
-    roles: 0x2 | 0x0F | 0xFF
+    roles: ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR
   }, {
     icon: <ListIcon />,
     name: "Application Types",
     path: "/application-type",
-    roles: 0x0F | 0xFF
+    roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
   },
   {
     icon: <PageIcon />,
     name: "Business Types",
     path: "/business-type",
-    roles: 0x0F | 0xFF
+    roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
   },
   {
     icon: <GridIcon />,
     name: "Zoning Classifications",
     path: "/zoning",
-    roles: 0x0F | 0xFF
+    roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
   },
 ];
 
@@ -77,9 +78,11 @@ const AppSidebar = () => {
     let submenuMatched = false;
     ["main", "others"].forEach((menuType) => {
         const items = menuType === "main" ? navItems : primaryItems;
-        items.forEach((nav, index) => {
+        items.filter(nav => hasRole(nav.roles)).forEach((nav, index) => {
         if (nav.subItems) {
-            nav.subItems.forEach((subItem) => {
+            const allowedSubItems = nav.subItems.filter(subItem => hasRole(subItem.roles));
+            console.info({allowedSubItems});
+            allowedSubItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
                 setOpenSubmenu({
                 type: menuType,
@@ -201,7 +204,7 @@ const AppSidebar = () => {
               }}
             >
               <ul className="mt-2 space-y-1 ml-9">
-                {nav.subItems.map((subItem) => (
+                {nav.subItems.filter(subItem => hasRole(subItem.roles)).map((subItem) => (
                   <li key={subItem.name}>
                     <Link
                       to={subItem.path}

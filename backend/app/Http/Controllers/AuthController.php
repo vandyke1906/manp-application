@@ -42,7 +42,6 @@ class AuthController extends Controller
         DB::beginTransaction();
         try{
             $obj = $this->interface->register($data);
-            Log::debug($obj);
             DB::commit();
             return ApiResponseClass::sendResponse(new RegistrationResource($obj),'User registered successfully.',201);
         }catch(\Exception $ex){
