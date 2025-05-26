@@ -35,6 +35,30 @@ class UserRepository implements AuthInterface
     public function login(array $data){
         try {
             $user = User::where('email', $data["email"])->first();
+            if (!$user || !Hash::check($data["password"], $user->password)) {
+                throw new \ErrorException('Invalid Credentials.');
+            }
+
+            // Authenticate user via Laravel's session-based authentication
+            Auth::login($user); // This replaces token-based authentication
+            
+            // Regenerate session for security
+            session()->regenerate();
+
+            return (object)[
+                "name" => $user->name, 
+                "email" => $user->email, 
+                "role" => $user->role, 
+                "verified" => isset($user->email_verified_at)
+            ];
+        } catch (\Exception $ex) {
+            throw new \ErrorException($ex->getMessage());
+        }
+    }
+
+    public function loginToken(array $data){
+        try {
+            $user = User::where('email', $data["email"])->first();
             if(!$user || !Hash::check($data["password"], $user->password)){
                 throw new \ErrorException('Invalid Credentials.');
             }

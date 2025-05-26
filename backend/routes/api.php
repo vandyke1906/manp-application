@@ -23,3 +23,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/business-types',BusinessTypeController::class);
     Route::apiResource('/proponents',ProponentController::class);
 });
+
+Route::get('/debug-csrf', function () {
+    return response()->json([
+        'csrf_token' => request()->cookie('XSRF-TOKEN'),
+    ]);
+});

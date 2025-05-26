@@ -20,6 +20,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationEmail;
 
+use function Psy\debug;
+
 class AuthController extends Controller
 {
     private AuthInterface $interface;
@@ -49,6 +51,28 @@ class AuthController extends Controller
     }
 
     public function login(LoginRequest $request)
+    {
+        Log::debug(request()->cookie('XSRF-TOKEN'));
+        try {
+            $data = [
+                'email' => $request->email,
+                'password' => $request->password,
+            ];
+            
+            $result = $this->interface->login($data);
+
+            return ApiResponseClass::sendResponse(
+                new AuthResource($result),
+                $result->verified ? 'Login successful.' : 'Required verification.',
+                $result->verified ? 200 : 201
+            );
+        } catch (\Exception $ex) {
+            $errorData = ['email' => $request->email];
+            return ApiResponseClass::sendResponse($errorData, $ex->getMessage(), 401, false);
+        }
+    }
+
+    public function loginToken(LoginRequest $request)
     {
         try {
             $data =[
