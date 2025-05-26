@@ -32,7 +32,7 @@ class UserRepository implements AuthInterface
         return $user;
     }
 
-    public function login(array $data){
+    public function loginSession(array $data){
         try {
             $user = User::where('email', $data["email"])->first();
             if (!$user || !Hash::check($data["password"], $user->password)) {
@@ -56,7 +56,7 @@ class UserRepository implements AuthInterface
         }
     }
 
-    public function loginToken(array $data){
+    public function login(array $data){
         try {
             $user = User::where('email', $data["email"])->first();
             if(!$user || !Hash::check($data["password"], $user->password)){

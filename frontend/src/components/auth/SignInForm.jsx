@@ -25,7 +25,18 @@ export default function SignInForm() {
       ApiBasic.get('/sanctum/csrf-cookie', { withCredentials: true })
       .then((res) => {
             ApiBasic.post('/api/login', credentials).then((response) => {
-              console.log(response.data);
+              //console.log(response.data);
+              const { success, data } = response.data;
+              if(success){
+                if(data.verified){
+                  setUser(data);
+                  navigate("/");
+                } else {
+                  navigate("/verify");
+                }
+              } else {
+                setLoginError("Invalid credentials.");
+              }
             }).catch((error) => {
               setLoginError(error.response?.data?.message || 'Login failed!');
             });  })

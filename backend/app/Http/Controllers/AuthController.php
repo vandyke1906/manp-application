@@ -50,7 +50,7 @@ class AuthController extends Controller
         }
     }
 
-    public function login(LoginRequest $request)
+    public function loginSession(LoginRequest $request)
     {
         Log::debug(request()->cookie('XSRF-TOKEN'));
         try {
@@ -72,7 +72,7 @@ class AuthController extends Controller
         }
     }
 
-    public function loginToken(LoginRequest $request)
+    public function login(LoginRequest $request)
     {
         try {
             $data =[
@@ -108,6 +108,7 @@ class AuthController extends Controller
     public function authCheck(Request $request)
     {
         $user = $request->user(); // Get the authenticated user via Sanctum token
+        Log::debug($user);
         $result = ["authenticated" => (bool) $user, "verified" => $user->verified ];
         if ($user) {
             return ApiResponseClass::sendResponse($result, 'Authenticated.', 200);

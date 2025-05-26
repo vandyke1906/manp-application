@@ -14,16 +14,8 @@ const LayoutContent = () => {
   const { user, setUser, clearUser } = useUserStore();
   const navigate = useNavigate();
 
-  const checkAuthStatus = async () => {
-   // try {
-      // const userData = JSON.parse(sessionStorage.getItem("user"));
-      // const token = userData?.data?.token;
-
-      // if (!token) {
-      //   clearUser();
-      //   navigate("/signin");
-      //   return;
-      // }
+  const checkAuthStatus = () => {
+      console.log("checkAuthStatus");
       ApiClient.get('/auth-check').then((response) => {
         const { authenticated, verified } = response?.data;
         if (!authenticated) {
