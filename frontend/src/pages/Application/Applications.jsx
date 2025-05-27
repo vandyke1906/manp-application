@@ -52,8 +52,6 @@ const Applications = () => {
   if(isLoading) return <Spinner />;
   // if(isError) return <SomethingWentWrong />;
 
-  console.log("test");
-
   return (
     <>
         <PageMeta

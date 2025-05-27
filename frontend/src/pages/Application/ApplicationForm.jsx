@@ -233,7 +233,7 @@ const ApplicationForm = ({title=""}) => {
                       <Input type="text" id="mobile" name="business_name" placeholder="Name of Business" defaultValue={obj?.name} />
                   </div>
 
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                     <div className="sm:col-span-1">
                       <Label htmlFor="business_nature">Nature of Business/Project/Activity</Label>
                       {/* <Input type="text" id="business_nature" name="business_nature" placeholder="Nature of Business" defaultValue={obj?.name} /> */}
@@ -246,7 +246,7 @@ const ApplicationForm = ({title=""}) => {
                       />
                     </div>
 
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-2">
                       {/* <Label htmlFor="mobile">Type of Applicant</Label>
                       <Input type="text" id="mobile" name="name" placeholder="Name of Business" defaultValue={obj?.name} /> */}
                       <MultipleSelect
