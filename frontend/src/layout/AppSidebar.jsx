@@ -65,7 +65,7 @@ const primaryItems = [
   },
   {
     icon: <PageIcon />,
-    name: "Nature of Businesses",
+    name: "Nature of Business",
     path: "/business-nature",
     roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
   },
