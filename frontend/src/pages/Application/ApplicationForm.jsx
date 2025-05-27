@@ -7,6 +7,7 @@ import Label from '../../components/form/Label';
 import Input from '../../components/form/input/InputField';
 import FileInput from '../../components/form/input/FileInput';
 import MultipleSelect from '../../components/form/MultipleSelect';
+import Select from '../../components/form/Select';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -22,6 +23,24 @@ const multiOptions = [
   { value: "3", text: "Option 3", selected: false },
   { value: "4", text: "Option 4", selected: false },
   { value: "5", text: "Option 5", selected: false },
+];
+
+const natureOfBusinessOptions = [
+  { value: "marketing", label: "Marketing" },
+  { value: "template", label: "Template" },
+  { value: "development", label: "Development" },
+];
+
+const businessStatusOptions = [
+  { value: "marketing", label: "Marketing" },
+  { value: "template", label: "Template" },
+  { value: "development", label: "Development" },
+];
+
+const capitalizationOptions = [
+  { value: "marketing", label: "Marketing" },
+  { value: "template", label: "Template" },
+  { value: "development", label: "Development" },
 ];
 
 const ApplicationForm = ({title=""}) => {
@@ -128,8 +147,8 @@ const ApplicationForm = ({title=""}) => {
                     </Label>
                     <Input
                       type="text"
-                      id="fname"
-                      name="fname"
+                      id="mname"
+                      name="mname"
                       placeholder="Enter your Middle name"
                     />
                   </div>
@@ -149,7 +168,7 @@ const ApplicationForm = ({title=""}) => {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                   <div className="sm:col-span-1">
                     <Label htmlFor="mobile">Mobile Number</Label>
-                    <Input type="text" id="mobile" name="name" placeholder="Mobile Number" defaultValue={obj?.name} />
+                    <Input type="text" id="mobile" name="mobile" placeholder="Mobile Number" defaultValue={obj?.name} />
                   </div>
 
                   <div className="sm:col-span-1">
@@ -174,13 +193,20 @@ const ApplicationForm = ({title=""}) => {
               <div className="space-y-6">
                   <div>
                       <Label htmlFor="mobile">Business Name</Label>
-                      <Input type="text" id="mobile" name="name" placeholder="Name of Business" defaultValue={obj?.name} />
+                      <Input type="text" id="mobile" name="business_name" placeholder="Name of Business" defaultValue={obj?.name} />
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div className="sm:col-span-1">
-                      <Label htmlFor="tel">Nature of Business</Label>
-                      <Input type="text" id="tel" name="telephone_number" placeholder="Nature of Business" defaultValue={obj?.name} />
+                      <Label htmlFor="business_nature">Nature of Business/Project/Activity</Label>
+                      {/* <Input type="text" id="business_nature" name="business_nature" placeholder="Nature of Business" defaultValue={obj?.name} /> */}
+                      <Select
+                        options={natureOfBusinessOptions}
+                        name="business_nature"
+                        placeholder="Select Option"
+                        // onChange={handleSelectChange}
+                        className="dark:bg-dark-900"
+                      />
                     </div>
 
                     <div className="sm:col-span-1">
@@ -199,25 +225,39 @@ const ApplicationForm = ({title=""}) => {
                   </div>
 
                   <div>
-                      <Label htmlFor="address">Business Address</Label>
-                      <TextArea id="address" rows={3} name="address" placeholder="Business Address" defaultValue={obj?.description} />
+                      <Label htmlFor="business_address">Business Address</Label>
+                      <TextArea id="business_address" rows={3} name="business_address" placeholder="Business Address" defaultValue={obj?.description} />
                   </div>
 
                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div className="sm:col-span-1">
-                      <Label htmlFor="tel">Business Status</Label>
-                      <Input type="text" id="tel" name="telephone_number" placeholder="Telphone Number" defaultValue={obj?.name} />
+                      <Label htmlFor="business_status">Status of the Business/Project/Activity</Label>
+                      {/* <Input type="text" id="business_status" name="business_status" placeholder="Business Status" defaultValue={obj?.name} /> */}
+                      <Select
+                        options={businessStatusOptions}
+                        name="business_status"
+                        placeholder="Select Business Status"
+                        // onChange={handleSelectChange}
+                        className="dark:bg-dark-900"
+                      />
                     </div>
 
                     <div className="sm:col-span-1">
-                      <Label htmlFor="tel">Capitalization</Label>
-                      <Input type="text" id="tel" name="telephone_number" placeholder="Telphone Number" defaultValue={obj?.name} />
+                      <Label htmlFor="capitalization">Capitalization</Label>
+                      {/* <Input type="text" id="capitalization" name="capitalization" placeholder="Capitalization" defaultValue={obj?.name} /> */}
+                      <Select
+                        options={capitalizationOptions}
+                        name="capitalization"
+                        placeholder="Select Capitalization"
+                        // onChange={handleSelectChange}
+                        className="dark:bg-dark-900"
+                      />
                     </div>
                   </div>
 
                    <div>
-                      <Label htmlFor="address">Brief Description of the Business</Label>
-                      <TextArea id="address" rows={6} name="business_description" placeholder="Brief Description of the Business" defaultValue={obj?.description} />
+                      <Label htmlFor="business_description">Brief Description of the Business</Label>
+                      <TextArea id="business_description" rows={6} name="business_description" placeholder="Brief Description of the Business" defaultValue={obj?.description} />
                   </div>
               </div>
           </ComponentCard>
@@ -226,38 +266,38 @@ const ApplicationForm = ({title=""}) => {
            <ComponentCard title="Required Documents" className="mt-6">
               <div className="space-y-6">
                   <div>
-                      <Label htmlFor="mobile">Duly Signed Proof of Capitalization from the LGU</Label>
-                      <FileInput type="file" id="tel" name="telephone_number" placeholder="Telphone Number" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <Label htmlFor="proof_of_capitalization">Duly Signed Proof of Capitalization from the LGU</Label>
+                      <FileInput type="file" id="proof_of_capitalization" name="proof_of_capitalization" placeholder="Duly Signed Proof of Capitalization from the LGU" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
 
                   <div>
-                      <Label htmlFor="mobile">Barangay Clearance or Resolution Where the Project</Label>
-                      <FileInput type="file" id="tel" name="telephone_number" placeholder="Telphone Number" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <Label htmlFor="brgy_clearance">Barangay Clearance or Resolution Where the Project</Label>
+                      <FileInput type="file" id="brgy_clearance" name="brgy_clearance" placeholder="Barangay Clearance or Resolution Where the Project" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
 
                   <div>
-                      <Label htmlFor="mobile">Birth Certificate or Valid ID of Proponent</Label>
-                      <FileInput type="file" id="tel" name="telephone_number" placeholder="Telphone Number" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <Label htmlFor="valid_id">Birth Certificate or Valid ID of Proponent</Label>
+                      <FileInput type="file" id="valid_id" name="valid_id" placeholder="Birth Certificate or Valid ID of Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
 
                    <div>
-                      <Label htmlFor="mobile">Document Secured from the NCIP</Label>
-                      <FileInput type="file" id="tel" name="telephone_number" placeholder="Document Secured from the NCIP" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <Label htmlFor="document_from_ncip">Document Secured from the NCIP</Label>
+                      <FileInput type="file" id="document_from_ncip" name="document_from_ncip" placeholder="Document Secured from the NCIP" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
 
                   <div>
-                      <Label htmlFor="mobile">Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process</Label>
-                      <FileInput type="file" id="tel" name="telephone_number" placeholder="Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <Label htmlFor="certification_from_brgy">Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process</Label>
+                      <FileInput type="file" id="certification_from_brgy" name="certification_from_brgy" placeholder="Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
 
                   <div>
-                      <Label htmlFor="mobile">DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)</Label>
-                      <FileInput type="file" id="tel" name="telephone_number" placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <Label htmlFor="dti_sec_busines_permit">DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)</Label>
+                      <FileInput type="file" id="dti_sec_busines_permit" name="dti_sec_busines_permit" placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
 
                    <div>
-                      <Label htmlFor="mobile">Authorization Letter duly Signed by the Proponent</Label>
-                      <FileInput type="file" id="tel" name="telephone_number" placeholder="Authorization Letter duly Signed by the Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <Label htmlFor="authorization_letter">Authorization Letter duly Signed by the Proponent</Label>
+                      <FileInput type="file" id="authorization_letter" name="authorization_letter" placeholder="Authorization Letter duly Signed by the Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
               </div>
           </ComponentCard>

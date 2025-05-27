@@ -6,7 +6,7 @@ const MultiSelect = ({
   options,
   defaultSelected = [],
   onChange,
-  disabled = false,
+  disabled = false
 }) => {
   const [selectedOptions, setSelectedOptions] = useState(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);

@@ -22,10 +22,11 @@ export default function UserDropdown() {
 
   const handleSignOut = () => {
     ApiClient.post('logout', {}).then(() => {
-      clearUser();
-      navigate("/signin");
     }).catch((error) => {
       console.error({error});
+    }).finally(() => {
+        clearUser();
+        navigate("/signin");
     });
   }
 
