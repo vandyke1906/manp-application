@@ -180,7 +180,7 @@ export default function SignInForm() {
                   </div>
                   <Link
                     to="/reset-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                    className="text-sm text-green-500 hover:text-green-600 dark:text-green-400"
                   >
                     Forgot password?
                   </Link>
@@ -198,7 +198,7 @@ export default function SignInForm() {
                 Don&apos;t have an account? {""}
                 <Link
                   to="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  className="text-green-500 hover:text-green-600 dark:text-green-400"
                 >
                   Sign Up
                 </Link>

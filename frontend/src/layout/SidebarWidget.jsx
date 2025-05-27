@@ -14,7 +14,7 @@ export default function SidebarWidget() {
           href="#"
           target="_blank"
           rel="nofollow"
-          className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-brand-500 text-theme-sm hover:bg-brand-600"
+          className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-green-500 text-theme-sm hover:bg-green-600"
         >
           Activate
         </a>

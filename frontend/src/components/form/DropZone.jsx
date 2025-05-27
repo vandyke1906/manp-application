@@ -60,7 +60,7 @@ const DropzoneComponent = () => {
               Drag and drop your PNG, JPG, WebP, SVG images here or browse
             </span>
 
-            <span className="font-medium underline text-theme-sm text-brand-500">
+            <span className="font-medium underline text-theme-sm text-green-500">
               Browse File
             </span>
           </div>

@@ -143,7 +143,7 @@ export default function VerificationForm() {
                 Don&apos;t have an account? {""}
                 <Link
                   to="/signin"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  className="text-green-500 hover:text-green-600 dark:text-green-400"
                 >
                   Sign In
                 </Link>
