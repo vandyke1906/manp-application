@@ -22,16 +22,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
     Route::apiResource('/proponents',ProponentController::class);
+
     Route::apiResource('/zonings',ZoningController::class);
     Route::apiResource('/application-types',ApplicationTypeController::class);
     Route::apiResource('/business-types',BusinessTypeController::class);
+    Route::apiResource('/applicant-types',ApplicantTypeController::class);
+    Route::apiResource('/capitalizations',CapitalizationController::class);
+    Route::apiResource('/business-natures',BusinessNatureController::class);
+    Route::apiResource('/business-statuses',BusinessStatusController::class);
 });
 
-
-Route::apiResource('/applicant-types',ApplicantTypeController::class);
-Route::apiResource('/business-statuses',BusinessStatusController::class);
-Route::apiResource('/business-natures',BusinessNatureController::class);
-Route::apiResource('/capitalizations',CapitalizationController::class);
 
 Route::get('/debug-csrf', function () {
     return response()->json([

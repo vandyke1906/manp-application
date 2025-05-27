@@ -1,32 +1,32 @@
 <?php
 
 namespace App\Repositories;
-use App\Models\BusinessType;
-use App\Interfaces\BusinessTypeInterface;
+use App\Models\BusinessNature;
+use App\Interfaces\BusinessNatureInterface;
 
-class BusinessNatureRepository implements BusinessTypeInterface
+class BusinessNatureRepository implements BusinessNatureInterface
 {
     public function __construct()
     {
     }
 
     public function index(){
-        return BusinessType::all();
+        return BusinessNature::all();
     }
 
     public function getById($id){
-       return BusinessType::findOrFail($id);
+       return BusinessNature::findOrFail($id);
     }
 
     public function store(array $data){
-       return BusinessType::create($data);
+       return BusinessNature::create($data);
     }
 
     public function update(array $data,$id){
-       return BusinessType::whereId($id)->update($data);
+       return BusinessNature::whereId($id)->update($data);
     }
     
     public function delete($id){
-        BusinessType::destroy($id);
+        BusinessNature::destroy($id);
     }
 }
