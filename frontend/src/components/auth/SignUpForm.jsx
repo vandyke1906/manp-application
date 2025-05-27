@@ -183,7 +183,7 @@ export default function SignUpForm() {
                   <button 
                     type="submit"
                     disabled={!isChecked}
-                    className={`flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-green-500 shadow-theme-xs hover:bg-green-600${isChecked? "": " cursor-not-allowed"}`}
+                    className={`flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-green-700 shadow-theme-xs hover:bg-green-900${isChecked? "": " cursor-not-allowed"}`}
                   >
                     Sign Up
                   </button>

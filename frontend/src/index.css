@@ -195,7 +195,7 @@ layer(base);
 }
 
 @utility menu-item-active {
-  @apply bg-green-50 text-green-500 dark:bg-green-500/[0.12] dark:text-green-400;
+  @apply bg-green-50 text-green-500 dark:bg-green-700/[0.12] dark:text-green-400;
 }
 
 @utility menu-item-inactive {
@@ -237,7 +237,7 @@ layer(base);
 }
 
 @utility menu-dropdown-item-active {
-  @apply bg-green-50 text-green-500 dark:bg-green-500/[0.12] dark:text-green-400;
+  @apply bg-green-50 text-green-500 dark:bg-green-700/[0.12] dark:text-green-400;
 }
 
 @utility menu-dropdown-item-inactive {
@@ -249,11 +249,11 @@ layer(base);
 }
 
 @utility menu-dropdown-badge-active {
-  @apply bg-green-100 dark:bg-green-500/20;
+  @apply bg-green-100 dark:bg-green-700/20;
 }
 
 @utility menu-dropdown-badge-inactive {
-  @apply bg-green-50 group-hover:bg-green-100 dark:bg-green-500/15 dark:group-hover:bg-green-500/20;
+  @apply bg-green-50 group-hover:bg-green-100 dark:bg-green-700/15 dark:group-hover:bg-green-700/20;
 }
 @utility no-scrollbar {
   /* Chrome, Safari and Opera */
@@ -295,7 +295,7 @@ layer(base);
   @apply opacity-100;
 }
 .tableCheckbox:checked ~ span {
-  @apply border-brand-500 bg-green-500;
+  @apply border-brand-500 bg-green-700;
 }
 
 /* third-party libraries CSS */
@@ -363,7 +363,7 @@ layer(base);
   @apply stroke-gray-200! dark:stroke-gray-800!;
 }
 .jvectormap-tip {
-  @apply bg-green-500! border-none! px-2! py-1!;
+  @apply bg-green-700! border-none! px-2! py-1!;
 }
 .jvectormap-zoomin,
 .jvectormap-zoomout {
@@ -518,7 +518,7 @@ span.flatpickr-weekday,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
   background: #465fff;
-  @apply border-brand-500! bg-green-500! hover:border-brand-500! hover:bg-green-500!;
+  @apply border-brand-500! bg-green-700! hover:border-brand-500! hover:bg-green-700!;
 }
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
@@ -582,7 +582,7 @@ span.flatpickr-weekday,
   @apply hidden;
 }
 .fc-addEventButton-button {
-  @apply rounded-lg! border-0! bg-green-500! px-4! py-2.5! text-sm! font-medium! hover:bg-green-600! focus:shadow-none!;
+  @apply rounded-lg! border-0! bg-green-700! px-4! py-2.5! text-sm! font-medium! hover:bg-green-900! focus:shadow-none!;
 }
 .fc-toolbar-title {
   @apply text-lg! font-medium! text-gray-800 dark:text-white/90;
@@ -663,7 +663,7 @@ span.flatpickr-weekday,
   @apply bg-error-500;
 }
 .event-fc-color.fc-bg-primary .fc-daygrid-event-dot {
-  @apply bg-green-500;
+  @apply bg-green-700;
 }
 .event-fc-color.fc-bg-warning .fc-daygrid-event-dot {
   @apply bg-orange-500;
@@ -731,17 +731,17 @@ span.flatpickr-weekday,
 }
 
 .form-check-input:checked ~ span {
-  @apply border-[6px] border-brand-500 bg-green-500 dark:border-brand-500;
+  @apply border-[6px] border-brand-500 bg-green-700 dark:border-brand-500;
 }
 
 .taskCheckbox:checked ~ .box span {
-  @apply opacity-100 bg-green-500;
+  @apply opacity-100 bg-green-700;
 }
 .taskCheckbox:checked ~ p {
   @apply text-gray-400 line-through;
 }
 .taskCheckbox:checked ~ .box {
-  @apply border-brand-500 bg-green-500 dark:border-brand-500;
+  @apply border-brand-500 bg-green-700 dark:border-brand-500;
 }
 
 .task {

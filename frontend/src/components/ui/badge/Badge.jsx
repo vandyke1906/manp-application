@@ -21,7 +21,7 @@ const Badge = ({
   const variants = {
     light: {
       primary:
-        "bg-green-50 text-green-500 dark:bg-green-500/15 dark:text-green-400",
+        "bg-green-50 text-green-500 dark:bg-green-700/15 dark:text-green-400",
       success:
         "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500",
       error:
@@ -33,7 +33,7 @@ const Badge = ({
       dark: "bg-gray-500 text-white dark:bg-white/5 dark:text-white",
     },
     solid: {
-      primary: "bg-green-500 text-white dark:text-white",
+      primary: "bg-green-700 text-white dark:text-white",
       success: "bg-success-500 text-white dark:text-white",
       error: "bg-error-500 text-white dark:text-white",
       warning: "bg-warning-500 text-white dark:text-white",
