@@ -17,32 +17,6 @@ import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
 import Checkbox from '../../components/form/input/Checkbox';
 
-const multiOptions = [
-  { value: "1", text: "Option 1", selected: false },
-  { value: "2", text: "Option 2", selected: false },
-  { value: "3", text: "Option 3", selected: false },
-  { value: "4", text: "Option 4", selected: false },
-  { value: "5", text: "Option 5", selected: false },
-];
-
-const natureOfBusinessOptions = [
-  { value: "marketing", label: "Marketing" },
-  { value: "template", label: "Template" },
-  { value: "development", label: "Development" },
-];
-
-const businessStatusOptions = [
-  { value: "marketing", label: "Marketing" },
-  { value: "template", label: "Template" },
-  { value: "development", label: "Development" },
-];
-
-const capitalizationOptions = [
-  { value: "marketing", label: "Marketing" },
-  { value: "template", label: "Template" },
-  { value: "development", label: "Development" },
-];
-
 const ApplicationForm = ({title=""}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -52,9 +26,72 @@ const ApplicationForm = ({title=""}) => {
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["application", id],
-      queryFn: () => ApiClient.get(`applications/${id}`).then((response) => response.data),
-      enabled: !!id, // Only run the query if `id` exists
-    });
+    queryFn: () => ApiClient.get(`applications/${id}`).then((response) => response.data),
+    enabled: !!id, // Only run the query if `id` exists
+  });
+
+  const applicationTypeQuery = useQuery({
+    queryKey: ["application-types"],
+    queryFn: () => ApiClient.get(`application-types`).then((response) => response.data),
+  });
+
+  const applicantTypeQuery = useQuery({
+    queryKey: ["applicant-types"],
+    queryFn: () => ApiClient.get(`applicant-types`).then((response) => response.data),
+  });
+
+  const businessTypeQuery = useQuery({
+    queryKey: ["business-types"],
+    queryFn: () => ApiClient.get(`business-types`).then((response) => response.data),
+  });
+
+  const capitalizationQuery = useQuery({
+    queryKey: ["capitalizations"],
+    queryFn: () => ApiClient.get(`capitalizations`).then((response) => response.data),
+  });
+  
+  const businessNatureQuery = useQuery({
+    queryKey: ["business-natures"],
+    queryFn: () => ApiClient.get(`business-natures`).then((response) => response.data),
+  });
+
+  const businessStatusQuery = useQuery({
+    queryKey: ["business-statuses"],
+    queryFn: () => ApiClient.get(`business-statuses`).then((response) => response.data),
+  });
+
+  //options
+  const applicationTypeOptions = applicationTypeQuery.data?.data?.map((data) => ({
+    value: data.id, // Use `id` as the value
+    label: data.name, // Use `name` as the label
+  })) || [];
+
+  const applicantTypeOptions = applicantTypeQuery.data?.data?.map((data) => ({
+    value: data.id, // Use `id` as the value
+    label: data.name, // Use `name` as the label
+    selected: false
+  })) || [];
+
+  const businessTypeOptions = businessTypeQuery.data?.data?.map((data) => ({
+    value: data.id, // Use `id` as the value
+    label: data.name, // Use `name` as the label
+  })) || [];
+
+  const capitalizationOptions = capitalizationQuery.data?.data?.map((data) => ({
+    value: data.id, // Use `id` as the value
+    label: data.name, // Use `name` as the label
+  })) || [];
+
+  const businessNatureOptions = businessNatureQuery.data?.data?.map((data) => ({
+    value: data.id, // Use `id` as the value
+    label: data.name, // Use `name` as the label
+  })) || [];
+
+  const businessStatusOptions = businessStatusQuery.data?.data?.map((data) => ({
+    value: data.id, // Use `id` as the value
+    label: data.name, // Use `name` as the label
+  })) || [];
+  
 
   // Use useEffect to update the state when the query is successful
   useEffect(() => {
@@ -201,7 +238,7 @@ const ApplicationForm = ({title=""}) => {
                       <Label htmlFor="business_nature">Nature of Business/Project/Activity</Label>
                       {/* <Input type="text" id="business_nature" name="business_nature" placeholder="Nature of Business" defaultValue={obj?.name} /> */}
                       <Select
-                        options={natureOfBusinessOptions}
+                        options={businessNatureOptions}
                         name="business_nature"
                         placeholder="Select Option"
                         // onChange={handleSelectChange}
@@ -213,9 +250,9 @@ const ApplicationForm = ({title=""}) => {
                       {/* <Label htmlFor="mobile">Type of Applicant</Label>
                       <Input type="text" id="mobile" name="name" placeholder="Name of Business" defaultValue={obj?.name} /> */}
                       <MultipleSelect
-                        label="Type of Applican"
-                        options={multiOptions}
-                        defaultSelected={["1", "3"]}
+                        label="Type of Applicant"
+                        options={applicantTypeOptions}
+                        // defaultSelected={["1", "3"]}
                         // onChange={(values) => setSelectedValues(values)}
                       />
                       {/* <p className="sr-only">
@@ -271,32 +308,32 @@ const ApplicationForm = ({title=""}) => {
               <div className="space-y-6">
                   <div>
                       <Label htmlFor="proof_of_capitalization">Duly Signed Proof of Capitalization from the LGU</Label>
-                      <FileInput type="file" id="proof_of_capitalization" name="proof_of_capitalization" placeholder="Duly Signed Proof of Capitalization from the LGU" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <FileInput type="file" id="proof_of_capitalization" name="proof_of_capitalization" placeholder="Duly Signed Proof of Capitalization from the LGU" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
                       <Label htmlFor="brgy_clearance">Barangay Clearance or Resolution Where the Project</Label>
-                      <FileInput type="file" id="brgy_clearance" name="brgy_clearance" placeholder="Barangay Clearance or Resolution Where the Project" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <FileInput type="file" id="brgy_clearance" name="brgy_clearance" placeholder="Barangay Clearance or Resolution Where the Project" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
                       <Label htmlFor="valid_id">Birth Certificate or Valid ID of Proponent</Label>
-                      <FileInput type="file" id="valid_id" name="valid_id" placeholder="Birth Certificate or Valid ID of Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <FileInput type="file" id="valid_id" name="valid_id" placeholder="Birth Certificate or Valid ID of Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                    <div>
                       <Label htmlFor="document_from_ncip">Document Secured from the NCIP</Label>
-                      <FileInput type="file" id="document_from_ncip" name="document_from_ncip" placeholder="Document Secured from the NCIP" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <FileInput type="file" id="document_from_ncip" name="document_from_ncip" placeholder="Document Secured from the NCIP" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
                       <Label htmlFor="certification_from_brgy">Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process</Label>
-                      <FileInput type="file" id="certification_from_brgy" name="certification_from_brgy" placeholder="Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <FileInput type="file" id="certification_from_brgy" name="certification_from_brgy" placeholder="Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
                       <Label htmlFor="dti_sec_busines_permit">DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)</Label>
-                      <FileInput type="file" id="dti_sec_busines_permit" name="dti_sec_busines_permit" placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <FileInput type="file" id="dti_sec_busines_permit" name="dti_sec_busines_permit" placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                    <div>

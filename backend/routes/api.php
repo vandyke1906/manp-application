@@ -8,6 +8,7 @@ use App\Http\Controllers\ZoningController;
 use App\Http\Controllers\ProponentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ApplicantTypeController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BusinessStatusController;
 use App\Http\Controllers\BusinessNatureController;
 use App\Http\Controllers\CapitalizationController;
@@ -22,6 +23,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
     Route::apiResource('/proponents',ProponentController::class);
+
+    Route::apiResource('/applications',ApplicationController::class);
 
     Route::apiResource('/zonings',ZoningController::class);
     Route::apiResource('/application-types',ApplicationTypeController::class);

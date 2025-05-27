@@ -31,7 +31,7 @@ const MultiSelect = ({
   };
 
   const selectedValuesText = selectedOptions.map(
-    (value) => options.find((option) => option.value === value)?.text || ""
+    (value) => options.find((option) => option.value === value)?.label || ""
   );
 
   return (
@@ -81,7 +81,7 @@ const MultiSelect = ({
                 ) : (
                   <input
                     placeholder="Select option"
-                    className="w-full h-full p-1 pr-2 text-sm bg-transparent border-0 outline-hidden appearance-none placeholder:text-gray-800 focus:border-0 focus:outline-hidden focus:ring-0 dark:placeholder:text-white/90"
+                    className="w-full h-full p-1 pr-2 text-sm bg-transparent border-0 outline-hidden appearance-none placeholder:text-gray-800 focus:border-0 focus:outline-hidden focus:ring-0 dark:placeholder:text-white/90 dark:text-gray-400 dark:text-white/90"
                     readOnly
                     value="Select option"
                   />
@@ -134,7 +134,7 @@ const MultiSelect = ({
                       }`}
                     >
                       <div className="mx-2 leading-6 text-gray-800 dark:text-white/90">
-                        {option.text}
+                        {option.label}
                       </div>
                     </div>
                   </div>

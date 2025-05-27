@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\ApiResponseClass;
 use App\Models\Application;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
@@ -13,7 +14,7 @@ class ApplicationController extends Controller
      */
     public function index()
     {
-        //
+        return ApiResponseClass::sendResponse([],'',200);
     }
 
     /**
