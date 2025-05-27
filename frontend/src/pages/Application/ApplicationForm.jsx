@@ -257,7 +257,11 @@ const ApplicationForm = ({title=""}) => {
 
                    <div>
                       <Label htmlFor="business_description">Brief Description of the Business</Label>
-                      <TextArea id="business_description" rows={6} name="business_description" placeholder="Brief Description of the Business" defaultValue={obj?.description} />
+                      <TextArea id="business_description" rows={6} name="business_description" 
+                      placeholder="Brief Description of the Business" 
+                      defaultValue={obj?.description}
+                      hint="Example for Development Projects: The planned project is an inland resort within 1,000 sqm of land beside the road at Sitio Paradise, Brgy. Kapatagan, Digos City, Davao del Sur. The total project footprint is 500 sqm which will include 1 admin building, 1 function hall, 1 swimming pool, and 5 villas/rooms. The projected capacity of the resort is 50 persons per night and 75 day-tour visitors. (Important Note: Please include the size of total land area, and the total area of facilities as the project footprint)"
+                       />
                   </div>
               </div>
           </ComponentCard>

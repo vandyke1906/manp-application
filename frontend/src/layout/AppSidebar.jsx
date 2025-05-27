@@ -38,7 +38,14 @@ const primaryItems = [
     name: "Proponents",
     path: "/proponent",
     roles: ROLES.RPS_TEAM | ROLES.MANAGER | ROLES.ADMINISTRATOR
-  }, {
+  }, 
+  {
+    icon: <ListIcon />,
+    name: "Applicant Types",
+    path: "/applicant-type",
+    roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
+  },
+  {
     icon: <ListIcon />,
     name: "Application Types",
     path: "/application-type",
@@ -48,6 +55,24 @@ const primaryItems = [
     icon: <PageIcon />,
     name: "Business Types",
     path: "/business-type",
+    roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
+  },
+  {
+    icon: <PageIcon />,
+    name: "Business Capitalizations",
+    path: "/capitalization",
+    roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
+  },
+  {
+    icon: <PageIcon />,
+    name: "Nature of Businesses",
+    path: "/business-nature",
+    roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
+  },
+  {
+    icon: <PageIcon />,
+    name: "Status of Business",
+    path: "/business-status",
     roles:  ROLES.MANAGER | ROLES.ADMINISTRATOR
   },
   {

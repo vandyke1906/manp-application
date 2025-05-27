@@ -5,7 +5,6 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import BusinessType from './pages/BusinessType/BusinessType';
 import Zoning from './pages/Zone/Zoning';
-import NotFound from './pages/NotFound';
 import ZoningForm from './pages/Zone/ZoningForm';
 import BusinessTypeForm from './pages/BusinessType/BusinessTypeForm';
 import Proponent from './pages/Proponent/Proponent';
@@ -19,6 +18,15 @@ import SignIn from './pages/AuthPages/SignIn';
 import SignUp from './pages/AuthPages/SignUp';
 import Verification from './pages/AuthPages/Verification';
 import UserProfile from './pages/UserProfile';
+import NotFound from './pages/NotFound';
+import ApplicantType from './pages/ApplicantType/ApplicantType';
+import ApplicantTypeForm from './pages/ApplicantType/ApplicantTypeForm';
+import Capitalization from './pages/Capitalization/Capitalization';
+import CapitalizationForm from './pages/Capitalization/CapitalizationForm';
+import BusinessNature from './pages/BusinessNature/BusinessNature';
+import BusinessNatureForm from './pages/BusinessNature/BusinessNatureForm';
+import BusinessStatus from './pages/BusinessStatus/BusinessStatus';
+import BusinessStatusForm from './pages/BusinessStatus/BusinessStatusForm';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -57,6 +65,30 @@ function App() {
               <Route index element={<Zoning />} /> {/* Default route */}
               <Route path="create" element={<ZoningForm />} />
               <Route path="update/:id" element={<ZoningForm />} /> {/* Dynamic route */}
+            </Route>
+
+            <Route path="/applicant-type">
+              <Route index element={<ApplicantType />} /> {/* Default route */}
+              <Route path="create" element={<ApplicantTypeForm />} />
+              <Route path="update/:id" element={<ApplicantTypeForm />} /> {/* Dynamic route */}
+            </Route>
+
+            <Route path="/capitalization">
+              <Route index element={<Capitalization />} /> {/* Default route */}
+              <Route path="create" element={<CapitalizationForm />} />
+              <Route path="update/:id" element={<CapitalizationForm />} /> {/* Dynamic route */}
+            </Route>
+
+            <Route path="/business-nature">
+              <Route index element={<BusinessNature />} /> {/* Default route */}
+              <Route path="create" element={<BusinessNatureForm />} />
+              <Route path="update/:id" element={<BusinessNatureForm />} /> {/* Dynamic route */}
+            </Route>
+
+            <Route path="/business-status">
+              <Route index element={<BusinessStatus />} /> {/* Default route */}
+              <Route path="create" element={<BusinessStatusForm />} />
+              <Route path="update/:id" element={<BusinessStatusForm />} /> {/* Dynamic route */}
             </Route>
           </Route>
 
