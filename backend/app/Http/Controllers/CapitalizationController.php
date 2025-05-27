@@ -2,35 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Zoning;
-use App\Http\Requests\StoreZoningRequest;
-use App\Http\Requests\UpdateZoningRequest;
+use App\Models\Capitalization;
+use App\Http\Requests\StoreCapitalizationRequest;
+use App\Http\Requests\UpdateCapitalizationRequest;
 
 use Illuminate\Support\Facades\DB;
 use App\Classes\ApiResponseClass;
-use App\Interfaces\ZoningInterface;
-use App\Http\Resources\ZoningResource;
+use App\Interfaces\CapitalizationInterface;
+use App\Http\Resources\CapitalizationResource;
 
-
-class ZoningController extends Controller
+class CapitalizationController extends Controller
 {
-    private ZoningInterface $interface;
+    private CapitalizationInterface $interface;
 
-    public function __construct(ZoningInterface $obj){
+    public function __construct(CapitalizationInterface $obj){
         $this->interface = $obj;
     }
 
     public function index()
     {
         $data = $this->interface->index()->sortBy('name')->values();;
-        return ApiResponseClass::sendResponse(ZoningResource::collection($data),'',200);
+        return ApiResponseClass::sendResponse(CapitalizationResource::collection($data),'',200);
     }
 
     public function create()
     {
     }
 
-    public function store(StoreZoningRequest $request)
+    public function store(StoreCapitalizationRequest $request)
     {
         $details =[
             'name' => $request->name,
@@ -41,7 +40,7 @@ class ZoningController extends Controller
              $obj = $this->interface->store($details);
 
              DB::commit();
-             return ApiResponseClass::sendResponse(new ZoningResource($obj),'Zoning classification added successfully.',201);
+             return ApiResponseClass::sendResponse(new CapitalizationResource($obj),'Capitalization classification added successfully.',201);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
@@ -51,14 +50,14 @@ class ZoningController extends Controller
     public function show($id)
     {
         $obj = $this->interface->getById($id);
-        return ApiResponseClass::sendResponse(new ZoningResource($obj),'',200);
+        return ApiResponseClass::sendResponse(new CapitalizationResource($obj),'',200);
     }
 
-    public function edit(Zoning $zoning)
+    public function edit(Capitalization $Capitalization)
     {
     }
 
-    public function update(UpdateZoningRequest $request, $id)
+    public function update(UpdateCapitalizationRequest $request, $id)
     {
         
         $updateDetails =[
@@ -69,7 +68,7 @@ class ZoningController extends Controller
         try{
              $data = $this->interface->update($updateDetails,$id);
              DB::commit();
-             return ApiResponseClass::sendResponse($data, 'Zoning classification updated successfully.',201);
+             return ApiResponseClass::sendResponse($data, 'Capitalization classification updated successfully.',201);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
@@ -79,6 +78,6 @@ class ZoningController extends Controller
     public function destroy($id)
     {
         $this->interface->delete($id);
-        return ApiResponseClass::sendResponse($id, 'Zoning classification deleted successfully.',201);
+        return ApiResponseClass::sendResponse($id, 'Capitalization classification deleted successfully.',201);
     }
 }

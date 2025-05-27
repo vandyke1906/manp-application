@@ -107,7 +107,7 @@ public function toArray(Request $request): array
 	- php artisan install:api
 
 
-====== OTHERS
+====== OTHERS ====================
 
 CREATE REQUEST
 php artisan make:request Auth/UserRegisterRequest 
@@ -117,8 +117,9 @@ php artisan route:list -v
 php artisan config:publish cors
 
 php artisan config:clear
-
 php artisan cache:clear
+
+php artisan migrate:rollback --step=1
 
 
 php artisan config:clear
@@ -126,3 +127,4 @@ php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
+php artisan queue:list

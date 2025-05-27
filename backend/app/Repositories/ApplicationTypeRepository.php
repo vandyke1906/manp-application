@@ -6,12 +6,8 @@ use App\Interfaces\ApplicationTypeInterface;
 
 class ApplicationTypeRepository implements ApplicationTypeInterface
 {
-    /**
-     * Create a new class instance.
-     */
     public function __construct()
     {
-        //
     }
 
     public function index(){
