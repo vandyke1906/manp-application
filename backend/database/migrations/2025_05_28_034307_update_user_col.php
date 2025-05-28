@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->string('first_name');
+            $table->string('middle_name');
+            $table->string('last_name');
+            $table->string('suffix')->nullable();
+            $table->string('mobile_number')->nullable();
+            $table->string('address')->nullable();
+            $table->string('telephone_number')->nullable();
         });
     }
 
@@ -22,7 +28,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // $table->dropColumn('is_verified');
+            $table->dropColumn('name');
         });
     }
 };

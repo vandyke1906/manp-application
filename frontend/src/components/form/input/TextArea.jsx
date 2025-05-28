@@ -12,6 +12,7 @@ const TextArea = ({
   disabled = false, // Disabled state
   error = false, // Error state
   hint = "", // Default hint text
+  isRequired = false
 }) => {
   const handleChange = (e) => {
     if (onChange) {
@@ -39,6 +40,7 @@ const TextArea = ({
         disabled={disabled}
         className={textareaClasses}
         defaultValue={defaultValue}
+        required={isRequired}
       />
       {hint && (
         <p

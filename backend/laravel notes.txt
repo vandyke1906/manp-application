@@ -4,7 +4,7 @@ https://medium.com/@1415sandalanka/laravel-11-rest-api-crud-with-best-practices-
  	- php artisan make:model Product -a
  In database/migrations/YYYY_MM_DD_HHMMSS_create_products_table.php 
 	###to run migration after edit -php artisan migrate
-	###to add columns or update table -php artisan make:migration add_col_to_proponents --table=proponents
+	###to add columns or update table -proponents --table=proponents
 
  In app/Models/Product
 
@@ -128,3 +128,5 @@ php artisan route:clear
 php artisan view:clear
 
 php artisan queue:list
+
+php artisan migrate:refresh

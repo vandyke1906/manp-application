@@ -64,7 +64,7 @@ const BusinessStatus = () => {
               <Button size="sm" variant="primary" onClick={() => {
                 navigate("/business-status/create");
               }}>
-                New business-statuse Classification
+                New Status of Business
               </Button>
               <GenericTable columnHeaders={headers} tableData={result.data} 
                 onEdit={(obj) => {

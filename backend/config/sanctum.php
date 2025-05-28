@@ -47,7 +47,8 @@ return [
     |
     */
 
-    'expiration' => null,
+    'expiration' => null, // Token expires after 5 minutes //vandyke1906 - null it will not expire
+    'rt_expiration' => 24 * 60, // Refresh token expires after 24 hours
 
     /*
     |--------------------------------------------------------------------------

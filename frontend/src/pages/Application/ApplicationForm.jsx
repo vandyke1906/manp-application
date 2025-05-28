@@ -165,8 +165,8 @@ const ApplicationForm = ({title=""}) => {
         <form  ref={formRef} onSubmit={handleSave}>
           <ComponentCard title="Proponent Details">
               <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                  <div className="sm:col-span-1">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-7">
+                  <div className="sm:col-span-2">
                     <Label>
                       First Name<span className="text-error-500">*</span>
                     </Label>
@@ -175,10 +175,11 @@ const ApplicationForm = ({title=""}) => {
                       id="fname"
                       name="fname"
                       placeholder="Enter your first name"
+                      isRequired={true}
                     />
                   </div>
 
-                  <div className="sm:col-span-1">
+                  <div className="sm:col-span-2">
                     <Label>
                       Middle Name<span className="text-error-500">*</span>
                     </Label>
@@ -187,9 +188,10 @@ const ApplicationForm = ({title=""}) => {
                       id="mname"
                       name="mname"
                       placeholder="Enter your Middle name"
+                      isRequired={true}
                     />
                   </div>
-                  <div className="sm:col-span-1">
+                  <div className="sm:col-span-2">
                     <Label>
                       Last Name<span className="text-error-500">*</span>
                     </Label>
@@ -198,14 +200,27 @@ const ApplicationForm = ({title=""}) => {
                       id="lname"
                       name="lname"
                       placeholder="Enter your last name"
+                      isRequired={true}
+                    />
+                  </div>
+                  <div className="sm:col-span-1">
+                    <Label>
+                      Suffix
+                    </Label>
+                    <Input
+                      type="text"
+                      id="suffix"
+                      name="suffix"
+                      placeholder="Enter Suffix"
+                      hint="Jr. Sr."
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                   <div className="sm:col-span-1">
-                    <Label htmlFor="mobile">Mobile Number</Label>
-                    <Input type="text" id="mobile" name="mobile" placeholder="Mobile Number" defaultValue={obj?.name} />
+                    <Label htmlFor="mobile">Mobile Number<span className="text-error-500">*</span></Label>
+                    <Input type="text" id="mobile" name="mobile" placeholder="Mobile Number" defaultValue={obj?.name} isRequired={true} />
                   </div>
 
                   <div className="sm:col-span-1">
@@ -214,14 +229,14 @@ const ApplicationForm = ({title=""}) => {
                   </div>
 
                   <div className="sm:col-span-1">
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="email">Email Address<span className="text-error-500">*</span></Label>
                     <Input type="email" id="email" name="emai_address" placeholder="Email Address" isRequired={true} defaultValue={obj?.name} />
                   </div>
                 </div>
 
                   <div>
-                      <Label htmlFor="address">Address</Label>
-                      <TextArea id="address" rows={3} name="address" placeholder="address" defaultValue={obj?.description} />
+                      <Label htmlFor="address">Address<span className="text-error-500">*</span></Label>
+                      <TextArea id="address" rows={3} name="address" placeholder="address" defaultValue={obj?.description} isRequired={true} />
                   </div>
               </div>
           </ComponentCard>
@@ -229,13 +244,13 @@ const ApplicationForm = ({title=""}) => {
           <ComponentCard title="Business / Project Details" className="mt-6">
               <div className="space-y-6">
                   <div>
-                      <Label htmlFor="mobile">Business Name</Label>
+                      <Label htmlFor="mobile">Business Name<span className="text-error-500">*</span></Label>
                       <Input type="text" id="mobile" name="business_name" placeholder="Name of Business" defaultValue={obj?.name} />
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                     <div className="sm:col-span-1">
-                      <Label htmlFor="business_nature">Nature of Business/Project/Activity</Label>
+                      <Label htmlFor="business_nature">Nature of Business/Project/Activity<span className="text-error-500">*</span></Label>
                       {/* <Input type="text" id="business_nature" name="business_nature" placeholder="Nature of Business" defaultValue={obj?.name} /> */}
                       <Select
                         options={businessNatureOptions}
@@ -251,6 +266,7 @@ const ApplicationForm = ({title=""}) => {
                       <Input type="text" id="mobile" name="name" placeholder="Name of Business" defaultValue={obj?.name} /> */}
                       <MultipleSelect
                         label="Type of Applicant"
+                        isRequired={true}
                         options={applicantTypeOptions}
                         // defaultSelected={["1", "3"]}
                         // onChange={(values) => setSelectedValues(values)}
@@ -262,13 +278,13 @@ const ApplicationForm = ({title=""}) => {
                   </div>
 
                   <div>
-                      <Label htmlFor="business_address">Business Address</Label>
-                      <TextArea id="business_address" rows={3} name="business_address" placeholder="Business Address" defaultValue={obj?.description} />
+                      <Label htmlFor="business_address">Business Address<span className="text-error-500">*</span></Label>
+                      <TextArea id="business_address" rows={3} name="business_address" placeholder="Business Address" defaultValue={obj?.description} isRequired={true} />
                   </div>
 
                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div className="sm:col-span-1">
-                      <Label htmlFor="business_status">Status of the Business/Project/Activity</Label>
+                      <Label htmlFor="business_status">Status of the Business/Project/Activity<span className="text-error-500">*</span></Label>
                       {/* <Input type="text" id="business_status" name="business_status" placeholder="Business Status" defaultValue={obj?.name} /> */}
                       <Select
                         options={businessStatusOptions}
@@ -276,11 +292,12 @@ const ApplicationForm = ({title=""}) => {
                         placeholder="Select Business Status"
                         // onChange={handleSelectChange}
                         className="dark:bg-dark-900"
+                        isRequired={true}
                       />
                     </div>
 
                     <div className="sm:col-span-1">
-                      <Label htmlFor="capitalization">Capitalization</Label>
+                      <Label htmlFor="capitalization">Capitalization<span className="text-error-500">*</span></Label>
                       {/* <Input type="text" id="capitalization" name="capitalization" placeholder="Capitalization" defaultValue={obj?.name} /> */}
                       <Select
                         options={capitalizationOptions}
@@ -288,16 +305,18 @@ const ApplicationForm = ({title=""}) => {
                         placeholder="Select Capitalization"
                         // onChange={handleSelectChange}
                         className="dark:bg-dark-900"
+                        isRequired={true}
                       />
                     </div>
                   </div>
 
                    <div>
-                      <Label htmlFor="business_description">Brief Description of the Business</Label>
+                      <Label htmlFor="business_description">Brief Description of the Business<span className="text-error-500">*</span></Label>
                       <TextArea id="business_description" rows={6} name="business_description" 
-                      placeholder="Brief Description of the Business" 
-                      defaultValue={obj?.description}
-                      hint="Example for Development Projects: The planned project is an inland resort within 1,000 sqm of land beside the road at Sitio Paradise, Brgy. Kapatagan, Digos City, Davao del Sur. The total project footprint is 500 sqm which will include 1 admin building, 1 function hall, 1 swimming pool, and 5 villas/rooms. The projected capacity of the resort is 50 persons per night and 75 day-tour visitors. (Important Note: Please include the size of total land area, and the total area of facilities as the project footprint)"
+                        placeholder="Brief Description of the Business" 
+                        defaultValue={obj?.description}
+                        hint="Example for Development Projects: The planned project is an inland resort within 1,000 sqm of land beside the road at Sitio Paradise, Brgy. Kapatagan, Digos City, Davao del Sur. The total project footprint is 500 sqm which will include 1 admin building, 1 function hall, 1 swimming pool, and 5 villas/rooms. The projected capacity of the resort is 50 persons per night and 75 day-tour visitors. (Important Note: Please include the size of total land area, and the total area of facilities as the project footprint)"
+                        isRequired={true}
                        />
                   </div>
               </div>
@@ -307,32 +326,32 @@ const ApplicationForm = ({title=""}) => {
            <ComponentCard title="Required Documents" className="mt-6">
               <div className="space-y-6">
                   <div>
-                      <Label htmlFor="proof_of_capitalization">Duly Signed Proof of Capitalization from the LGU</Label>
+                      <Label htmlFor="proof_of_capitalization">Duly Signed Proof of Capitalization from the LGU<span className="text-error-500">*</span></Label>
                       <FileInput type="file" id="proof_of_capitalization" name="proof_of_capitalization" placeholder="Duly Signed Proof of Capitalization from the LGU" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
-                      <Label htmlFor="brgy_clearance">Barangay Clearance or Resolution Where the Project</Label>
+                      <Label htmlFor="brgy_clearance">Barangay Clearance or Resolution Where the Project<span className="text-error-500">*</span></Label>
                       <FileInput type="file" id="brgy_clearance" name="brgy_clearance" placeholder="Barangay Clearance or Resolution Where the Project" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
-                      <Label htmlFor="valid_id">Birth Certificate or Valid ID of Proponent</Label>
+                      <Label htmlFor="valid_id">Birth Certificate or Valid ID of Proponent<span className="text-error-500">*</span></Label>
                       <FileInput type="file" id="valid_id" name="valid_id" placeholder="Birth Certificate or Valid ID of Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                    <div>
-                      <Label htmlFor="document_from_ncip">Document Secured from the NCIP</Label>
+                      <Label htmlFor="document_from_ncip">Document Secured from the NCIP<span className="text-error-500">*</span></Label>
                       <FileInput type="file" id="document_from_ncip" name="document_from_ncip" placeholder="Document Secured from the NCIP" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
-                      <Label htmlFor="certification_from_brgy">Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process</Label>
+                      <Label htmlFor="certification_from_brgy">Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process<span className="text-error-500">*</span></Label>
                       <FileInput type="file" id="certification_from_brgy" name="certification_from_brgy" placeholder="Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
                   <div>
-                      <Label htmlFor="dti_sec_busines_permit">DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)</Label>
+                      <Label htmlFor="dti_sec_busines_permit">DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)<span className="text-error-500">*</span></Label>
                       <FileInput type="file" id="dti_sec_busines_permit" name="dti_sec_busines_permit" placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 

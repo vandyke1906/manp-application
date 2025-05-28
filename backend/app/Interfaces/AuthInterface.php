@@ -9,6 +9,7 @@ interface AuthInterface
     public function login(array $data);
     public function logout(array $data);
     public function authCheck(array $data);
+    public function refreshToken(array $data);
     public function sendVerificationEmail();
     public function verifyCode();
 }

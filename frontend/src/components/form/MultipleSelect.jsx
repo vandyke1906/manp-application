@@ -6,7 +6,8 @@ const MultiSelect = ({
   options,
   defaultSelected = [],
   onChange,
-  disabled = false
+  disabled = false,
+  isRequired = false
 }) => {
   const [selectedOptions, setSelectedOptions] = useState(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +38,7 @@ const MultiSelect = ({
   return (
     <div className="w-full">
       <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-        {label}
+        {label} { isRequired ? <span className="text-error-500">*</span> : ''}
       </label>
 
       <div className="relative z-20 inline-block w-full">

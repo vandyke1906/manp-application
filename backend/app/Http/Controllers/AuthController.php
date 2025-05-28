@@ -34,7 +34,10 @@ class AuthController extends Controller
     {
         $role = Roles::PROPONENTS;
         $data =[
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'suffix' => $request->suffix,
             'email' => $request->email,
             'password' => $request->password,
             'role' => $role
@@ -51,7 +54,6 @@ class AuthController extends Controller
 
     public function loginSession(LoginRequest $request)
     {
-        Log::debug(request()->cookie('XSRF-TOKEN'));
         try {
             $data = [
                 'email' => $request->email,
@@ -79,8 +81,14 @@ class AuthController extends Controller
                 'password' => $request->password,
             ];
             $result = $this->interface->login($data);
+            
+            Log::debug($result->full_name);
+
+            $cookie = null;
+            if(isset($result->refreshToken))
+                $cookie = cookie('refresh_token', $result->refreshToken, 60 * 24 * 7, '/', null, true, true); // Secure HttpOnly cookie
             if($result->verified){
-                return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 200);
+                return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 200, $cookie);
             } else {
                 return ApiResponseClass::sendResponse(new AuthResource($result),'Required verification.', 201);
             }
@@ -92,11 +100,9 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request){
-       Log::debug($request);
-       $user = $request->user(); // Get the authenticated user via token
-       Log::debug($user);
+       $user = $request->user();
         if ($user) {
-            $user->tokens()->delete(); // Revoke all tokens for the user
+            $user->currentAccessToken()->delete();
 
             return ApiResponseClass::sendResponse([], 'Logout successful.', 200);
         }
@@ -104,14 +110,21 @@ class AuthController extends Controller
     }
 
 
-    public function authCheck(Request $request)
-    {
+    public function authCheck(Request $request){
         $user = $request->user();
         $result = null;
         if ($user) {
             if(isset($user->email_verified_at)){
                 $result = (object)[
-                    "name" => $user->name, 
+                    "first_name" => $user->first_name, 
+                    "middle_name" => $user->middle_name, 
+                    "last_name" => $user->last_name, 
+                    "suffix" => $user->suffix, 
+                    "full_name" => $user->full_name, 
+                    "mobile" => $user->mobile, 
+                    "suffix" => $user->suffix, 
+                    "suffix" => $user->suffix, 
+                    "suffix" => $user->suffix, 
                     "email" => $user->email, 
                     "role" => $user->role, 
                     "token" => $request->bearerToken(),
@@ -119,7 +132,10 @@ class AuthController extends Controller
                 ];
             } else {
                 $result = (object)[
-                    "name" => $user->name, 
+                    "first_name" => $user->first_name, 
+                    "middle_name" => $user->middle_name, 
+                    "last_name" => $user->last_name, 
+                    "suffix" => $user->suffix, 
                     "email" => $user->email, 
                     "role" => $user->role, 
                     "verified" => false
@@ -130,6 +146,21 @@ class AuthController extends Controller
             return ApiResponseClass::sendResponse($result, 'Invalid token or unauthorized.', 401, false);
         }
     }
+
+    public function refreshToken(Request $request)
+    {
+        Log::info('Incoming refresh token request.');
+        Log::info('Cookies:', ['cookies' => $request->cookies->all()]);
+        $user = $request->user();
+        if ($user) {
+            $user->currentAccessToken()->delete();
+            $newToken = $user->createToken('manp-token')->plainTextToken;
+            if($newToken)
+                return ApiResponseClass::sendResponse($newToken, 'Authenticated.', 200);
+        }
+        return ApiResponseClass::sendResponse([], 'Unauthorized Access.', 401, false);
+    }
+
 
 
     public function sendVerificationEmail(Request $request)
@@ -158,112 +189,14 @@ class AuthController extends Controller
         return response()->json(['success' => false, 'message' => 'Invalid Email.'], 400);
     }
 
-
-    // public function login(LoginRequest $request)
-    // {
-    //     try {
-    //         $user = User::where('email', $request->email)->first();
-    //         if(!$user || !Hash::check($request->password, $user->password)){
-    //             throw new \ErrorException('Invalid Credentials.');
-    //         }
-
-    //         $token = $user->createToken('manp')->plainTextToken;
-    //         $data = [ 'user' => $user, 'token' => $token];
-    //         return ApiResponseClass::sendResponse(new AuthResource($data),'Login successful.', 201);
-
-    //     }catch(\Exception $ex){
-    //         $errorData = ['email' => $request->email, 'message' =>  $ex->getMessage()];
-    //         return ApiResponseClass::sendResponse($errorData,'Login successful.', 401, false);
-    //     }
-    // }
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return response()->json($this->interface->index());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function register(Request $request)
-    // {
-    //     $fields = $request->validate([
-    //         'name' => 'required|string',
-    //         'email' => 'required|string|unique:users,email',
-    //         'password' => 'required|string',
-    //     ]);
-    //     $user = User::create([
-    //         'name' => $fields['name'],
-    //         'email' => $fields['email'],
-    //         'password' => bcrypt($fields['password']),
-    //     ]);
-    //     $token = $user->createToken('manp')->plainTextToken;
-    //     $response = [ 'user' => $user, 'token' => $token ];
-    //     return response($response, 201);
-    // }
-
-    // public function login(Request $request){
-    //     $fields = $request->validate([
-    //         'email' => 'required|string|unique:users,email',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     $user = User::where('email', $fields['email'])->first();
-    //     if(!$user || !Hash::check($fields['password'], $user->password)){
-    //         return response(['message' => 'Bad Credentials', 401]);
-    //     }
-
-    //     $token = $user->createToken('manp')->plainTextToken;
-    //     $response = [
-    //         'success' => true,
-    //         'message' => 'Login successful.',
-    //         'token' => $token,
-    //         'user' => $user,
-    //     ];
-    //     return response($response, 201);
-
-    // }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function store(Request $request){}
+    public function show(string $id){}
+    public function edit(string $id){}
+    public function update(Request $request, string $id){}
+    public function destroy(string $id){}
 }

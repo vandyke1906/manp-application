@@ -24,8 +24,7 @@ export default function SignInForm() {
     
       ApiBasic.get('/sanctum/csrf-cookie', { withCredentials: true })
       .then((res) => {
-            ApiBasic.post('/api/login', credentials).then((response) => {
-              //console.log(response.data);
+            ApiBasic.post('/api/login', credentials, { withCredentials: true }).then((response) => {
               const { success, data } = response.data;
               if(success){
                 if(data.verified){

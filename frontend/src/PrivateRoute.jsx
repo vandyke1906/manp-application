@@ -13,7 +13,7 @@ const { user, setUser, isSameUser } = useUserStore();
 
 
   useEffect(() => {
-    ApiClient.get("/auth-check").then((response) => {
+    ApiClient.get("/auth/check").then((response) => {
         const { success, data } = response.data;
         if(success){
           if(data.verified){

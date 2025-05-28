@@ -55,7 +55,6 @@ class ProponentController extends Controller
             'zoning_id' => $request->zoning_id,
             'business_type_id' => $request->business_type_id
         ];
-        Log::info('Request data: ', $request->all());
         DB::beginTransaction();
         try{
              $proponent = $this->proponentRepositryInterface->store($details);

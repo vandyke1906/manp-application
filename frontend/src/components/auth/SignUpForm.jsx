@@ -114,17 +114,63 @@ export default function SignUpForm() {
             </div>
             <form ref={formRef} onSubmit={handleRegister}>
               <div className="space-y-5">
-                <div>
-                  <Label>
-                    Full Name<span className="text-error-500">*</span>
-                  </Label>
-                  <Input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Enter your full name"
-                  />
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  {/* <!-- First Name --> */}
+                  <div className="sm:col-span-1">
+                    <Label>
+                      First Name<span className="text-error-500">*</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      id="first_name"
+                      name="first_name"
+                      placeholder="Enter your first name"
+                      isRequired={true}
+                    />
+                  </div>
+                  {/* <!-- Last Name --> */}
+                  <div className="sm:col-span-1">
+                    <Label>
+                      Last Name<span className="text-error-500">*</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      id="last_name"
+                      name="last_name"
+                      placeholder="Enter your last name"
+                      isRequired={true}
+                    />
+                  </div>
                 </div>
+
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-4">
+                   {/* <!-- Middle Name --> */}
+                  <div className="sm:col-span-3">
+                    <Label>
+                      Middle Name<span className="text-error-500">*</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      id="middle_name"
+                      name="middle_name"
+                      placeholder="Enter your middle name"
+                      isRequired={true}
+                    />
+                  </div>
+                  {/* <!-- Suffix --> */}
+                  <div className="sm:col-span-1">
+                    <Label>
+                      Suffix
+                    </Label>
+                    <Input
+                      type="text"
+                      id="suffix"
+                      name="suffix"
+                      placeholder="Suffix (Jr., Sr.)"
+                    />
+                  </div>
+                </div>
+
                 {/* <!-- Email --> */}
                 <div>
                   <Label>

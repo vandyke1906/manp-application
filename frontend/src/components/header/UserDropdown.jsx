@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import useUserStore from "../../_utils/store/useUserStore";
-import Button from "../ui/button/Button";
 import {  ApiClient } from "../../_utils/axios";
 
 export default function UserDropdown() {
@@ -40,7 +39,7 @@ export default function UserDropdown() {
           <img src="/images/user/owner.jpg" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">{user.name || "User"}</span>
+        <span className="block mr-1 font-medium text-theme-sm">{user.full_name || "User"}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
