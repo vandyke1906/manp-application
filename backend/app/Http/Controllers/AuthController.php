@@ -193,6 +193,13 @@ class AuthController extends Controller
     {
         return response()->json($this->interface->index());
     }
+    
+    public function profile(Request $request){
+        $user = $request->user()->only(['first_name', 'middle_name', 'last_name', 'suffix','mobile_number', 'email','telephone_number', 'address']);
+        if (!$user)
+            return ApiResponseClass::sendResponse([], 'User not found', 404, false);
+        return ApiResponseClass::sendResponse($user, 'Success', 200);
+    }
 
     public function store(Request $request){}
     public function show(string $id){}

@@ -23,6 +23,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/auth/refresh', [AuthController::class, 'refreshToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
+    Route::get('/users/profile', [AuthController::class, 'profile']);
     Route::apiResource('/proponents',ProponentController::class);
 
     Route::apiResource('/applications',ApplicationController::class);

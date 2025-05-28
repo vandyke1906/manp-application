@@ -30,6 +30,12 @@ const ApplicationForm = ({title=""}) => {
     enabled: !!id, // Only run the query if `id` exists
   });
 
+  
+  const userProfileQuery = useQuery({
+    queryKey: ["user-profile"],
+    queryFn: () => ApiClient.get(`/users/profile`).then((response) => response.data),
+  });
+
   const applicationTypeQuery = useQuery({
     queryKey: ["application-types"],
     queryFn: () => ApiClient.get(`application-types`).then((response) => response.data),
@@ -176,6 +182,8 @@ const ApplicationForm = ({title=""}) => {
                       name="fname"
                       placeholder="Enter your first name"
                       isRequired={true}
+                      defaultValue={userProfileQuery?.data?.data?.first_name || ""}
+                      disabled={true}
                     />
                   </div>
 
@@ -189,6 +197,8 @@ const ApplicationForm = ({title=""}) => {
                       name="mname"
                       placeholder="Enter your Middle name"
                       isRequired={true}
+                      defaultValue={userProfileQuery?.data?.data?.middle_name || ""}
+                      disabled={true}
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -201,6 +211,8 @@ const ApplicationForm = ({title=""}) => {
                       name="lname"
                       placeholder="Enter your last name"
                       isRequired={true}
+                      defaultValue={userProfileQuery?.data?.data?.last_name || ""}
+                      disabled={true}
                     />
                   </div>
                   <div className="sm:col-span-1">
@@ -213,6 +225,8 @@ const ApplicationForm = ({title=""}) => {
                       name="suffix"
                       placeholder="Enter Suffix"
                       hint="Jr. Sr."
+                      defaultValue={userProfileQuery?.data?.data?.suffix || ""}
+                      disabled={true}
                     />
                   </div>
                 </div>
@@ -220,23 +234,48 @@ const ApplicationForm = ({title=""}) => {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                   <div className="sm:col-span-1">
                     <Label htmlFor="mobile">Mobile Number<span className="text-error-500">*</span></Label>
-                    <Input type="text" id="mobile" name="mobile" placeholder="Mobile Number" defaultValue={obj?.name} isRequired={true} />
+                    <Input 
+                      type="text" id="mobile" name="mobile" 
+                      placeholder="Mobile Number" 
+                      isRequired={true}
+                      defaultValue={userProfileQuery?.data?.data?.mobile_number || ""}
+                      disabled={true}
+                    />
                   </div>
 
                   <div className="sm:col-span-1">
                     <Label htmlFor="tel">Telephone Number</Label>
-                    <Input type="text" id="tel" name="telephone_number" placeholder="Telphone Number" defaultValue={obj?.name} />
+                    <Input 
+                      type="text" 
+                      id="tel" 
+                      name="telephone_number" 
+                      placeholder="Telphone Number" 
+                      defaultValue={userProfileQuery?.data?.data?.telephone_number || ""}
+                      disabled={true}
+                    />
                   </div>
 
                   <div className="sm:col-span-1">
                     <Label htmlFor="email">Email Address<span className="text-error-500">*</span></Label>
-                    <Input type="email" id="email" name="emai_address" placeholder="Email Address" isRequired={true} defaultValue={obj?.name} />
+                    <Input type="email" id="email" 
+                      name="emai_address" 
+                      placeholder="Email Address" 
+                      isRequired={true} 
+                      defaultValue={userProfileQuery?.data?.data?.email || ""}
+                      disabled={true}
+                    />
                   </div>
                 </div>
 
                   <div>
                       <Label htmlFor="address">Address<span className="text-error-500">*</span></Label>
-                      <TextArea id="address" rows={3} name="address" placeholder="address" defaultValue={obj?.description} isRequired={true} />
+                      <TextArea id="address" rows={3} 
+                        name="address" 
+                        placeholder="address" 
+                        isRequired={true}
+                        defaultValue={userProfileQuery?.data?.data?.address || ""}
+                        disabled={true}
+                      />
                   </div>
               </div>
           </ComponentCard>
