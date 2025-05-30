@@ -16,9 +16,7 @@ class ApplicationRepository implements ApplicationInterface
     public function index($user){
         switch($user->role){
             case Roles::PROPONENTS: {
-                // $data =Application::where("user_id", $user->id)->values();
-                // Log::debug($data); //TODO
-                return [];
+                return Application::where("user_id", $user->id)->get();
             }
             case Roles::RPS_TEAM: 
             case Roles::MANAGER: 
