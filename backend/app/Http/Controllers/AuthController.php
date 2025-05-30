@@ -20,7 +20,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationEmail;
 
-use function Psy\debug;
 
 class AuthController extends Controller
 {

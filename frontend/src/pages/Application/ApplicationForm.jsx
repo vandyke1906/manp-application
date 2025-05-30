@@ -169,7 +169,7 @@ const ApplicationForm = ({title=""}) => {
     <PageBreadcrumb pageTitle="Application" />
     <div className="space-y-6">
         <form  ref={formRef} onSubmit={handleSave}>
-          <ComponentCard title="Proponent Details">
+                    <ComponentCard title="Proponent Details">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-7">
                   <div className="sm:col-span-2">
@@ -282,9 +282,22 @@ const ApplicationForm = ({title=""}) => {
 
           <ComponentCard title="Business / Project Details" className="mt-6">
               <div className="space-y-6">
-                  <div>
+                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                    <div className="sm:col-span-1">
+                      <Label htmlFor="business_status">Application Type<span className="text-error-500">*</span></Label>
+                      <Select
+                        options={applicationTypeOptions}
+                        name="application_type"
+                        placeholder="Select Application Type"
+                        className="dark:bg-dark-900"
+                        isRequired={true}
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
                       <Label htmlFor="mobile">Business Name<span className="text-error-500">*</span></Label>
                       <Input type="text" id="mobile" name="business_name" placeholder="Name of Business" defaultValue={obj?.name} />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">

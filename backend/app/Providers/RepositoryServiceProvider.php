@@ -21,6 +21,8 @@ use App\Interfaces\BusinessNatureInterface;
 use App\Repositories\BusinessNatureRepository;
 use App\Interfaces\CapitalizationInterface;
 use App\Repositories\CapitalizationRepository;
+use App\Interfaces\ApplicationInterface;
+use App\Repositories\ApplicationRepository;
 
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -39,6 +41,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BusinessStatusInterface::class, BusinessStatusRepository::class);
         $this->app->bind(BusinessNatureInterface::class, BusinessNatureRepository::class);
         $this->app->bind(CapitalizationInterface::class, CapitalizationRepository::class);
+        $this->app->bind(ApplicationInterface::class, ApplicationRepository::class);
     }
 
     /**
