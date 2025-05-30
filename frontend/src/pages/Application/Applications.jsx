@@ -13,12 +13,11 @@ import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
 
 const headers = [
-  {key: "id", value: "ID"},
-  {key: "name", value: "Name"},
-  {key: "establishment", value: "Establishment"},
-  {key: "address", value: "Address"},
-  {key: "contact_number", value: "Contact Number"},
-  {key: "email_address", value: "Email Address"},
+  {key: "application_number", value: "Application Number"},
+  {key: "application_date", value: "Application Date"},
+  {key: "business_name", value: "Business Name"},
+  {key: "business_address", value: "Business Address"},
+  {key: "status", value: "Application Status"},
   {key: "action", value: "Action"}
 ];
 
@@ -31,7 +30,7 @@ const Applications = () => {
 
   const {isLoading, isError, data: result = { data: [] }, error } = useQuery({
     queryKey: ["applications"],
-    queryFn: ApiClient.get("applications").then((response) => response.data),
+    queryFn: () => ApiClient.get("applications").then((response) => response.data),
   });
 
   const deleteMutation = useMutation({ 

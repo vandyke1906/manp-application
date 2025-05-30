@@ -24,11 +24,8 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $user = $request->user();
-        $data = $this->interface->index($user)->values();
+        $data = $this->interface->index($request->user())->values();
         return ApiResponseClass::sendResponse($data,'',200);
-        //$data = $this->interface->index()->sortBy('name')->values();;
-        //return ApiResponseClass::sendResponse(ApplicationResource::collection($data),'',200);
     }
 
     public function create()
