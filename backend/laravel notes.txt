@@ -24,7 +24,7 @@ https://medium.com/@1415sandalanka/laravel-11-rest-api-crud-with-best-practices-
 
 
 2. CREATE INTERFACE
-	- php artisan make:interface /Interfaces/ProductRepositoryInterface
+	- php artisan make:interface /ProductRepositoryInterface
  In app/Interfaces folder, put inside code:
 	public function index();
 	public function getById($id);
