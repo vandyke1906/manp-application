@@ -22,6 +22,11 @@ use App\Repositories\CapitalizationRepository;
 use App\Interfaces\ApplicationInterface;
 use App\Repositories\ApplicationRepository;
 
+use App\Interfaces\ApplicantTypeApplicationInterface;
+use App\Repositories\ApplicantTypeApplicationRepository;
+use App\Interfaces\ApplicationFilesInterface;
+use App\Repositories\ApplicationFilesRepository;
+
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -39,6 +44,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BusinessNatureInterface::class, BusinessNatureRepository::class);
         $this->app->bind(CapitalizationInterface::class, CapitalizationRepository::class);
         $this->app->bind(ApplicationInterface::class, ApplicationRepository::class);
+
+        $this->app->bind(ApplicantTypeApplicationInterface::class, ApplicantTypeApplicationRepository::class);
+        $this->app->bind(ApplicationFilesInterface::class, ApplicationFilesRepository::class);
     }
 
     /**

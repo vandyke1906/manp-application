@@ -3,23 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use \Illuminate\Http\UploadedFile;
 use App\Classes\ApiResponseClass;
 use App\Models\Application;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Interfaces\ApplicationInterface;
 use App\Http\Resources\ApplicationResource;
+
+
+use App\Interfaces\ApplicantTypeApplicationInterface;
+use App\Interfaces\ApplicationFilesInterface;
 
 use Illuminate\Support\Facades\Log;
 
 class ApplicationController extends Controller
 {
     private ApplicationInterface $interface;
+    private ApplicantTypeApplicationInterface $applicant_application_interface;
+    private ApplicationFilesInterface $application_files_interface;
 
     public function __construct(ApplicationInterface $obj){
         $this->interface = $obj;
+        $this->applicant_application_interface = app(ApplicantTypeApplicationInterface::class);
+        $this->application_files_interface = app(ApplicationFilesInterface::class);
+
     }
 
     public function index(Request $request)
@@ -34,6 +45,7 @@ class ApplicationController extends Controller
 
     public function store(StoreApplicationRequest $request)
     {
+        // Log::debug($request);
         $user = (object)$request->user()->only(['id', 'first_name', 'middle_name', 'last_name', 'suffix', 'email']);
         $application_data =[
             'application_date' => $request->application_date,
@@ -66,10 +78,43 @@ class ApplicationController extends Controller
         ];
         DB::beginTransaction();
         try{
-             $application = $this->interface->store($application_data);
-             //$application->id
-             DB::commit();
-             return ApiResponseClass::sendResponse([],'Application added successfully.',201);
+            $application = $this->interface->store($application_data);
+
+            //application applicant_types
+            foreach ($request->applicant_type_id as $app_type_id) {
+                $this->applicant_application_interface->store(['application_id' => $application->id, 'applicant_type_id' => $app_type_id]);
+            }
+
+            //application files
+            foreach ($application_files as $key => $file) {
+                if ($file instanceof UploadedFile && !$file->getError()) {
+                    $mimeType = $file->getClientMimeType();
+                    // $originalName = $file->getClientOriginalName();
+                    // $fileSize = $file->getSize();
+                    // $storedPath = $file->store('uploads'); // Save the file
+                    
+                    // echo "File: $fileName\n";
+                    // echo "Original Name: $originalName\n";
+                    // echo "MIME Type: $mimeType\n";
+                    // echo "Size: {$fileSize} bytes\n";
+                    // echo "Stored Path: $storedPath\n\n";
+                    $folder_business = Str::slug($request->business_name);
+                    $storedPath = $file->store('uploads');
+                    $filePath = $file->store("uploads/application_files/{$folder_business}"); // Save the file to storage
+                    $data_file = [
+                        'application_id' => $application->id,
+                        'file_name' => $key,
+                        'file_type' => $mimeType,
+                        'file_path' => $storedPath,
+                    ];
+                    $this->application_files_interface->store($data_file);
+                } else {
+                    echo "Error uploading $key\n";
+                }
+            }
+
+            DB::commit();
+            return ApiResponseClass::sendResponse([],'Application added successfully.',201);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);

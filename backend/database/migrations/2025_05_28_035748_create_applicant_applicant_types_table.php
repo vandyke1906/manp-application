@@ -15,7 +15,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('applicant_applicant_types', function (Blueprint $table) {
+        Schema::create('applicant_type_applications', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Application::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(ApplicantType::class);
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('applicant_applicant_types');
+        Schema::dropIfExists('applicant_type_applications');
     }
 };
