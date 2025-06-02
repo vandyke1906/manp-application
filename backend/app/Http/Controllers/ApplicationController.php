@@ -34,16 +34,42 @@ class ApplicationController extends Controller
 
     public function store(StoreApplicationRequest $request)
     {
-        $details =[
-            'name' => $request->name,
-            'description' => $request->description,
+        $user = (object)$request->user()->only(['id', 'first_name', 'middle_name', 'last_name', 'suffix', 'email']);
+        $application_data =[
+            'application_date' => $request->application_date,
+            'first_name' => $user->first_name,
+            'middle_name' => $user->middle_name,
+            'last_name' => $user->last_name,
+            'suffix' => $user->suffix,
+            'email_address' => $user->email,
+            'contact_number' => $request->telephone_number ? "{$request->mobile_number}, {$request->telephone_number}"  : "{$request->mobile_number}",
+            'address' => $request->address,
+            'user_id' => $user->id,
+            'applicant_type_id' => $request->applicant_type_id,
+            'application_type_id' => $request->application_type_id,
+            'business_name' => $request->business_name,
+            'business_address' => $request->business_address,
+            'business_description' => $request->business_description,
+            'business_nature_id' => $request->business_nature_id,
+            'business_status_id' => $request->business_status_id,
+            'capitalization_id' => $request->capitalization_id,
+            'business_type_id' => $request->business_type_id,
+        ];
+        $application_files = [
+            'proof_of_capitalization' => $request->proof_of_capitalization,
+            'barangay_clearance' => $request->barangay_clearance,
+            'birth_certificate_or_id' => $request->birth_certificate_or_id,
+            'ncip_document' => $request->ncip_document,
+            'fpic_certification' => $request->fpic_certification,
+            'business_permit' => $request->business_permit, 
+            'authorization_letter' => $request->authorization_letter, 
         ];
         DB::beginTransaction();
         try{
-             $obj = $this->interface->store($details);
+             $application = $this->interface->store($application_data);
 
              DB::commit();
-             return ApiResponseClass::sendResponse(new ApplicationResource($obj),'Application added successfully.',201);
+             return ApiResponseClass::sendResponse([],'Application added successfully.',201);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);

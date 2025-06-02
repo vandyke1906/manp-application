@@ -35,6 +35,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->string('business_name');
             $table->longText('business_address');
+            $table->longText('business_description');
             $table->foreignIdFor(BusinessNature::class);
             $table->foreignIdFor(BusinessStatus::class);
             $table->foreignIdFor(Capitalization::class);

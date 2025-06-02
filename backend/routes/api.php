@@ -25,7 +25,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/profile', [AuthController::class, 'profile']);
 
     Route::apiResource('/applications',ApplicationController::class);
-
     Route::apiResource('/zonings',ZoningController::class);
     Route::apiResource('/application-types',ApplicationTypeController::class);
     Route::apiResource('/business-types',BusinessTypeController::class);

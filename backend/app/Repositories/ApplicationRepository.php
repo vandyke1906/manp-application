@@ -31,7 +31,15 @@ class ApplicationRepository implements ApplicationInterface
        return Application::findOrFail($id);
     }
 
-    public function store(array $data){
+    public function store(array $data){ 
+        $lastApplication = Application::latest()->first();
+        $nextId = $lastApplication ? $lastApplication->id + 1 : 1;
+        $data["application_number"] = 'MANP-PAMO-APPLICATION-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+        Log::info($data);
+        // $role = Roles::PROPONENTS;
+        // $data["password"] = Hash::make($data["password"]);
+        // $data["role"] = $role;
+        // $data["verification_code"] = Str::random(6);
        return Application::create($data);
     }
 

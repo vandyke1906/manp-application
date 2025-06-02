@@ -8,6 +8,7 @@ import Input from '../../components/form/input/InputField';
 import FileInput from '../../components/form/input/FileInput';
 import MultipleSelect from '../../components/form/MultipleSelect';
 import Select from '../../components/form/Select';
+import DatePicker from '../../components/form/DatePicker';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -282,7 +283,7 @@ const ApplicationForm = ({title=""}) => {
           <ComponentCard title="Business / Project Details" className="mt-6">
               <div className="space-y-6">
                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-2">
                       <Label htmlFor="business_status">Application Type<span className="text-error-500">*</span></Label>
                       <Select
                         options={applicationTypeOptions}
@@ -293,10 +294,27 @@ const ApplicationForm = ({title=""}) => {
                       />
                     </div>
 
-                    <div className="sm:col-span-2">
-                      <Label htmlFor="business_name">Business Name<span className="text-error-500">*</span></Label>
-                      <Input type="text" id="business_name" name="business_name" placeholder="Name of Business" defaultValue={obj?.name} />
+                    <div className="sm:col-span-1">
+                      {/* <Label htmlFor="application_date">Application Date<span className="text-error-500">*</span></Label>
+                      <Input type="date" id="application_date" name="application_date" placeholder="Date of Application" defaultValue={obj?.application_date} format="dd/mmm/yyyy" /> */}
+                       <DatePicker
+                        id="date-picker"
+                        name="application_date"
+                        label="Application Date"
+                        placeholder="Select a date"
+                        isRequired={true}
+                        // onChange={(dates, currentDateString) => {
+                        //   // Handle your logic
+                        //   console.log({ dates, currentDateString });
+                        // }}
+                      />
                     </div>
+                  </div>
+
+
+                  <div>
+                    <Label htmlFor="business_name">Business Name<span className="text-error-500">*</span></Label>
+                    <Input type="text" id="business_name" name="business_name" placeholder="Name of Business" defaultValue={obj?.name} />
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
