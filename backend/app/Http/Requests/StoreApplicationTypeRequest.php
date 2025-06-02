@@ -24,7 +24,6 @@ class StoreApplicationTypeRequest extends CommonFormRequest
     {
         return [
             'name' => 'required',
-            'description' => 'required'
         ];
     }
 }

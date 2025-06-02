@@ -23,7 +23,7 @@ class StoreApplicationRequest extends CommonFormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required',
         ];
     }
 }

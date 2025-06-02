@@ -24,8 +24,7 @@ class StoreZoningRequest extends CommonFormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'description' => 'required'
+            'name' => 'required'
         ];
     }
 }
