@@ -5,8 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class application_files extends Model
+class ApplicationFiles extends Model
 {
     /** @use HasFactory<\Database\Factories\ApplicationFilesFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'application_id',
+        'file_type',
+        'file_name',
+        'file_path',
+    ];
 }
