@@ -29,8 +29,6 @@ return new class extends Migration
             $table->string('suffix')->nullable();
             $table->string('email_address');
             $table->string('contact_number');
-            $table->string('establishment');
-            $table->string('address');
             $table->foreignIdFor(ApplicantType::class);
             $table->foreignIdFor(ApplicationType::class);
             $table->string('application_number')->unique();

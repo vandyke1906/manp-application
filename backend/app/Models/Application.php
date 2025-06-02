@@ -12,15 +12,23 @@ class Application extends Model
 
     protected $fillable = [
         'application_date',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'suffix',
+        'email_address',
+        'contact_number',
+        'applicant_type_id',
         'application_type_id',
+        'application_number',
         'user_id',
         'business_name',
-        'business_nature_id',
-        'applicant_type_id',
         'business_address',
+        'business_nature_id',
         'business_status_id',
         'capitalization_id',
+        'business_type_id',
+        'zoning_id',
         'status',
-        'application_number',
     ];
 }
