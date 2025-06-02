@@ -45,7 +45,7 @@ class ApplicationController extends Controller
             'contact_number' => $request->telephone_number ? "{$request->mobile_number}, {$request->telephone_number}"  : "{$request->mobile_number}",
             'address' => $request->address,
             'user_id' => $user->id,
-            'applicant_type_id' => $request->applicant_type_id,
+            // 'applicant_type_id' => $request->applicant_type_id,
             'application_type_id' => $request->application_type_id,
             'business_name' => $request->business_name,
             'business_address' => $request->business_address,
@@ -67,7 +67,7 @@ class ApplicationController extends Controller
         DB::beginTransaction();
         try{
              $application = $this->interface->store($application_data);
-
+             //$application->id
              DB::commit();
              return ApiResponseClass::sendResponse([],'Application added successfully.',201);
 
