@@ -18,7 +18,6 @@ class Application extends Model
         'suffix',
         'email_address',
         'contact_number',
-        'applicant_type_id',
         'application_type_id',
         'application_number',
         'user_id',

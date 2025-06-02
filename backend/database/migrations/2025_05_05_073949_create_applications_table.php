@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('suffix')->nullable();
             $table->string('email_address');
             $table->string('contact_number');
-            $table->foreignIdFor(ApplicantType::class);
+            $table->string('address');
             $table->foreignIdFor(ApplicationType::class);
             $table->string('application_number')->unique();
             $table->foreignIdFor(User::class);
