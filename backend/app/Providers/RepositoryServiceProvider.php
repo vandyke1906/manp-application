@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\ProponentRepository;
-use App\Interfaces\ProponentRepositoryInterface;
 use App\Interfaces\ZoningInterface;
 use App\Repositories\ZoningRepository;
 use App\Interfaces\BusinessTypeInterface;
@@ -32,7 +30,6 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(ProponentRepositoryInterface::class, ProponentRepository::class);
         $this->app->bind(ZoningInterface::class, ZoningRepository::class);
         $this->app->bind(BusinessTypeInterface::class, BusinessTypeRepository::class);
         $this->app->bind(ApplicationTypeInterface::class, ApplicationTypeRepository::class);

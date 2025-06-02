@@ -239,7 +239,6 @@ const ApplicationForm = ({title=""}) => {
                       placeholder="Mobile Number" 
                       isRequired={true}
                       defaultValue={userProfileQuery?.data?.data?.mobile_number || ""}
-                      disabled={true}
                     />
                   </div>
 
@@ -251,7 +250,6 @@ const ApplicationForm = ({title=""}) => {
                       name="telephone_number" 
                       placeholder="Telphone Number" 
                       defaultValue={userProfileQuery?.data?.data?.telephone_number || ""}
-                      disabled={true}
                     />
                   </div>
 
@@ -274,7 +272,6 @@ const ApplicationForm = ({title=""}) => {
                         placeholder="address" 
                         isRequired={true}
                         defaultValue={userProfileQuery?.data?.data?.address || ""}
-                        disabled={true}
                       />
                   </div>
               </div>

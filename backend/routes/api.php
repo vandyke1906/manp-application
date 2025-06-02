@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\ApplicationTypeController;
 use App\Http\Controllers\ZoningController;
-use App\Http\Controllers\ProponentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ApplicantTypeController;
 use App\Http\Controllers\ApplicationController;
@@ -24,7 +23,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
     Route::get('/users/profile', [AuthController::class, 'profile']);
-    Route::apiResource('/proponents',ProponentController::class);
 
     Route::apiResource('/applications',ApplicationController::class);
 
