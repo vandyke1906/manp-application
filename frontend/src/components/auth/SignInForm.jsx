@@ -22,8 +22,8 @@ export default function SignInForm() {
     const credentials = Object.fromEntries(formData.entries()); // Converts FormData to
 
     
-      ApiBasic.get('/sanctum/csrf-cookie', { withCredentials: true })
-      .then((res) => {
+      // ApiBasic.get('/sanctum/csrf-cookie', { withCredentials: true })
+      // .then((res) => {
             ApiBasic.post('/api/login', credentials, { withCredentials: true }).then((response) => {
               const { success, data } = response.data;
               if(success){
@@ -38,8 +38,9 @@ export default function SignInForm() {
               }
             }).catch((error) => {
               setLoginError(error.response?.data?.message || 'Login failed!');
-            });  })
-      .catch(error => console.error('CSRF token request failed', error));
+            });  
+      //     })
+      // .catch(error => console.error('CSRF token request failed', error));
 
 
         // ApiBasic.post('/api/login', credentials, {
