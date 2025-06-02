@@ -103,7 +103,7 @@ const ZoningForm = ({title=""}) => {
           <div className="space-y-6">
                 <div>
                     <Label htmlFor="input">Name</Label>
-                    <Input type="text" id="input" name="name" placeholder="Business Type" defaultValue={obj?.name} />
+                    <Input type="text" id="input" name="name" placeholder="Zoning Classification" defaultValue={obj?.name} />
                 </div>
                 <div>
                     <Label htmlFor="inputTwo">Description</Label>
