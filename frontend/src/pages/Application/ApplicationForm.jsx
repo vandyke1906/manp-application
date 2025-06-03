@@ -515,15 +515,25 @@ const ApplicationForm = ({title=""}) => {
           </div>
         </form>
         
-        <ComponentCard title="Application Documents" className="mt-6">
+        <ComponentCard title="Submitted Documents" className="mt-6">
             {/* <div className="space-y-6">
               {!!id && <FilePreview docs={fileQueries.map((query) => query.data).filter(Boolean) || []} />}
             </div> */}
             
             {fileQueries.map((query) => query.data).filter(Boolean).map((file, index) => (
-                <a key={index} href={file.uri} target="_blank" rel="noopener noreferrer">
-                    {file.fileName}
-                </a>
+                <p>
+                  <a 
+                      key={index} 
+                      href="#" 
+                      className="text-green-500 hover:text-green-600 dark:text-green-400"
+                      onClick={(e) => {
+                          e.preventDefault(); // Prevent default navigation
+                          window.open(file.uri, "FilePreview", "width=800,height=600,resizable=yes");
+                      }}
+                  >
+                      {file.name}
+                  </a>
+                </p>
             ))}
 
           </ComponentCard>

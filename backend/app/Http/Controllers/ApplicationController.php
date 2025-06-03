@@ -197,8 +197,9 @@ class ApplicationController extends Controller
         Log::info($application_file);
         return response()->json([
             'uri' => $signedUrl,
-            'fileType' => $application_file->file_type,
-            'fileName' => $application_file->file_name
+            'file_type' => $application_file->file_type,
+            'file_name' => $application_file->file_name,
+            'name' => $this->humanReadable($application_file->name),
         ]);
     }
 
@@ -226,4 +227,9 @@ class ApplicationController extends Controller
         $this->interface->delete($id);
         return ApiResponseClass::sendResponse($id, 'Application deleted successfully.',201);
     }
+
+    function humanReadable($string) {
+        return ucwords(str_replace('_', ' ', $string));
+    }
+
 }
