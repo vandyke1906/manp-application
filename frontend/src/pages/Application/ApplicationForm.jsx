@@ -17,6 +17,7 @@ import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
 import Checkbox from '../../components/form/input/Checkbox';
+import FilePreview from '../../components/ui/FilePreview';
 
 const ApplicationForm = ({title=""}) => {
   const navigate = useNavigate();
@@ -33,17 +34,6 @@ const ApplicationForm = ({title=""}) => {
     }),
     enabled: !!id, // Only run the query if `id` exists
   });
-
-  const { data: appFileresult } = useQuery({ 
-    queryKey: ["application-files", id],
-    queryFn: () => ApiClient.get(`/files/${folder}/${filename}`).then((response) => {
-      console.info({response})
-      return response.data;
-    }),
-    enabled: obj && Object.keys(obj).length > 0, // Only run the query if `id` exists
-  });
-
-  console.log(obj);
   
   const userProfileQuery = useQuery({
     queryKey: ["user-profile"],
@@ -431,13 +421,9 @@ const ApplicationForm = ({title=""}) => {
                   </div>
 
                   {/* test */}
-                   <div>
-                      {appFileresult?.data?.proof_of_capitalization ? (
-                        <a href={appFileresult?.data?.proof_of_capitalization} target="_blank" rel="noopener noreferrer">{appFileresult?.data?.proof_of_capitalization || ""}</a>
-                      ) : (
-                        <p>No file uploaded</p>
-                      )}
-                   </div>
+                  <div>
+                    {!!id && <FilePreview applicationId={id} fileName="proof_of_capitalization" />}
+                  </div>
               </div>
           </ComponentCard>
 

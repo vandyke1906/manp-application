@@ -13,10 +13,11 @@ const MultiSelect = ({
   const [isOpen, setIsOpen] = useState(false);
 
   // Update selectedOptions when defaultSelected changes
-  useEffect(() => {
-    setSelectedOptions(defaultSelected);
-  }, [defaultSelected]);
+  // useEffect(() => {
+  //   setSelectedOptions(defaultSelected);
+  // }, [defaultSelected]);
 
+  // console.info({defaultSelected});
 
   const toggleDropdown = () => {
     if (!disabled) setIsOpen((prev) => !prev);

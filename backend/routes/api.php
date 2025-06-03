@@ -26,7 +26,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users', [AuthController::class, 'index']);
     Route::get('/users/profile', [AuthController::class, 'profile']);
 
+    Route::get('/applications-file/{id}/{name}', [ApplicationController::class, 'getApplicationFile']);
     Route::apiResource('/applications',ApplicationController::class);
+
     Route::apiResource('/zonings',ZoningController::class);
     Route::apiResource('/application-types',ApplicationTypeController::class);
     Route::apiResource('/business-types',BusinessTypeController::class);
@@ -34,17 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/capitalizations',CapitalizationController::class);
     Route::apiResource('/business-natures',BusinessNatureController::class);
     Route::apiResource('/business-statuses',BusinessStatusController::class);    
-
-    Route::get('/files/{folder}/{filename}', function ($folder, $filename) {
-        $path = storage_path("app/private/application_files/{$folder}/{$filename}");
-        if (!file_exists($path)) {
-            abort(404);
-        }
-        return response()->file($path);
-    });
-
 });
-
 
 Route::get('/debug-csrf', function () {
     return response()->json([

@@ -19,7 +19,7 @@ class ApplicantTypeApplicationRepository implements ApplicantTypeApplicationInte
     public function getByApplicationId($appId){
        return ApplicantTypeApplications::where('application_id',$appId)->get();
     }
-    
+
     public function store(array $data){
        return ApplicantTypeApplications::create($data);
     }
