@@ -43,6 +43,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return response()->file($path);
     });
 
+});
+
 
 Route::get('/debug-csrf', function () {
     return response()->json([
