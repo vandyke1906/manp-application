@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateApplicationRequest;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Interfaces\ApplicationInterface;
 use App\Http\Resources\ApplicationResource;
 
@@ -90,7 +91,7 @@ class ApplicationController extends Controller
                     $folder_business = Str::slug($request->business_name);
                     $extension = $file->getClientOriginalExtension();
                     $fileName = "{$key}.{$extension}";
-                    $filePath = $file->storeAs("uploads/application_files/{$folder_business}", $fileName); // Save the file to storage
+                    $filePath = $file->storeAs("private/application_files/{$folder_business}", $fileName);
                     $data_file = [
                         'application_id' => $application->id,
                         'name' => $key,
@@ -125,7 +126,8 @@ class ApplicationController extends Controller
 
             $application_files = $this->application_files_interface->getByApplicationId($id);
              foreach ($application_files as $file) {
-                $application[$file->name] = $file->file_path;
+                $folder_business = Str::slug($application->business_name);
+                $application[$file->name] = "{$folder_business}/{$file->file_name}";
             }
             return ApiResponseClass::sendResponse($application,'',200);
         }

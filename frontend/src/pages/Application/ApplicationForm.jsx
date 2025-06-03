@@ -34,6 +34,15 @@ const ApplicationForm = ({title=""}) => {
     enabled: !!id, // Only run the query if `id` exists
   });
 
+  const { data: appFileresult } = useQuery({ 
+    queryKey: ["application-files", id],
+    queryFn: () => ApiClient.get(`/files/${folder}/${filename}`).then((response) => {
+      console.info({response})
+      return response.data;
+    }),
+    enabled: obj && Object.keys(obj).length > 0, // Only run the query if `id` exists
+  });
+
   console.log(obj);
   
   const userProfileQuery = useQuery({
@@ -420,6 +429,15 @@ const ApplicationForm = ({title=""}) => {
                       <Label htmlFor="authorization_letter">Authorization Letter duly Signed by the Proponent</Label>
                       <FileInput type="file" id="authorization_letter" name="authorization_letter" placeholder="Authorization Letter duly Signed by the Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
+
+                  {/* test */}
+                   <div>
+                      {appFileresult?.data?.proof_of_capitalization ? (
+                        <a href={appFileresult?.data?.proof_of_capitalization} target="_blank" rel="noopener noreferrer">{appFileresult?.data?.proof_of_capitalization || ""}</a>
+                      ) : (
+                        <p>No file uploaded</p>
+                      )}
+                   </div>
               </div>
           </ComponentCard>
 

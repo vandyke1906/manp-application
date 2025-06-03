@@ -12,6 +12,8 @@ use App\Http\Controllers\BusinessStatusController;
 use App\Http\Controllers\BusinessNatureController;
 use App\Http\Controllers\CapitalizationController;
 
+use Illuminate\Support\Facades\Log;
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/send-verification', [AuthController::class, 'sendVerificationEmail']);
@@ -31,8 +33,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/applicant-types',ApplicantTypeController::class);
     Route::apiResource('/capitalizations',CapitalizationController::class);
     Route::apiResource('/business-natures',BusinessNatureController::class);
-    Route::apiResource('/business-statuses',BusinessStatusController::class);
-});
+    Route::apiResource('/business-statuses',BusinessStatusController::class);    
+
+    Route::get('/files/{folder}/{filename}', function ($folder, $filename) {
+        $path = storage_path("app/private/application_files/{$folder}/{$filename}");
+        if (!file_exists($path)) {
+            abort(404);
+        }
+        return response()->file($path);
+    });
 
 
 Route::get('/debug-csrf', function () {
