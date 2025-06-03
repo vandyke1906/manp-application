@@ -34,6 +34,42 @@ const ApplicationForm = ({title=""}) => {
     }),
     enabled: !!id, // Only run the query if `id` exists
   });
+
+
+  //fetch files
+  const fetchFiles = async (applicationId) => {
+    const fileNames = [
+                        "proof_of_capitalization",
+                        "barangay_clearance",
+                        "birth_certificate_or_id",
+                        "ncip_document",
+                        "fpic_certification",
+                        "business_permit",
+                        "authorization_letter"
+                      ];
+    const fileRequests = fileNames.map((fileName) =>
+        ApiClient.get(`applications-file/${applicationId}/${fileName}`)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.error(`Error fetching file: ${fileName}`, error);
+                return null; // Prevent breaking the request chain
+            })
+    );
+
+  const files = await Promise.all(fileRequests);
+    return files.filter(Boolean); // Remove any failed/null responses
+  };
+
+  const { data: fileResults } = useQuery({
+      queryKey: ["application-files", id],
+      queryFn: () => fetchFiles(id),
+      enabled: !!id, // Ensure valid queries only run
+  });
+
+  console.info({fileResults});
+  //fetch files
+
+
   
   const userProfileQuery = useQuery({
     queryKey: ["user-profile"],
@@ -109,6 +145,29 @@ const ApplicationForm = ({title=""}) => {
       setObj(result?.data);
     }
   }, [isSuccess, result]);
+  
+
+  
+  // useEffect(() => {
+  //     setLoading(true); 
+  //     Promise.all(
+  //         fileNames.map((fileName) => 
+  //             ApiClient.get(`applications-file/${applicationId}/${fileName}`)
+  //                 .then(({ data }) => ({
+  //                     uri: data.file_url,
+  //                     fileType: data.file_type,
+  //                     fileName: data.file_name
+  //                 }))
+  //                 .catch((error) => {
+  //                     console.error(`Error fetching file: ${fileName}`, error);
+  //                     return null; // Ensure failed requests don't break the chain
+  //                 })
+  //         )
+  //     ).then((files) => {
+  //         setDocs(files.filter(Boolean)); // Removes any failed/null responses
+  //         setLoading(false);
+  //     }).catch(() => setLoading(false));
+  // }, [applicationId]);
 
 
   const createMutation = useMutation({ 
@@ -419,11 +478,6 @@ const ApplicationForm = ({title=""}) => {
                       <Label htmlFor="authorization_letter">Authorization Letter duly Signed by the Proponent</Label>
                       <FileInput type="file" id="authorization_letter" name="authorization_letter" placeholder="Authorization Letter duly Signed by the Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
-
-                  {/* test */}
-                  <div>
-                    {!!id && <FilePreview applicationId={id} fileName="proof_of_capitalization" />}
-                  </div>
               </div>
           </ComponentCard>
 
@@ -459,8 +513,13 @@ const ApplicationForm = ({title=""}) => {
               </Button>
             </div>
           </div>
-
         </form>
+        
+        <ComponentCard title="Application Documents" className="mt-6">
+            <div className="space-y-6">
+              {!!id && <FilePreview key={fileResults?.length} docs={fileResults || []} />}
+            </div>
+          </ComponentCard>
     </div>
     </>
   )

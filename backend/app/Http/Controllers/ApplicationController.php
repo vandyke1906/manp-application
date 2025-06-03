@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateApplicationRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use App\Interfaces\ApplicationInterface;
 use App\Http\Resources\ApplicationResource;
 
@@ -148,25 +149,57 @@ class ApplicationController extends Controller
     //     }
     // }
 
-    public function getApplicationFile($id, $name, Request $request){
-        $userId = $request->user()->id; // Get authenticated user ID
-        $application = Application::where('id', $id)->where('user_id', $userId)->first();   // Validate if the application belongs to the user
+    //return using blob
+    // public function getApplicationFile($id, $name, Request $request){
+    //     $userId = $request->user()->id; // Get authenticated user ID
+    //     $application = Application::where('id', $id)->where('user_id', $userId)->first();   // Validate if the application belongs to the user
+    //     if (!$application) {
+    //         return ApiResponseClass::sendResponse([], 'Application not found or unauthorized',404);
+    //     }
+
+    //     $application_file = $this->application_files_interface->getByApplicationAppIdAndName($application->id, $name);
+    //      if (!$application_file) {
+    //         return ApiResponseClass::sendResponse([], 'File not found or unauthorized',404);
+    //     }
+    //     $folder_business = Str::slug($application->business_name);
+    //     // $folderPath = "app/private/application_files/{$folder_business}/{$application_file->file_name}";
+    //     $path = storage_path("app/private/application_files/{$folder_business}/{$application_file->file_name}");
+    //     if (!file_exists($path)) {
+    //         return ApiResponseClass::sendResponse([], 'File not found or unauthorized',404);
+    //     }
+    //     // Return the file with correct headers for download or viewing
+    //     return response()->file($path, ['Content-Type' => mime_content_type($path)]);  
+    // }
+
+    //Generate Signed URL
+    public function getApplicationFile($id, $name, Request $request)
+    {
+        $userId = $request->user()->id;
+
+        // Validate if the application belongs to the user
+        $application = Application::where('id', $id)->where('user_id', $userId)->first();
         if (!$application) {
-            return ApiResponseClass::sendResponse([], 'Application not found or unauthorized',404);
+            return ApiResponseClass::sendResponse([], 'Application not found or unauthorized', 404);
         }
 
+        // Find the file
         $application_file = $this->application_files_interface->getByApplicationAppIdAndName($application->id, $name);
-         if (!$application_file) {
-            return ApiResponseClass::sendResponse([], 'File not found or unauthorized',404);
+        if (!$application_file) {
+            return ApiResponseClass::sendResponse([], 'File not found or unauthorized', 404);
         }
+
+        // Define the path inside Laravel's storage
         $folder_business = Str::slug($application->business_name);
-        // $folderPath = "app/private/application_files/{$folder_business}/{$application_file->file_name}";
-        $path = storage_path("app/private/application_files/{$folder_business}/{$application_file->file_name}");
-        if (!file_exists($path)) {
-            return ApiResponseClass::sendResponse([], 'File not found or unauthorized',404);
-        }
-        // Return the file with correct headers for download or viewing
-        return response()->file($path, ['Content-Type' => mime_content_type($path)]);  
+        // $filePath = "private/application_files/{$folder_business}/{$application_file->file_name}";
+
+        // Generate a **signed URL** that expires after a set duration
+        $signedUrl = URL::temporarySignedRoute('download-file', now()->addMinutes(30), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
+        Log::info($application_file);
+        return response()->json([
+            'uri' => $signedUrl,
+            'fileType' => $application_file->file_type,
+            'fileName' => $application_file->file_name
+        ]);
     }
 
     public function edit(Application $Application){}

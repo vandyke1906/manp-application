@@ -38,6 +38,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/business-statuses',BusinessStatusController::class);    
 });
 
+Route::get('/download-file/{business_name}/{file_name}', function ($business_name, $file_name) {
+    if (!request()->hasValidSignature()) {
+        abort(403, 'Unauthorized access');
+    }
+    $path = storage_path("app/private/application_files/{$business_name}/{$file_name}");
+    if (!file_exists($path)) {
+        return response()->json(['message' => 'File not found'], 404);
+    }
+    return response()->file($path, ['Content-Type' => mime_content_type($path)]);
+})->name('download-file');
+
+
 Route::get('/debug-csrf', function () {
     return response()->json([
         'csrf_token' => request()->cookie('XSRF-TOKEN'),
