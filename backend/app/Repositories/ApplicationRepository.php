@@ -28,13 +28,18 @@ class ApplicationRepository implements ApplicationInterface
     }
 
     public function getById($id){
-       return Application::findOrFail($id);
+        return Application::findOrFail($id);
+       //return Application::join('application_files', 'applications.id', '=', 'application_files.application_id')
+       //     ->join('applicant_type_applications', 'applications.id', '=', 'applicant_type_applications.application_id')
+       //     ->select('applications.*', 'application_files.*', 'applicant_type_applications.*')
+       //     ->where('applications.id', $id)
+       //     ->firstOrFail();
     }
 
     public function store(array $data){ 
         $lastApplication = Application::latest()->first();
         $nextId = $lastApplication ? $lastApplication->id + 1 : 1;
-        $data["application_number"] = 'MANP-PAMO-APPLICATION-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+        $data["application_number"] = 'APP' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
         return Application::create($data);
     }
 

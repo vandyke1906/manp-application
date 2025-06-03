@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 
 const MultiSelect = ({
@@ -11,6 +11,12 @@ const MultiSelect = ({
 }) => {
   const [selectedOptions, setSelectedOptions] = useState(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);
+
+  // Update selectedOptions when defaultSelected changes
+  useEffect(() => {
+    setSelectedOptions(defaultSelected);
+  }, [defaultSelected]);
+
 
   const toggleDropdown = () => {
     if (!disabled) setIsOpen((prev) => !prev);

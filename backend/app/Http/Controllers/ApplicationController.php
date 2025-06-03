@@ -45,7 +45,6 @@ class ApplicationController extends Controller
 
     public function store(StoreApplicationRequest $request)
     {
-        // Log::debug($request);
         $user = (object)$request->user()->only(['id', 'first_name', 'middle_name', 'last_name', 'suffix', 'email']);
         $application_data =[
             'application_date' => $request->application_date,
@@ -57,7 +56,6 @@ class ApplicationController extends Controller
             'contact_number' => $request->telephone_number ? "{$request->mobile_number}, {$request->telephone_number}"  : "{$request->mobile_number}",
             'address' => $request->address,
             'user_id' => $user->id,
-            // 'applicant_type_id' => $request->applicant_type_id,
             'application_type_id' => $request->application_type_id,
             'business_name' => $request->business_name,
             'business_address' => $request->business_address,
@@ -95,6 +93,7 @@ class ApplicationController extends Controller
                     $filePath = $file->storeAs("uploads/application_files/{$folder_business}", $fileName); // Save the file to storage
                     $data_file = [
                         'application_id' => $application->id,
+                        'name' => $key,
                         'file_name' => $fileName,
                         'file_type' => $mimeType,
                         'file_path' => $filePath,
@@ -115,17 +114,28 @@ class ApplicationController extends Controller
 
     public function show($id)
     {
-        $obj = $this->interface->getById($id);
-        return ApiResponseClass::sendResponse(new ApplicationResource($obj),'',200);
+        $application = $this->interface->getById($id);
+        if($application){
+            $applicant_types = $this->applicant_application_interface->getByApplicationId($id);
+            $application_type_ids = [];
+            foreach ($applicant_types as $applicant_type) {
+                $application_type_ids[] = $applicant_type->applicant_type_id;
+            }
+            $application->applicant_type_id = $application_type_ids;
+
+            $application_files = $this->application_files_interface->getByApplicationId($id);
+             foreach ($application_files as $file) {
+                $application[$file->name] = $file->file_path;
+            }
+            return ApiResponseClass::sendResponse($application,'',200);
+        }
+        return ApiResponseClass::sendResponse([], 'Invalid Application.', 401, false);
     }
 
-    public function edit(Application $Application)
-    {
-    }
+    public function edit(Application $Application){}
 
     public function update(UpdateApplicationRequest $request, $id)
     {
-        
         $updateDetails =[
             'name' => $request->name,
             'description' => $request->description,

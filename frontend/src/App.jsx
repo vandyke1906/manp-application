@@ -39,9 +39,10 @@ function App() {
           {/* Dashboard Layout */}
           <Route element={<PrivateRoute />}>
             <Route index path="/" element={<Home />} />
-            <Route index path="/profile" element={<UserProfile />} />
-            <Route index path="/applications" element={<Applications />} />
-            <Route index path="/application-form" element={<ApplicationForm />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/applications" element={<Applications />} />
+            <Route path="/application-form" element={<ApplicationForm />} />
+            <Route path="/application-form/:id" element={<ApplicationForm />} /> {/* Dynamic route */}
 
             <Route path="/proponent">
               <Route index element={<Proponent />} /> {/* Default route */}

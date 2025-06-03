@@ -28,10 +28,13 @@ const ApplicationForm = ({title=""}) => {
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
     queryKey: ["application", id],
-    queryFn: () => ApiClient.get(`applications/${id}`).then((response) => response.data),
+    queryFn: () => ApiClient.get(`applications/${id}`).then((response) => {
+      return response.data;
+    }),
     enabled: !!id, // Only run the query if `id` exists
   });
 
+  console.log(obj);
   
   const userProfileQuery = useQuery({
     queryKey: ["user-profile"],
@@ -149,7 +152,6 @@ const ApplicationForm = ({title=""}) => {
     const formData = new FormData(event.target); // Creates a FormData object from the form
     const data = Object.fromEntries(formData.entries()); // Converts FormData to
     data.applicant_type_id = applicantTypes;
-    console.info({data});
     // Call the correct mutation based on whether an `id` exists
     if (id) {
       updateMutation.mutate({ id, ...data }); // Include `id` for the update call
@@ -291,22 +293,18 @@ const ApplicationForm = ({title=""}) => {
                         placeholder="Select Application Type"
                         className="dark:bg-dark-900"
                         isRequired={true}
+                        defaultValue={obj?.application_type_id || ""}
                       />
                     </div>
 
                     <div className="sm:col-span-1">
-                      {/* <Label htmlFor="application_date">Application Date<span className="text-error-500">*</span></Label>
-                      <Input type="date" id="application_date" name="application_date" placeholder="Date of Application" defaultValue={obj?.application_date} format="dd/mmm/yyyy" /> */}
                        <DatePicker
                         id="date-picker"
                         name="application_date"
                         label="Application Date"
                         placeholder="Select a date"
                         isRequired={true}
-                        // onChange={(dates, currentDateString) => {
-                        //   // Handle your logic
-                        //   console.log({ dates, currentDateString });
-                        // }}
+                        defaultDate={obj?.application_date || ""}
                       />
                     </div>
                   </div>
@@ -314,7 +312,7 @@ const ApplicationForm = ({title=""}) => {
 
                   <div>
                     <Label htmlFor="business_name">Business Name<span className="text-error-500">*</span></Label>
-                    <Input type="text" id="business_name" name="business_name" placeholder="Name of Business" defaultValue={obj?.name} />
+                    <Input type="text" id="business_name" name="business_name" placeholder="Name of Business" defaultValue={obj?.business_name || ""} />
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -324,8 +322,8 @@ const ApplicationForm = ({title=""}) => {
                         options={businessNatureOptions}
                         name="business_nature_id"
                         placeholder="Select Option"
-                        // onChange={handleSelectChange}
                         className="dark:bg-dark-900"
+                        defaultValue={obj?.business_nature_id || ""} 
                       />
                     </div>
 
@@ -335,16 +333,14 @@ const ApplicationForm = ({title=""}) => {
                         isRequired={true}
                         options={applicantTypeOptions}
                         onChange={(values) => setApplicantTypes(values)}
+                        defaultSelected={obj?.applicant_type_id || []}
                       />
-                      {/* <p className="sr-only">
-                        Selected Values: {selectedValues.join(", ")}
-                      </p> */}
                     </div>
                   </div>
 
                   <div>
                       <Label htmlFor="business_address">Business Address<span className="text-error-500">*</span></Label>
-                      <TextArea id="business_address" rows={3} name="business_address" placeholder="Business Address" defaultValue={obj?.description} isRequired={true} />
+                      <TextArea id="business_address" rows={3} name="business_address" placeholder="Business Address" defaultValue={obj?.business_address} isRequired={true} />
                   </div>
 
                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -357,6 +353,7 @@ const ApplicationForm = ({title=""}) => {
                         placeholder="Select Business Status"
                         className="dark:bg-dark-900"
                         isRequired={true}
+                        defaultValue={obj?.business_status_id || ""}
                       />
                     </div>
 
@@ -369,6 +366,7 @@ const ApplicationForm = ({title=""}) => {
                         placeholder="Select Capitalization"
                         className="dark:bg-dark-900"
                         isRequired={true}
+                        defaultValue={obj?.capitalization_id || ""}
                       />
                     </div>
                   </div>
@@ -377,7 +375,7 @@ const ApplicationForm = ({title=""}) => {
                       <Label htmlFor="business_description">Brief Description of the Business<span className="text-error-500">*</span></Label>
                       <TextArea id="business_description" rows={6} name="business_description" 
                         placeholder="Brief Description of the Business" 
-                        defaultValue={obj?.description}
+                        defaultValue={obj?.business_description}
                         hint="Example for Development Projects: The planned project is an inland resort within 1,000 sqm of land beside the road at Sitio Paradise, Brgy. Kapatagan, Digos City, Davao del Sur. The total project footprint is 500 sqm which will include 1 admin building, 1 function hall, 1 swimming pool, and 5 villas/rooms. The projected capacity of the resort is 50 persons per night and 75 day-tour visitors. (Important Note: Please include the size of total land area, and the total area of facilities as the project footprint)"
                         isRequired={true}
                        />

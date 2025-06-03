@@ -12,6 +12,7 @@ class ApplicationFiles extends Model
 
     protected $fillable = [
         'application_id',
+        'name',
         'file_type',
         'file_name',
         'file_path',

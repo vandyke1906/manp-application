@@ -16,6 +16,10 @@ class ApplicationFilesRepository implements ApplicationFilesInterface
        return ApplicationFiles::findOrFail($id);
     }
 
+    public function getByApplicationId($appId){
+       return ApplicationFiles::where('application_id',$appId)->get();
+    }
+
     public function store(array $data){
        return ApplicationFiles::create($data);
     }
