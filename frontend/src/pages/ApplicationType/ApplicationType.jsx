@@ -63,7 +63,7 @@ const ApplicationType = () => {
             <Button size="sm" variant="primary" onClick={() => {
                 navigate("/application-type/create");
               }}>
-              New Business Type
+              New Application Type
             </Button>
         <GenericTable columnHeaders={headers} tableData={result.data} 
           onEdit={(obj) => {

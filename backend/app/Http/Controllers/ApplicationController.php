@@ -89,23 +89,15 @@ class ApplicationController extends Controller
             foreach ($application_files as $key => $file) {
                 if ($file instanceof UploadedFile && !$file->getError()) {
                     $mimeType = $file->getClientMimeType();
-                    // $originalName = $file->getClientOriginalName();
-                    // $fileSize = $file->getSize();
-                    // $storedPath = $file->store('uploads'); // Save the file
-                    
-                    // echo "File: $fileName\n";
-                    // echo "Original Name: $originalName\n";
-                    // echo "MIME Type: $mimeType\n";
-                    // echo "Size: {$fileSize} bytes\n";
-                    // echo "Stored Path: $storedPath\n\n";
                     $folder_business = Str::slug($request->business_name);
-                    $storedPath = $file->store('uploads');
-                    $filePath = $file->store("uploads/application_files/{$folder_business}"); // Save the file to storage
+                    $extension = $file->getClientOriginalExtension();
+                    $fileName = "{$key}.{$extension}";
+                    $filePath = $file->storeAs("uploads/application_files/{$folder_business}", $fileName); // Save the file to storage
                     $data_file = [
                         'application_id' => $application->id,
-                        'file_name' => $key,
+                        'file_name' => $fileName,
                         'file_type' => $mimeType,
-                        'file_path' => $storedPath,
+                        'file_path' => $filePath,
                     ];
                     $this->application_files_interface->store($data_file);
                 } else {
