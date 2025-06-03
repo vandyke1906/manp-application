@@ -3,7 +3,6 @@ import "../../_styles/doc-viewer.css";
 
 const FilePreview = ({ docs = [] }) => {
     return  <DocViewer
-        key={docs.length}
         documents={docs} 
         pluginRenderers={DocViewerRenderers}
         config={{

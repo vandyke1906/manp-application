@@ -18,6 +18,7 @@ import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
 import Checkbox from '../../components/form/input/Checkbox';
 import FilePreview from '../../components/ui/FilePreview';
+import GetApplicationFiles from '../../_utils/GetApplicationFiles';
 
 const ApplicationForm = ({title=""}) => {
   const navigate = useNavigate();
@@ -36,39 +37,38 @@ const ApplicationForm = ({title=""}) => {
   });
 
 
-  //fetch files
-  const fetchFiles = async (applicationId) => {
-    const fileNames = [
-                        "proof_of_capitalization",
-                        "barangay_clearance",
-                        "birth_certificate_or_id",
-                        "ncip_document",
-                        "fpic_certification",
-                        "business_permit",
-                        "authorization_letter"
-                      ];
-    const fileRequests = fileNames.map((fileName) =>
-        ApiClient.get(`applications-file/${applicationId}/${fileName}`)
-            .then((response) => response.data)
-            .catch((error) => {
-                console.error(`Error fetching file: ${fileName}`, error);
-                return null; // Prevent breaking the request chain
-            })
-    );
+  // //fetch files
+  // const fetchFiles = (applicationId) => {
+  //   const fileNames = [
+  //                       "proof_of_capitalization",
+  //                       "barangay_clearance",
+  //                       "birth_certificate_or_id",
+  //                       "ncip_document",
+  //                       "fpic_certification",
+  //                       "business_permit",
+  //                       "authorization_letter"
+  //                     ];
+  //   const fileRequests = fileNames.map((fileName) => {
+  //     console.info({fileName});
+  //     return ApiClient.get(`applications-file/${applicationId}/${fileName}`)
+  //       .then((response) => response.data)
+  //       .catch((error) => {
+  //           console.error(`Error fetching file: ${fileName}`, error);
+  //           return null; // Prevent breaking the request chain
+  //     })
+  //   });
 
-  const files = await Promise.all(fileRequests);
-    return files.filter(Boolean); // Remove any failed/null responses
-  };
+  //   return Promise.all(fileRequests).then((files) => files.filter(Boolean)).catch(() => []);
+  // };
 
-  const { data: fileResults } = useQuery({
-      queryKey: ["application-files", id],
-      queryFn: () => fetchFiles(id),
-      enabled: !!id, // Ensure valid queries only run
-  });
+  // const { data: fileResults } = useQuery({
+  //     queryKey: ["application-files", id],
+  //     queryFn: () => fetchFiles(id),
+  //     enabled: !!id, // Ensure valid queries only run
+  // });
+  // //fetch files
 
-  console.info({fileResults});
-  //fetch files
-
+  const fileQueries = GetApplicationFiles(id);
 
   
   const userProfileQuery = useQuery({
@@ -516,9 +516,16 @@ const ApplicationForm = ({title=""}) => {
         </form>
         
         <ComponentCard title="Application Documents" className="mt-6">
-            <div className="space-y-6">
-              {!!id && <FilePreview key={fileResults?.length} docs={fileResults || []} />}
-            </div>
+            {/* <div className="space-y-6">
+              {!!id && <FilePreview docs={fileQueries.map((query) => query.data).filter(Boolean) || []} />}
+            </div> */}
+            
+            {fileQueries.map((query) => query.data).filter(Boolean).map((file, index) => (
+                <a key={index} href={file.uri} target="_blank" rel="noopener noreferrer">
+                    {file.fileName}
+                </a>
+            ))}
+
           </ComponentCard>
     </div>
     </>
