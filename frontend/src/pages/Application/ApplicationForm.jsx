@@ -521,20 +521,29 @@ const ApplicationForm = ({title=""}) => {
             </div> */}
             
             {fileQueries.map((query) => query.data).filter(Boolean).map((file, index) => (
-                <p>
+              <p key={index}>
                   <a 
-                      key={index} 
                       href="#" 
                       className="text-green-500 hover:text-green-600 dark:text-green-400"
                       onClick={(e) => {
-                          e.preventDefault(); // Prevent default navigation
-                          window.open(file.uri, "FilePreview", "width=800,height=600,resizable=yes");
+                          e.preventDefault();
+                          
+                          const width = 800;
+                          const height = 600;
+                          const left = (window.screen.width - width) / 2;
+                          const top = (window.screen.height - height) / 2;
+
+                          window.open(
+                              file.uri, 
+                              "_blank", 
+                              `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
+                          );
                       }}
                   >
                       {file.name}
                   </a>
-                </p>
-            ))}
+              </p>
+          ))}
 
           </ComponentCard>
     </div>

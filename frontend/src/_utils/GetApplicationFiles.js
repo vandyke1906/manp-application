@@ -22,7 +22,6 @@ const GetApplicationFiles = (applicationId) => {
     ];
     return useQueries({
         queries: fileNames.map((fileName) => {
-            console.info({fileName});
             return {
                 queryKey: ["application-file", applicationId, fileName],
                 queryFn: () => fetchFile(applicationId, fileName),
