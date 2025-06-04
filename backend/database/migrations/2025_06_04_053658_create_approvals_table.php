@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Application::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class);
+            $table->text('comment')->nullable(); 
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();

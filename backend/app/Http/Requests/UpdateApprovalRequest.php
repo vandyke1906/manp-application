@@ -24,6 +24,7 @@ class UpdateApprovalRequest extends CommonFormRequest
     {
         return [
             'application_id' => 'required',
+            'comment' => 'string',
             'status' => ['required', 'string', Rule::in(['pending', 'approved', 'rejected'])]
         ];
     }
