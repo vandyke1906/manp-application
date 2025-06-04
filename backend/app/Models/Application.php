@@ -30,6 +30,5 @@ class Application extends Model
         'capitalization_id',
         'business_type_id',
         'zoning_id',
-        'status',
     ];
 }

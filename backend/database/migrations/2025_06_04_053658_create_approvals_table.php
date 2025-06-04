@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('approvals', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Application::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
+            $table->unsignedInteger('approving_role');
             $table->text('comment')->nullable(); 
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamp('approved_at')->nullable();

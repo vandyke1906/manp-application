@@ -11,6 +11,8 @@ class Roles
 }
 
 
+
+
 // const ROLES = {
 //     USER:          0x01,
 //     ADMIN:         0x02,

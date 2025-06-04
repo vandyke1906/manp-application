@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use \Illuminate\Http\UploadedFile;
 use App\Classes\ApiResponseClass;
 use App\Models\Application;
+use App\Models\Approval;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Constants\Roles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use App\Interfaces\ApplicationInterface;
@@ -107,6 +109,14 @@ class ApplicationController extends Controller
                 }
             }
 
+            //intial empty approval
+            Approval::create([
+                'application_id' => $application->id,
+                'user_id' => null, // No one has approved yet
+                'approving_role' => Roles::RPS_TEAM, // First approval step
+                'status' => 'pending',
+            ]);
+            
             DB::commit();
             return ApiResponseClass::sendResponse([],'Application added successfully.',201);
 
