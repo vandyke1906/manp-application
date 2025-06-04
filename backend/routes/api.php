@@ -25,6 +25,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
     Route::get('/users/profile', [AuthController::class, 'profile']);
+    Route::get('/applicant-types/by-ids', [ApplicantTypeController::class, 'getByIds']);
 
     Route::get('/applications-file/{id}/{name}', [ApplicationController::class, 'getApplicationFile']);
     Route::apiResource('/applications',ApplicationController::class);

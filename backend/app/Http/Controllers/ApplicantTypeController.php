@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ApplicantType;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreApplicantTypeRequest;
 use App\Http\Requests\UpdateApplicantTypeRequest;
 
@@ -53,13 +54,20 @@ class ApplicantTypeController extends Controller
         return ApiResponseClass::sendResponse(new ApplicantTypeResource($obj),'',200);
     }
 
+    public function getByIds(Request $request)
+    {
+        $idRequest = $request->query('ids'); 
+        $ids = explode(',', $idRequest);
+        $obj = $this->interface->getByIds($ids);
+        return ApiResponseClass::sendResponse($obj,'',200);
+    }
+
     public function edit(ApplicantType $ApplicantType)
     {
     }
 
     public function update(UpdateApplicantTypeRequest $request, $id)
     {
-        
         $updateDetails =[
             'name' => $request->name,
             'description' => $request->description,

@@ -9,6 +9,7 @@ import FileInput from '../../components/form/input/FileInput';
 import MultipleSelect from '../../components/form/MultipleSelect';
 import Select from '../../components/form/Select';
 import DatePicker from '../../components/form/DatePicker';
+import Badge from '../../components/ui/badge/Badge';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -42,7 +43,7 @@ const ApplicationView = ({title=""}) => {
     queryFn: () => ApiClient.get(`applications/${id}`).then((response) => {
       return response.data;
     }),
-    enabled: !!id, // Only run the query if `id` exists
+    enabled: !!id,
   });
 
   const fileQueries = GetApplicationFiles(id);
@@ -51,69 +52,6 @@ const ApplicationView = ({title=""}) => {
     queryKey: ["user-profile"],
     queryFn: () => ApiClient.get(`/users/profile`).then((response) => response.data),
   });
-
-  const applicationTypeQuery = useQuery({
-    queryKey: ["application-types"],
-    queryFn: () => ApiClient.get(`application-types`).then((response) => response.data),
-  });
-
-  const applicantTypeQuery = useQuery({
-    queryKey: ["applicant-types"],
-    queryFn: () => ApiClient.get(`applicant-types`).then((response) => response.data),
-  });
-
-  const businessTypeQuery = useQuery({
-    queryKey: ["business-types"],
-    queryFn: () => ApiClient.get(`business-types`).then((response) => response.data),
-  });
-
-  const capitalizationQuery = useQuery({
-    queryKey: ["capitalizations"],
-    queryFn: () => ApiClient.get(`capitalizations`).then((response) => response.data),
-  });
-  
-  const businessNatureQuery = useQuery({
-    queryKey: ["business-natures"],
-    queryFn: () => ApiClient.get(`business-natures`).then((response) => response.data),
-  });
-
-  const businessStatusQuery = useQuery({
-    queryKey: ["business-statuses"],
-    queryFn: () => ApiClient.get(`business-statuses`).then((response) => response.data),
-  });
-
-  //options
-  const applicationTypeOptions = applicationTypeQuery.data?.data?.map((data) => ({
-    value: data.id, // Use `id` as the value
-    label: data.name, // Use `name` as the label
-  })) || [];
-
-  const applicantTypeOptions = applicantTypeQuery.data?.data?.map((data) => ({
-    value: data.id, // Use `id` as the value
-    label: data.name, // Use `name` as the label
-    selected: false
-  })) || [];
-
-  const businessTypeOptions = businessTypeQuery.data?.data?.map((data) => ({
-    value: data.id, // Use `id` as the value
-    label: data.name, // Use `name` as the label
-  })) || [];
-
-  const capitalizationOptions = capitalizationQuery.data?.data?.map((data) => ({
-    value: data.id, // Use `id` as the value
-    label: data.name, // Use `name` as the label
-  })) || [];
-
-  const businessNatureOptions = businessNatureQuery.data?.data?.map((data) => ({
-    value: data.id, // Use `id` as the value
-    label: data.name, // Use `name` as the label
-  })) || [];
-
-  const businessStatusOptions = businessStatusQuery.data?.data?.map((data) => ({
-    value: data.id, // Use `id` as the value
-    label: data.name, // Use `name` as the label
-  })) || [];
-  
 
   // Use useEffect to update the state when the query is successful
   useEffect(() => {
@@ -141,7 +79,6 @@ const ApplicationView = ({title=""}) => {
   const updateMutation = useMutation({
     mutationFn: (data) => ApiClient.put(`applications/${data?.id || 0}`, data, { headers: {  'Content-Type': 'multipart/form-data' } }).then((response) => response.data),
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries({ queryKey: ["application"] });
       if(data.success){
         toast.success(data.message, {
@@ -220,7 +157,6 @@ const ApplicationView = ({title=""}) => {
 
 
 const ProponentInfoCard = ({data = {}}) => {
-  console.info({data});
  return (
   <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -229,7 +165,7 @@ const ProponentInfoCard = ({data = {}}) => {
             Proponent Information
           </h4>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-7 2xl:gap-x-48">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 lg:gap-8 xl:gap-x-36 2xl:gap-x-48">
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 First Name
@@ -301,6 +237,45 @@ const ProponentInfoCard = ({data = {}}) => {
 };
 
 const BusinessProjectInfoCard = ({data = {}}) => {
+
+  const applicantTypesQuery = useQuery({
+    queryKey: ["application-types"],
+    queryFn: () => ApiClient.get(`/applicant-types/by-ids?ids=${data?.applicant_type_id.join(',')}`).then((response) => response.data),
+    enabled: !!data?.applicant_type_id,
+  });
+
+  console.info({applicantTypesQuery:applicantTypesQuery?.data})
+
+  const applicationTypeQuery = useQuery({
+    queryKey: ["application-type"],
+    queryFn: () => ApiClient.get(`application-types/${data.application_type_id}`).then((response) => response.data),
+    enabled: !!data?.application_type_id,
+  });
+
+  const businessTypeQuery = useQuery({
+    queryKey: ["business-type"],
+    queryFn: () => ApiClient.get(`business-types/${data.business_type_id}`).then((response) => response.data),
+    enabled: !!data?.business_type_id,
+  });
+
+  const capitalizationQuery = useQuery({
+    queryKey: ["capitalization"],
+    queryFn: () => ApiClient.get(`capitalizations/${data.capitalization_id}`).then((response) => response.data),
+    enabled: !!data?.capitalization_id,
+  });
+
+  const businessNatureQuery = useQuery({
+    queryKey: ["business-nature"],
+    queryFn: () => ApiClient.get(`business-natures/${data.business_nature_id}`).then((response) => response.data),
+    enabled: !!data?.business_nature_id,
+  });  
+
+    const businessStatusQuery = useQuery({
+    queryKey: ["business-status"],
+    queryFn: () => ApiClient.get(`business-statuses/${data.business_status_id}`).then((response) => response.data),
+    enabled: !!data?.business_status_id,
+  });  
+
  return (
   <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -309,7 +284,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
             Business or Project Information
           </h4>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-7 2xl:gap-x-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-7 2xl:gap-x-32">
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Application Number
@@ -324,7 +299,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
                 Application Type
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.application_type_id}
+                {applicationTypeQuery?.data?.data?.name}
               </p>
             </div>
 
@@ -332,9 +307,11 @@ const BusinessProjectInfoCard = ({data = {}}) => {
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Type of Applicant
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.applicant_type_id}
-              </p>
+              <div className="flex flex-wrap gap-4">
+                {applicantTypesQuery?.data?.data?.map((obj) => (
+                    <Badge key={obj.id} size="sm">{obj.name.toUpperCase()}</Badge>
+                ))}
+              </div>
             </div>
 
             <div>
@@ -346,7 +323,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
               </p>
             </div>
 
-            <div className="col-span-3">
+            <div className="col-span-2">
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Business Name
               </p>
@@ -360,29 +337,29 @@ const BusinessProjectInfoCard = ({data = {}}) => {
                 Nature of Business
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.business_nature_id}
+                {businessNatureQuery?.data?.data?.name}
               </p>
             </div>
 
-            <div className="col-span-2">
+            <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Status of Business
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.business_status_id}
+                {businessStatusQuery?.data?.data?.name}
               </p>
             </div>
 
-            <div className="col-span-2">
+            <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Capitalization
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.business_capitalization_id}
+                {capitalizationQuery?.data?.data?.name}
               </p>
             </div>
 
-            <div className="col-span-4">
+            <div className="col-span-2">
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Business Address
               </p>
@@ -391,7 +368,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
               </p>
             </div>
 
-            <div className="col-span-4">
+            <div className="col-span-2">
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Brief Description of the Business
               </p>

@@ -18,6 +18,10 @@ class ApplicantTypeRepository implements ApplicantTypeInterface
        return ApplicantType::findOrFail($id);
     }
 
+    public function getByIds($ids){
+        return ApplicantType::whereIn('id', $ids)->get();
+    }
+
     public function store(array $data){
        return ApplicantType::create($data);
     }
