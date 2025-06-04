@@ -14,26 +14,43 @@ class ApplicationRepository implements ApplicationInterface
     }
 
     public function index($user){
-        switch($user->role){
+        // switch($user->role){
+        //     case Roles::PROPONENTS: {
+        //         return Application::where("user_id", $user->id)->get();
+        //     }
+        //     case Roles::RPS_TEAM: 
+        //     case Roles::MANAGER: 
+        //     case Roles::ADMINISTRATOR: {
+        //         return Application::all();
+        //     }
+        //     default: return [];
+        // }
+        switch ($user->role) {
             case Roles::PROPONENTS: {
-                return Application::where("user_id", $user->id)->get();
+                return Application::where("user_id", $user->id)
+                ->with(['approvals' => function ($query) {
+                    // $query->orderBy('approved_at', 'asc');
+                    $query->latest('approved_at')->limit(1); 
+                }])->get();
             }
-            case Roles::RPS_TEAM: 
-            case Roles::MANAGER: 
+            case Roles::RPS_TEAM:
+            case Roles::MANAGER:
             case Roles::ADMINISTRATOR: {
-                return Application::all();
+                return Application::with(['approvals' => function ($query) {
+                    // $query->orderBy('approved_at', 'asc');
+                    $query->latest('approved_at')->limit(1); 
+                }])->get();
             }
-            default: return [];
+            default:
+                return [];
         }
     }
 
     public function getById($id){
-        return Application::findOrFail($id);
-       //return Application::join('application_files', 'applications.id', '=', 'application_files.application_id')
-       //     ->join('applicant_type_applications', 'applications.id', '=', 'applicant_type_applications.application_id')
-       //     ->select('applications.*', 'application_files.*', 'applicant_type_applications.*')
-       //     ->where('applications.id', $id)
-       //     ->firstOrFail();
+        //return Application::findOrFail($id);
+        return Application::with(['approvals' => function ($query) {
+            $query->orderBy('approved_at', 'asc'); // Ensures approvals appear in sequenc
+        }])->findOrFail($id);
     }
 
     public function store(array $data){ 

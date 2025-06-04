@@ -50,7 +50,7 @@ const Applications = () => {
   });
 
   if(isLoading) return <Spinner />;
-  // if(isError) return <SomethingWentWrong />;
+  if(isError) return <SomethingWentWrong />;
 
   return (
     <>
@@ -69,7 +69,8 @@ const Applications = () => {
                   columnHeaders={headers} 
                   tableData={result.data.map(data => ({
                     ...data,
-                    application_date: formatDate(data.application_date, "dd-MMM-yyyy hh:mm A")
+                    application_date: formatDate(data.application_date, "dd-MMM-yyyy hh:mm A"),
+                    status: data.approvals[0].status
                 }))}
                   {...(hasRole(ROLES.PROPONENTS)
                       ? {

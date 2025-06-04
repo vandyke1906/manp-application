@@ -288,7 +288,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
                 Application Number
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.application_number}
+                {data.application_number} - {!!data?.approvals.length && <Badge size="sm" color="warning">{data.approvals[0].status}</Badge>}
               </p>
             </div>
 
