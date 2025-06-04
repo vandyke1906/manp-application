@@ -11,6 +11,7 @@ import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
+import { formatDate, hasRole, ROLES } from '../../_utils/helper';
 
 const headers = [
   {key: "application_number", value: "Application Number"},
@@ -61,21 +62,28 @@ const Applications = () => {
     <div className="space-y-6">
         <ComponentCard title="">
           <div className="space-y-5 sm:space-y-6">
-              <Button size="sm" variant="primary" onClick={() => {
-                navigate("/application-form");
-              }}>
-                New Application
-              </Button>
+              {hasRole(ROLES.PROPONENTS) && <Button size="sm" variant="primary" onClick={() => { navigate("/application-form") }}>New Application</Button>}
               
-              <GenericTable columnHeaders={headers} tableData={result.data} 
-                onEdit={(obj) => {
-                  navigate(`/application-form/${obj.id}`);
-                }} 
-                onDelete={(obj) => {
-                  setSelectedID(obj?.id);
-                  openModal();
-                }} 
+              <GenericTable 
+                  columnHeaders={headers} 
+                  tableData={result.data.map(data => ({
+                    ...data,
+                    application_date: formatDate(data.application_date, "dd-MMM-yyyy hh:mm A")
+                }))}
+                  {...(hasRole(ROLES.PROPONENTS)
+                      ? {
+                          onEdit: (obj) => navigate(`/application-form/${obj.id}`),
+                          onDelete: (obj) => {
+                              setSelectedID(obj?.id);
+                              openModal();
+                          }
+                      }
+                      : {
+                          onView: (obj) => navigate(`/view-application/${obj.id}`)
+                      }
+                  )}
               />
+
           </div>
         </ComponentCard>
     </div>
