@@ -18,4 +18,16 @@ class Approval extends Model
         'status',
         'approved_at',
     ];
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function approver_name()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'first_name', 'middle_name', 'last_name', 'suffix');
+    }
+
+
 }

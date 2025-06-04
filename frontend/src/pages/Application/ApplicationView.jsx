@@ -30,6 +30,13 @@ const documentsHeaders = [
   {key: "action", value: "Action"}
 ];
 
+const approvalHeaders = [
+  {key: "full_name", value: "Approver"},
+  {key: "comment", value: "Comment"},
+  {key: "status", value: "Status"},
+  {key: "approved_at", value: "Action Date"}
+];
+
 const ApplicationView = ({title=""}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -45,13 +52,14 @@ const ApplicationView = ({title=""}) => {
     }),
     enabled: !!id,
   });
-
-  const fileQueries = GetApplicationFiles(id);
   
   const userProfileQuery = useQuery({
     queryKey: ["user-profile"],
     queryFn: () => ApiClient.get(`/users/profile`).then((response) => response.data),
   });
+
+  const fileQueries = GetApplicationFiles(id);
+
 
   // Use useEffect to update the state when the query is successful
   useEffect(() => {
@@ -112,45 +120,35 @@ const ApplicationView = ({title=""}) => {
   if(isLoading) return <Spinner />;
   if(isError) return <SomethingWentWrong />;
 
+  // console.info({obj});
+
   return (
     <>
       <PageMeta title="View Application"  description=""/>
       <PageBreadcrumb pageTitle="Application" />
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
-        {/* <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
-          Profile
-        </h3> */}
-        <div className="space-y-6">
-          
-          <ProponentInfoCard data={obj} />
-          <BusinessProjectInfoCard data={obj} />
 
-          <ComponentCard title="Submitted Documents" className="my-6">
-            <GenericTable 
-              columnHeaders={documentsHeaders}
-              tableData={
-                fileQueries.map((query) => query.data).filter(Boolean).map(file => ({
-                    ...file,
-                    file_size: formatFileSize(file.file_size),
-                    updated_at: formatDate(file.updated_at, "dd-MMM-yyyy hh:mm A")
-                }))
-              } 
-              onView={(obj) => {
-                const width = 800;
-                const height = 600;
-                const left = (window.screen.width - width) / 2;
-                const top = (window.screen.height - height) / 2;
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+        <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            {obj?.business_name} ({obj?.application_number}) {!!obj?.approvals?.length && <Badge size="sm" color="warning">{obj.approvals[0].status}</Badge>}
+          </h3>
+        </div>
 
-                window.open(
-                    obj.uri, 
-                    "_blank", 
-                    `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
-                );
-              }} 
-            />
-          </ComponentCard>
+        <div className="flex items-center gap-3">
+          {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+            See all
+          </button> */}
+          <Button>Take Action</Button>
         </div>
       </div>
+
+      <ProponentInfoCard data={obj} />
+      <BusinessProjectInfoCard data={obj} />
+      <SubmittedDocumentsCard data={fileQueries} />
+      <ApprovalsCard data={obj?.approvals || []} />
+
+    </div>
     </>
   )
 }
@@ -288,7 +286,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
                 Application Number
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {data.application_number} - {!!data?.approvals.length && <Badge size="sm" color="warning">{data.approvals[0].status}</Badge>}
+                {data.application_number}
               </p>
             </div>
 
@@ -381,5 +379,45 @@ const BusinessProjectInfoCard = ({data = {}}) => {
     </div>
  );
 };
+
+const SubmittedDocumentsCard = ({data = {}}) => {
+  return (
+    <ComponentCard title="Submitted Documents" className="my-6">
+      <GenericTable
+        columnHeaders={documentsHeaders}
+        tableData={data.map((query) => query.data).filter(Boolean).map(file => ({
+          ...file,
+          file_size: formatFileSize(file.file_size),
+          updated_at: formatDate(file.updated_at, "dd-MMM-yyyy hh:mm A")
+        }))}
+        onView={(obj) => {
+          const width = 800;
+          const height = 600;
+          const left = (window.screen.width - width) / 2;
+          const top = (window.screen.height - height) / 2;
+
+          window.open(
+            obj.uri,
+            "_blank",
+            `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
+          );
+        } } />
+    </ComponentCard>
+  );
+};
+
+const ApprovalsCard = ({data = {}}) => {
+  return (
+    <ComponentCard title="Approvals" className="my-6">
+      <GenericTable
+        columnHeaders={approvalHeaders}
+        tableData={data.filter(o => !!o.user_id).map(obj => ({
+          ...obj,
+          full_name: obj.approver_name?.fullname || "",
+          approved_at: formatDate(obj.approved_at, "dd-MMM-yyyy hh:mm A")
+        }))}/>
+    </ComponentCard>
+  );
+}
 
 export default ApplicationView

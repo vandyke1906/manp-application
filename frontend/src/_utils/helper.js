@@ -19,30 +19,34 @@ const formatFileSize = (bytes)  => {
 }
 
 const formatDate = (dateString, format = 'dd-MMM-yyyy hh:mm A') => {
-    const date = new Date(dateString);
+    try {
+        const date = new Date(dateString);
     
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const fullMonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    
-    // Convert to 12-hour format and determine AM/PM
-    let hours = date.getHours();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const fullMonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        // Convert to 12-hour format and determine AM/PM
+        let hours = date.getHours();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
 
-    const formatMap = {
-        yyyy: date.getFullYear(),
-        mm: String(date.getMonth() + 1).padStart(2, '0'),
-        MMMM: fullMonthNames[date.getMonth()],
-        MMM: monthNames[date.getMonth()],
-        dd: String(date.getDate()).padStart(2, '0'),
-        hh: String(hours).padStart(2, '0'), // 12-hour format
-        HH: String(date.getHours()).padStart(2, '0'), // 24-hour format
-        MM: String(date.getMinutes()).padStart(2, '0'),
-        SS: String(date.getSeconds()).padStart(2, '0'),
-        A: ampm // AM/PM
-    };
+        const formatMap = {
+            yyyy: date.getFullYear(),
+            mm: String(date.getMonth() + 1).padStart(2, '0'),
+            MMMM: fullMonthNames[date.getMonth()],
+            MMM: monthNames[date.getMonth()],
+            dd: String(date.getDate()).padStart(2, '0'),
+            hh: String(hours).padStart(2, '0'), // 12-hour format
+            HH: String(date.getHours()).padStart(2, '0'), // 24-hour format
+            MM: String(date.getMinutes()).padStart(2, '0'),
+            SS: String(date.getSeconds()).padStart(2, '0'),
+            A: ampm // AM/PM
+        };
 
-    return format.replace(/yyyy|mm|MMMM|MMM|dd|hh|HH|MM|SS|A/g, match => formatMap[match]);
+        return format.replace(/yyyy|mm|MMMM|MMM|dd|hh|HH|MM|SS|A/g, match => formatMap[match]);
+    } catch (error) {
+        return "";
+    }
 };
 
 export { hasRole, ROLES, formatFileSize, formatDate };

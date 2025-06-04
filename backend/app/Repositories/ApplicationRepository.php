@@ -47,10 +47,15 @@ class ApplicationRepository implements ApplicationInterface
     }
 
     public function getById($id){
-        //return Application::findOrFail($id);
         return Application::with(['approvals' => function ($query) {
-            $query->orderBy('approved_at', 'asc'); // Ensures approvals appear in sequenc
-        }])->findOrFail($id);
+            $query->orderBy('approved_at', 'asc');
+        }, 'approvals.approver_name'])->findOrFail($id);
+
+        //return Application::findOrFail($id);
+
+        // return Application::with(['approvals' => function ($query) {
+        //     $query->orderBy('approved_at', 'asc'); // Ensures approvals appear in sequenc
+        // }])->findOrFail($id);
     }
 
     public function store(array $data){ 
