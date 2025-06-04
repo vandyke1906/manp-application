@@ -13,6 +13,8 @@ import { ApiClient } from '../../_utils/axios';
 import GetApplicationFiles from '../../_utils/GetApplicationFiles';
 import GenericTable from '../../components/tables/GenericTable';
 import { formatDate, formatFileSize } from '../../_utils/helper';
+import ApprovalModal from './ApprovalModal';
+import { useModal } from '../../hooks/useModal';
 
 const documentsHeaders = [
   {key: "file_name", value: "File Name"},
@@ -35,6 +37,8 @@ const ApplicationView = ({title=""}) => {
   const formRef = useRef(null);
   const [obj, setObj] = useState({});
   const [applicantTypes, setApplicantTypes] = useState([]);
+
+  const { isOpen, openModal, closeModal } = useModal();
 
   const { isLoading, isError, data: result, isSuccess } = useQuery({ 
     queryKey: ["application", id],
@@ -130,7 +134,7 @@ const ApplicationView = ({title=""}) => {
           {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             See all
           </button> */}
-          <Button>Take Action</Button>
+          <Button onClick={openModal}>Take Action</Button>
         </div>
       </div>
 
@@ -138,8 +142,10 @@ const ApplicationView = ({title=""}) => {
       <BusinessProjectInfoCard data={obj} />
       <SubmittedDocumentsCard data={fileQueries} />
       <ApprovalsCard data={obj?.approvals || []} />
-
     </div>
+
+    <ApprovalModal closeModal={closeModal} isOpen={isOpen} application_id={id} />
+    
     </>
   )
 }
@@ -404,7 +410,7 @@ const ApprovalsCard = ({data = {}}) => {
         columnHeaders={approvalHeaders}
         tableData={data.filter(o => !!o.user_id).map(obj => ({
           ...obj,
-          full_name: obj.approver_name?.fullname || "",
+          full_name: obj.approver_name?.full_name || "",
           approved_at: formatDate(obj.approved_at, "dd-MMM-yyyy hh:mm A")
         }))}/>
     </ComponentCard>

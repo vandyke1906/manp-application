@@ -11,6 +11,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BusinessStatusController;
 use App\Http\Controllers\BusinessNatureController;
 use App\Http\Controllers\CapitalizationController;
+use App\Http\Controllers\ApprovalController;
 
 use Illuminate\Support\Facades\Log;
 
@@ -36,7 +37,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/applicant-types',ApplicantTypeController::class);
     Route::apiResource('/capitalizations',CapitalizationController::class);
     Route::apiResource('/business-natures',BusinessNatureController::class);
-    Route::apiResource('/business-statuses',BusinessStatusController::class);    
+    Route::apiResource('/business-statuses',BusinessStatusController::class);  
+    Route::apiResource('/approvals',ApprovalController::class);     
 });
 
 Route::get('/download-file/{business_name}/{file_name}', function ($business_name, $file_name) {

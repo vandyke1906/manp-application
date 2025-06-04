@@ -122,7 +122,7 @@ const ApplicantTypeForm = ({title=""}) => {
                   </div>
                 </div>
           </div>
-          </form>
+        </form>
         </ComponentCard>
     </div>
     </>

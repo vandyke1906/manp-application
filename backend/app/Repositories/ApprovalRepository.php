@@ -3,6 +3,9 @@
 namespace App\Repositories;
 use App\Models\Approval;
 use App\Interfaces\ApprovalInterface;
+use App\Helpers\ApprovalHelper;
+
+use Illuminate\Support\Facades\Log;
 
 class ApprovalRepository implements ApprovalInterface
 {
@@ -21,7 +24,24 @@ class ApprovalRepository implements ApprovalInterface
     }
 
     public function store(array $data){
-       return Approval::create($data);
+      //  return Approval::create($data);
+      // Get current approval role from helper
+      $currentRole = ApprovalHelper::getCurrentApprovalRole($data['application_id']);
+      $nextRole = ApprovalHelper::getNextApprovalRole($currentRole);
+
+      // Set the approver role dynamically
+      $data['role'] = $nextRole ?? $currentRole; // Use next role or retain current if final step
+
+      // Create the approval record
+      $approval = Approval::create($data);
+      
+      Log::debug($approval);
+
+      // Process the approval sequence after creation
+      ApprovalHelper::processApproval($data['application_id']);
+
+      return $approval;
+
     }
 
     public function update(array $data,$id){

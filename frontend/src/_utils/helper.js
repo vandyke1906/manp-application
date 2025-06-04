@@ -11,6 +11,12 @@ const ROLES = {
     ADMINISTRATOR: 0x08,
 };
 
+const STATUS = {
+    pending: "Pending",
+    approved: "Approved",
+    rejected: "Rejected",
+};
+
 const formatFileSize = (bytes)  => {
     if (bytes === 0) return '0 Bytes';
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -49,4 +55,4 @@ const formatDate = (dateString, format = 'dd-MMM-yyyy hh:mm A') => {
     }
 };
 
-export { hasRole, ROLES, formatFileSize, formatDate };
+export { hasRole, ROLES, STATUS, formatFileSize, formatDate };

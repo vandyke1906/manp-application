@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Approval;
 use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Classes\ApiResponseClass;
 use App\Interfaces\ApprovalInterface;
@@ -29,12 +29,29 @@ class ApprovalController extends Controller
 
     public function create()
     {
-        //
+        
     }
 
     public function store(StoreApprovalRequest $request)
     {
-        //
+        
+        $details =[
+            'application_id' => $request->application_id,
+            'comment' => $request->comment,
+            'status' => $request->status,
+            'user_id' => $request->user()->id,
+            'approving_role' => $request->user()->role,
+            'approved_at' => Carbon::now(),
+        ];
+        DB::beginTransaction();
+        try{
+             $obj = $this->interface->store($details);
+             DB::commit();
+             return ApiResponseClass::sendResponse(new ApprovalResource($obj),'Approval added successfully.',201);
+
+        }catch(\Exception $ex){
+            return ApiResponseClass::rollback($ex);
+        }
     }
 
     public function show(Approval $approval)
