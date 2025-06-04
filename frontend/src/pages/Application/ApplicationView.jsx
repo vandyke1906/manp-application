@@ -131,7 +131,7 @@ const ApplicationView = ({title=""}) => {
         <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            {obj?.business_name} ({obj?.application_number}) {!!obj?.approvals?.length && <Badge size="sm" color="warning">{obj.approvals[0].status}</Badge>}
+            {obj?.business_name} ({obj?.application_number}) {!!obj?.approvals?.length && <Badge color="warning">{obj.approvals[0].status}</Badge>}
           </h3>
         </div>
 

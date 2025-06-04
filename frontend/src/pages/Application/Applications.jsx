@@ -36,7 +36,6 @@ const Applications = () => {
 
   const deleteMutation = useMutation({ 
     mutationFn: ({id}) => ApiClient.delete(`applications/${id || 0}`).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["applications"] });
@@ -51,8 +50,6 @@ const Applications = () => {
 
   if(isLoading) return <Spinner />;
   if(isError) return <SomethingWentWrong />;
-
-  console.info({obj});
 
   return (
     <>
