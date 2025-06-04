@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\CommonFormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateCommentRequest extends FormRequest
+class UpdateCommentRequest extends CommonFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
