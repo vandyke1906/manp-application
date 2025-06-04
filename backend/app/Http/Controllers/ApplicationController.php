@@ -97,6 +97,7 @@ class ApplicationController extends Controller
                         'application_id' => $application->id,
                         'name' => $key,
                         'file_name' => $fileName,
+                        'file_size' => $file->getSize(),
                         'file_type' => $mimeType,
                         'file_path' => $filePath,
                     ];
@@ -198,7 +199,9 @@ class ApplicationController extends Controller
         return response()->json([
             'uri' => $signedUrl,
             'file_type' => $application_file->file_type,
+            'file_size' => $application_file->file_size,
             'file_name' => $application_file->file_name,
+            'updated_at' => $application_file->	updated_at,
             'name' => $this->humanReadable($application_file->name),
         ]);
     }

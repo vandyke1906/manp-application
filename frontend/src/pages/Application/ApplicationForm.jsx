@@ -19,6 +19,14 @@ import { ApiClient } from '../../_utils/axios';
 import Checkbox from '../../components/form/input/Checkbox';
 import FilePreview from '../../components/ui/FilePreview';
 import GetApplicationFiles from '../../_utils/GetApplicationFiles';
+import GenericTable from '../../components/tables/GenericTable';
+
+const documentsHeaders = [
+  {key: "file_name", value: "File Name"},
+  {key: "file_size", value: "File Size"},
+  {key: "updated_at", value: "Date Modified"},
+  {key: "action", value: "Action"}
+];
 
 const ApplicationForm = ({title=""}) => {
   const navigate = useNavigate();
@@ -482,6 +490,45 @@ const ApplicationForm = ({title=""}) => {
           </ComponentCard>
 
           
+        
+        <ComponentCard title="Submitted Documents" className="mt-6">
+          <GenericTable 
+            columnHeaders={documentsHeaders}
+            tableData={fileQueries.map((query) => query.data).filter(Boolean)} 
+            onView={(obj) => {
+              // navigate(`/application-form/${obj.id}`);
+            }} 
+            onEdit={(obj) => {
+              // navigate(`/application-form/${obj.id}`);
+            }} 
+          />
+            {/* {fileQueries.map((query) => query.data).filter(Boolean).map((file, index) => (
+              <p key={index}>
+                  <a 
+                      href="#" 
+                      className="text-green-500 hover:text-green-600 dark:text-green-400"
+                      onClick={(e) => {
+                          e.preventDefault();
+                          
+                          const width = 800;
+                          const height = 600;
+                          const left = (window.screen.width - width) / 2;
+                          const top = (window.screen.height - height) / 2;
+
+                          window.open(
+                              file.uri, 
+                              "_blank", 
+                              `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
+                          );
+                      }}
+                  >
+                      {`View ${file.name}`}
+                  </a>
+              </p>
+          ))} */}
+        </ComponentCard>
+
+          
           <div className="flex items-center gap-3 mt-6">
             <Checkbox
               className="w-5 h-5"
@@ -514,38 +561,6 @@ const ApplicationForm = ({title=""}) => {
             </div>
           </div>
         </form>
-        
-        <ComponentCard title="Submitted Documents" className="mt-6">
-            {/* <div className="space-y-6">
-              {!!id && <FilePreview docs={fileQueries.map((query) => query.data).filter(Boolean) || []} />}
-            </div> */}
-            
-            {fileQueries.map((query) => query.data).filter(Boolean).map((file, index) => (
-              <p key={index}>
-                  <a 
-                      href="#" 
-                      className="text-green-500 hover:text-green-600 dark:text-green-400"
-                      onClick={(e) => {
-                          e.preventDefault();
-                          
-                          const width = 800;
-                          const height = 600;
-                          const left = (window.screen.width - width) / 2;
-                          const top = (window.screen.height - height) / 2;
-
-                          window.open(
-                              file.uri, 
-                              "_blank", 
-                              `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
-                          );
-                      }}
-                  >
-                      {file.name}
-                  </a>
-              </p>
-          ))}
-
-          </ComponentCard>
     </div>
     </>
   )

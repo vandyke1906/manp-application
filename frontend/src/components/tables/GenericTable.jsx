@@ -6,18 +6,19 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { PencilIcon, TrashBinIcon } from '../../icons';
+import { EyeIcon, PencilIcon, TrashBinIcon } from '../../icons';
 import Button from '../ui/button/Button';
 
-const GenericTable = ({tableData = {}, columnHeaders = [], onEdit, onDelete }) => {
+const GenericTable = ({tableData = {}, columnHeaders = [], onEdit, onDelete, onView }) => {
 
   const renderData = ({row, header}) => {
     const data = row[header.key];
     if(header.value.toLowerCase() === "action")
       return (
         <div className="flex items-center justify-center">
-          <Button size="sm" variant="" startIcon={<PencilIcon/>} onClick={() => onEdit(row)} />
-          <Button size="sm" variant="" startIcon={<TrashBinIcon/>}   onClick={() => onDelete(row)} />
+          {!!onView && <Button size="sm" variant="" startIcon={<EyeIcon/>} onClick={() => onView(row)} />}
+          {!!onEdit && <Button size="sm" variant="" startIcon={<PencilIcon/>} onClick={() => onEdit(row)} />}
+          {!!onDelete && <Button size="sm" variant="" startIcon={<TrashBinIcon/>}   onClick={() => onDelete(row)} />}
         </div>
       )
     else
