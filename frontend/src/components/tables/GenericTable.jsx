@@ -50,8 +50,8 @@ const GenericTable = ({tableData = {}, columnHeaders = [], onEdit, onDelete, onV
 
           {/* Table Body */}
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {tableData.map((row) => (
-              <TableRow key={row.id}>
+            {tableData.map((row, index) => (
+              <TableRow key={row.id || index}>
                 {columnHeaders.map((header, index) => (
                   <TableCell
                     key={index}

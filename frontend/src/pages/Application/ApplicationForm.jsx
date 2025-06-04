@@ -20,6 +20,7 @@ import Checkbox from '../../components/form/input/Checkbox';
 import FilePreview from '../../components/ui/FilePreview';
 import GetApplicationFiles from '../../_utils/GetApplicationFiles';
 import GenericTable from '../../components/tables/GenericTable';
+import { formatDate, formatFileSize } from '../../_utils/helper';
 
 const documentsHeaders = [
   {key: "file_name", value: "File Name"},
@@ -44,40 +45,7 @@ const ApplicationForm = ({title=""}) => {
     enabled: !!id, // Only run the query if `id` exists
   });
 
-
-  // //fetch files
-  // const fetchFiles = (applicationId) => {
-  //   const fileNames = [
-  //                       "proof_of_capitalization",
-  //                       "barangay_clearance",
-  //                       "birth_certificate_or_id",
-  //                       "ncip_document",
-  //                       "fpic_certification",
-  //                       "business_permit",
-  //                       "authorization_letter"
-  //                     ];
-  //   const fileRequests = fileNames.map((fileName) => {
-  //     console.info({fileName});
-  //     return ApiClient.get(`applications-file/${applicationId}/${fileName}`)
-  //       .then((response) => response.data)
-  //       .catch((error) => {
-  //           console.error(`Error fetching file: ${fileName}`, error);
-  //           return null; // Prevent breaking the request chain
-  //     })
-  //   });
-
-  //   return Promise.all(fileRequests).then((files) => files.filter(Boolean)).catch(() => []);
-  // };
-
-  // const { data: fileResults } = useQuery({
-  //     queryKey: ["application-files", id],
-  //     queryFn: () => fetchFiles(id),
-  //     enabled: !!id, // Ensure valid queries only run
-  // });
-  // //fetch files
-
   const fileQueries = GetApplicationFiles(id);
-
   
   const userProfileQuery = useQuery({
     queryKey: ["user-profile"],
@@ -154,30 +122,6 @@ const ApplicationForm = ({title=""}) => {
     }
   }, [isSuccess, result]);
   
-
-  
-  // useEffect(() => {
-  //     setLoading(true); 
-  //     Promise.all(
-  //         fileNames.map((fileName) => 
-  //             ApiClient.get(`applications-file/${applicationId}/${fileName}`)
-  //                 .then(({ data }) => ({
-  //                     uri: data.file_url,
-  //                     fileType: data.file_type,
-  //                     fileName: data.file_name
-  //                 }))
-  //                 .catch((error) => {
-  //                     console.error(`Error fetching file: ${fileName}`, error);
-  //                     return null; // Ensure failed requests don't break the chain
-  //                 })
-  //         )
-  //     ).then((files) => {
-  //         setDocs(files.filter(Boolean)); // Removes any failed/null responses
-  //         setLoading(false);
-  //     }).catch(() => setLoading(false));
-  // }, [applicationId]);
-
-
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("applications", data, { headers: {  'Content-Type': 'multipart/form-data' } }).then((response) => response.data),
     onSuccess: (data) => {
@@ -489,45 +433,33 @@ const ApplicationForm = ({title=""}) => {
               </div>
           </ComponentCard>
 
-          
-        
-        <ComponentCard title="Submitted Documents" className="mt-6">
+        {!!id && <ComponentCard title="Submitted Documents" className="mt-6">
           <GenericTable 
             columnHeaders={documentsHeaders}
-            tableData={fileQueries.map((query) => query.data).filter(Boolean)} 
+            tableData={
+              fileQueries.map((query) => query.data).filter(Boolean).map(file => ({
+                  ...file,
+                  size: formatFileSize(file.size),
+                  createdAt: formatDate(file.createdAt)
+              }))
+            } 
             onView={(obj) => {
-              // navigate(`/application-form/${obj.id}`);
+              const width = 800;
+              const height = 600;
+              const left = (window.screen.width - width) / 2;
+              const top = (window.screen.height - height) / 2;
+
+              window.open(
+                  obj.uri, 
+                  "_blank", 
+                  `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
+              );
             }} 
             onEdit={(obj) => {
               // navigate(`/application-form/${obj.id}`);
             }} 
           />
-            {/* {fileQueries.map((query) => query.data).filter(Boolean).map((file, index) => (
-              <p key={index}>
-                  <a 
-                      href="#" 
-                      className="text-green-500 hover:text-green-600 dark:text-green-400"
-                      onClick={(e) => {
-                          e.preventDefault();
-                          
-                          const width = 800;
-                          const height = 600;
-                          const left = (window.screen.width - width) / 2;
-                          const top = (window.screen.height - height) / 2;
-
-                          window.open(
-                              file.uri, 
-                              "_blank", 
-                              `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
-                          );
-                      }}
-                  >
-                      {`View ${file.name}`}
-                  </a>
-              </p>
-          ))} */}
-        </ComponentCard>
-
+        </ComponentCard>}
           
           <div className="flex items-center gap-3 mt-6">
             <Checkbox

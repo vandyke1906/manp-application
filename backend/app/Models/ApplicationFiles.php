@@ -14,6 +14,7 @@ class ApplicationFiles extends Model
         'application_id',
         'name',
         'file_type',
+        'file_size',
         'file_name',
         'file_path',
     ];

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Application::class)->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('file_type'); // Example: 'Resume', 'ID Proof', 'Certificate'
+            $table->string('file_type'); 
+            $table->string('file_size'); 
             $table->string('file_name');
             $table->string('file_path'); // Store file location
             $table->timestamps();

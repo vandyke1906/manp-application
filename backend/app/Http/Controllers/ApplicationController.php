@@ -195,7 +195,6 @@ class ApplicationController extends Controller
 
         // Generate a **signed URL** that expires after a set duration
         $signedUrl = URL::temporarySignedRoute('download-file', now()->addMinutes(30), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
-        Log::info($application_file);
         return response()->json([
             'uri' => $signedUrl,
             'file_type' => $application_file->file_type,
