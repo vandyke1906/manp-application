@@ -41,7 +41,7 @@ return new class extends Migration
             $table->foreignIdFor(Capitalization::class);
             $table->foreignIdFor(BusinessType::class)->nullable();
             $table->foreignIdFor(Zoning::class)->nullable();
-            $table->string('status')->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }
