@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('telephone_number')->nullable();
             $table->string('email')->unique();
-            $table->string('password')
-            ;$table->unsignedInteger('role');
+            $table->string('password');
+            $table->unsignedInteger('role');
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('verification_code')->nullable();
