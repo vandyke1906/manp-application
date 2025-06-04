@@ -244,8 +244,6 @@ const BusinessProjectInfoCard = ({data = {}}) => {
     enabled: !!data?.applicant_type_id,
   });
 
-  console.info({applicantTypesQuery:applicantTypesQuery?.data})
-
   const applicationTypeQuery = useQuery({
     queryKey: ["application-type"],
     queryFn: () => ApiClient.get(`application-types/${data.application_type_id}`).then((response) => response.data),
