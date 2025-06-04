@@ -136,42 +136,6 @@ class ApplicationController extends Controller
         return ApiResponseClass::sendResponse([], 'Invalid Application.', 401, false);
     }
 
-    // public function getApplicationFiles($id, $name, Request $request){
-    //     $userId = $request->user()->id; // Get authenticated user ID
-    //     $application = Application::where('id', $id)->where('user_id', $userId)->first();   // Validate if the application belongs to the user
-    //     if (!$application) {
-    //         return ApiResponseClass::sendResponse([], 'Application files not found or unauthorized',404);
-    //     }
-
-    //     $application_files = $this->application_files_interface->getByApplicationId($application->id);
-    //         foreach ($application_files as $file) {
-    //         $folder_business = Str::slug($application->business_name);
-    //         $folderPath = "app/private/application_files/{$folder_business}/{$file->file_name}";
-    //     }
-    // }
-
-    //return using blob
-    // public function getApplicationFile($id, $name, Request $request){
-    //     $userId = $request->user()->id; // Get authenticated user ID
-    //     $application = Application::where('id', $id)->where('user_id', $userId)->first();   // Validate if the application belongs to the user
-    //     if (!$application) {
-    //         return ApiResponseClass::sendResponse([], 'Application not found or unauthorized',404);
-    //     }
-
-    //     $application_file = $this->application_files_interface->getByApplicationAppIdAndName($application->id, $name);
-    //      if (!$application_file) {
-    //         return ApiResponseClass::sendResponse([], 'File not found or unauthorized',404);
-    //     }
-    //     $folder_business = Str::slug($application->business_name);
-    //     // $folderPath = "app/private/application_files/{$folder_business}/{$application_file->file_name}";
-    //     $path = storage_path("app/private/application_files/{$folder_business}/{$application_file->file_name}");
-    //     if (!file_exists($path)) {
-    //         return ApiResponseClass::sendResponse([], 'File not found or unauthorized',404);
-    //     }
-    //     // Return the file with correct headers for download or viewing
-    //     return response()->file($path, ['Content-Type' => mime_content_type($path)]);  
-    // }
-
     //Generate Signed URL
     public function getApplicationFile($id, $name, Request $request)
     {

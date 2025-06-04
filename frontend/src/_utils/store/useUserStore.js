@@ -1,19 +1,19 @@
 import { create } from 'zustand';
 
 const useUserStore = create((set) => ({
-  user: JSON.parse(sessionStorage.getItem("user")) || null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
 
   setUser: (user) => {
-    sessionStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
     set({ user });
   },
 
   clearUser: () => {
-    sessionStorage.removeItem("user");
+    localStorage.removeItem("user");
     set({ user: null });
   },
   isSameUser: (data) => {
-    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    const storedUser = JSON.parse(localStorage.getItem("user"));
 
     if (!storedUser || !data) return false; // Return false if missing data
     return JSON.stringify(storedUser) === JSON.stringify(data); // Deep comparison

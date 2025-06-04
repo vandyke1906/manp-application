@@ -11,7 +11,7 @@ const ApiClient = axios.create({
 
 // Automatically add the Bearer token to requests
 ApiClient.interceptors.request.use((config) => {
-  const userData = JSON.parse(sessionStorage.getItem("user")); // Retrieve user data from session storage
+  const userData = JSON.parse(localStorage.getItem("user")); // Retrieve user data from session storage
   const token = userData?.token; // Extract the token correctly
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -24,7 +24,7 @@ ApiClient.interceptors.request.use((config) => {
 //   (response) => response, 
 //   (error) => {
 //     if (error.response?.status === 401) {
-//       sessionStorage.removeItem("user"); // Clear stored user session
+//       localStorage.removeItem("user"); // Clear stored user session
 //       window.location.href = '/signin'; // Redirect to the sign-in page
 //     }
 //     return Promise.reject(error);
@@ -66,14 +66,14 @@ ApiClient.interceptors.response.use(
 const refreshToken = () => {
     return axios.post(`${BASE_API}/auth/refresh`, {}, { withCredentials: true }).then((response) => {
       const newToken = response.data.token;
-      const userData = JSON.parse(sessionStorage.getItem("user")) || {};
+      const userData = JSON.parse(localStorage.getItem("user")) || {};
       console.info({newToken});
       userData.token = newToken;
-      sessionStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("user", JSON.stringify(userData));
       return newToken;
     }).catch((error) => {
         console.error("Refresh token error:", error);
-        // sessionStorage.removeItem("user");
+        // localStorage.removeItem("user");
         // window.location.href = '/signin';
         //throw error;
     })

@@ -27,7 +27,7 @@ import BusinessNature from './pages/BusinessNature/BusinessNature';
 import BusinessNatureForm from './pages/BusinessNature/BusinessNatureForm';
 import BusinessStatus from './pages/BusinessStatus/BusinessStatus';
 import BusinessStatusForm from './pages/BusinessStatus/BusinessStatusForm';
-import ApplicationAction from './pages/Application/ApplicationAction';
+import ApplicationView from './pages/Application/ApplicationView';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -44,7 +44,7 @@ function App() {
             <Route path="/applications" element={<Applications />} />
             <Route path="/application-form" element={<ApplicationForm />} />
             <Route path="/application-form/:id" element={<ApplicationForm />} /> {/* Dynamic route */}
-            <Route path="/application-form/:id/action" element={<ApplicationAction />} /> {/* Dynamic route */}
+            <Route path="/application-view/:id" element={<ApplicationView />} /> {/* Dynamic route */}
 
             <Route path="/proponent">
               <Route index element={<Proponent />} /> {/* Default route */}

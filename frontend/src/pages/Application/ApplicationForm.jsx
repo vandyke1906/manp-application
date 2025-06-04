@@ -280,15 +280,15 @@ const ApplicationForm = ({title=""}) => {
                   </div>
                 </div>
 
-                  <div>
-                      <Label htmlFor="address">Address<span className="text-error-500">*</span></Label>
-                      <TextArea id="address" rows={3} 
-                        name="address" 
-                        placeholder="address" 
-                        isRequired={true}
-                        defaultValue={userProfileQuery?.data?.data?.address || ""}
-                      />
-                  </div>
+                <div>
+                    <Label htmlFor="address">Address<span className="text-error-500">*</span></Label>
+                    <TextArea id="address" rows={3} 
+                      name="address" 
+                      placeholder="address" 
+                      isRequired={true}
+                      defaultValue={userProfileQuery?.data?.data?.address || ""}
+                    />
+                </div>
               </div>
           </ComponentCard>
 

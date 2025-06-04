@@ -63,6 +63,7 @@ const Applications = () => {
         <ComponentCard title="">
           <div className="space-y-5 sm:space-y-6">
               {hasRole(ROLES.PROPONENTS) && <Button size="sm" variant="primary" onClick={() => { navigate("/application-form") }}>New Application</Button>}
+              {/* <Button size="sm" variant="primary" onClick={() => { navigate("/application-form") }}>New Application</Button> */}
               
               <GenericTable 
                   columnHeaders={headers} 
@@ -79,7 +80,7 @@ const Applications = () => {
                           }
                       }
                       : {
-                          onView: (obj) => navigate(`/view-application/${obj.id}`)
+                          onView: (obj) => navigate(`/application-view/${obj.id}`)
                       }
                   )}
               />

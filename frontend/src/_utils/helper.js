@@ -1,5 +1,5 @@
 const hasRole = (permissions) => {
-  const userData = JSON.parse(sessionStorage.getItem("user")); // Retrieve user data from session storage
+  const userData = JSON.parse(localStorage.getItem("user")); // Retrieve user data from session storage
   const userRole = userData?.role || 0;
    return (permissions & userRole) !== 0;
 };
@@ -21,8 +21,8 @@ const formatFileSize = (bytes)  => {
 const formatDate = (dateString, format = 'dd-MMM-yyyy hh:mm A') => {
     const date = new Date(dateString);
     
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const fullMonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
     // Convert to 12-hour format and determine AM/PM
     let hours = date.getHours();
@@ -32,6 +32,7 @@ const formatDate = (dateString, format = 'dd-MMM-yyyy hh:mm A') => {
     const formatMap = {
         yyyy: date.getFullYear(),
         mm: String(date.getMonth() + 1).padStart(2, '0'),
+        MMMM: fullMonthNames[date.getMonth()],
         MMM: monthNames[date.getMonth()],
         dd: String(date.getDate()).padStart(2, '0'),
         hh: String(hours).padStart(2, '0'), // 12-hour format
@@ -41,7 +42,7 @@ const formatDate = (dateString, format = 'dd-MMM-yyyy hh:mm A') => {
         A: ampm // AM/PM
     };
 
-    return format.replace(/yyyy|mm|MMM|dd|hh|HH|MM|SS|A/g, match => formatMap[match]);
+    return format.replace(/yyyy|mm|MMMM|MMM|dd|hh|HH|MM|SS|A/g, match => formatMap[match]);
 };
 
 export { hasRole, ROLES, formatFileSize, formatDate };
