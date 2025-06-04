@@ -44,9 +44,19 @@ function App() {
             <Route index path="/" element={<Home />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/applications" element={<Applications />} />
-            <Route path="/application-form" element={<ApplicationForm />} />
-            <Route path="/application-form/:id" element={<ApplicationForm />} />
-            {/* <Route path="/application-view/:id" element={<ApplicationView />} /> */}
+
+            <Route path="/application-form" element={
+              <ProtectedComponent user={user} allowedRoles={[ROLES.PROPONENTS ]}>
+                <ApplicationForm />
+              </ProtectedComponent>
+            } />
+            
+             <Route path="/application-form/:id" element={
+              <ProtectedComponent user={user} allowedRoles={[ROLES.PROPONENTS ]}>
+                <ApplicationForm />
+              </ProtectedComponent>
+            } />
+
             <Route path="/application-view/:id" element={
               <ProtectedComponent user={user} allowedRoles={[ROLES.RPS_TEAM, ROLES.MANAGER, ROLES.ADMINISTRATOR]}>
                 <ApplicationView />
