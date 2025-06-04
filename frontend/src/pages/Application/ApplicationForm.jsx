@@ -439,8 +439,8 @@ const ApplicationForm = ({title=""}) => {
             tableData={
               fileQueries.map((query) => query.data).filter(Boolean).map(file => ({
                   ...file,
-                  size: formatFileSize(file.size),
-                  createdAt: formatDate(file.createdAt)
+                  file_size: formatFileSize(file.file_size),
+                  updated_at: formatDate(file.updated_at, "dd-MMM-yyyy hh:mm A")
               }))
             } 
             onView={(obj) => {
