@@ -28,10 +28,12 @@ import BusinessNatureForm from './pages/BusinessNature/BusinessNatureForm';
 import BusinessStatus from './pages/BusinessStatus/BusinessStatus';
 import BusinessStatusForm from './pages/BusinessStatus/BusinessStatusForm';
 import ApplicationView from './pages/Application/ApplicationView';
+import { ROLES } from './_utils/helper';
+import ProtectedComponent from './pages/ProtectedComponent';
+import useUserStore from './_utils/store/useUserStore';
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const { user } = useUserStore();
   return (
     <>
     <Router>
@@ -43,55 +45,61 @@ function App() {
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/applications" element={<Applications />} />
             <Route path="/application-form" element={<ApplicationForm />} />
-            <Route path="/application-form/:id" element={<ApplicationForm />} /> {/* Dynamic route */}
-            <Route path="/application-view/:id" element={<ApplicationView />} /> {/* Dynamic route */}
+            <Route path="/application-form/:id" element={<ApplicationForm />} />
+            {/* <Route path="/application-view/:id" element={<ApplicationView />} /> */}
+            <Route path="/application-view/:id" element={
+              <ProtectedComponent user={user} allowedRoles={[ROLES.RPS_TEAM, ROLES.MANAGER, ROLES.ADMINISTRATOR]}>
+                <ApplicationView />
+              </ProtectedComponent>
+            } />
+
 
             <Route path="/proponent">
               <Route index element={<Proponent />} /> {/* Default route */}
               <Route path="create" element={<ProponentForm />} />
-              <Route path="update/:id" element={<ProponentForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<ProponentForm />} />
             </Route>
 
             <Route path="/application-type">
               <Route index element={<ApplicationType />} /> {/* Default route */}
               <Route path="create" element={<ApplicationTypeForm />} />
-              <Route path="update/:id" element={<ApplicationTypeForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<ApplicationTypeForm />} />
             </Route>
             
             <Route path="/business-type">
               <Route index element={<BusinessType />} /> {/* Default route */}
               <Route path="create" element={<BusinessTypeForm />} />
-              <Route path="update/:id" element={<BusinessTypeForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<BusinessTypeForm />} />
             </Route>
             
             <Route path="/zoning">
               <Route index element={<Zoning />} /> {/* Default route */}
               <Route path="create" element={<ZoningForm />} />
-              <Route path="update/:id" element={<ZoningForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<ZoningForm />} />
             </Route>
 
             <Route path="/applicant-type">
               <Route index element={<ApplicantType />} /> {/* Default route */}
               <Route path="create" element={<ApplicantTypeForm />} />
-              <Route path="update/:id" element={<ApplicantTypeForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<ApplicantTypeForm />} />
             </Route>
 
             <Route path="/capitalization">
               <Route index element={<Capitalization />} /> {/* Default route */}
               <Route path="create" element={<CapitalizationForm />} />
-              <Route path="update/:id" element={<CapitalizationForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<CapitalizationForm />} />
             </Route>
 
             <Route path="/business-nature">
               <Route index element={<BusinessNature />} /> {/* Default route */}
               <Route path="create" element={<BusinessNatureForm />} />
-              <Route path="update/:id" element={<BusinessNatureForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<BusinessNatureForm />} />
             </Route>
 
             <Route path="/business-status">
               <Route index element={<BusinessStatus />} /> {/* Default route */}
               <Route path="create" element={<BusinessStatusForm />} />
-              <Route path="update/:id" element={<BusinessStatusForm />} /> {/* Dynamic route */}
+              <Route path="update/:id" element={<BusinessStatusForm />} />
             </Route>
           </Route>
 
