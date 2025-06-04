@@ -394,7 +394,38 @@ const ApplicationForm = ({title=""}) => {
           </ComponentCard>
 
 
-           <ComponentCard title="Required Documents" className="mt-6">
+
+
+        {!!id ? 
+          <ComponentCard title="Submitted Documents" className="mt-6">
+            <GenericTable 
+              columnHeaders={documentsHeaders}
+              tableData={
+                fileQueries.map((query) => query.data).filter(Boolean).map(file => ({
+                    ...file,
+                    file_size: formatFileSize(file.file_size),
+                    updated_at: formatDate(file.updated_at, "dd-MMM-yyyy hh:mm A")
+                }))
+              } 
+              onView={(obj) => {
+                const width = 800;
+                const height = 600;
+                const left = (window.screen.width - width) / 2;
+                const top = (window.screen.height - height) / 2;
+
+                window.open(
+                    obj.uri, 
+                    "_blank", 
+                    `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
+                );
+              }} 
+              onEdit={(obj) => {
+                // navigate(`/application-form/${obj.id}`);
+              }} 
+            />
+          </ComponentCard> 
+          :
+          <ComponentCard title="Required Documents" className="mt-6">
               <div className="space-y-6">
                   <div>
                       <Label htmlFor="proof_of_capitalization">Duly Signed Proof of Capitalization from the LGU<span className="text-error-500">*</span></Label>
@@ -411,7 +442,7 @@ const ApplicationForm = ({title=""}) => {
                       <FileInput type="file" id="birth_certificate_or_id" name="birth_certificate_or_id" placeholder="Birth Certificate or Valid ID of Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
-                   <div>
+                    <div>
                       <Label htmlFor="ncip_document">Document Secured from the NCIP<span className="text-error-500">*</span></Label>
                       <FileInput type="file" id="ncip_document" name="ncip_document" placeholder="Document Secured from the NCIP" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
@@ -426,40 +457,13 @@ const ApplicationForm = ({title=""}) => {
                       <FileInput type="file" id="business_permit" name="business_permit" placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
                   </div>
 
-                   <div>
+                    <div>
                       <Label htmlFor="authorization_letter">Authorization Letter duly Signed by the Proponent</Label>
                       <FileInput type="file" id="authorization_letter" name="authorization_letter" placeholder="Authorization Letter duly Signed by the Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
                   </div>
               </div>
           </ComponentCard>
-
-        {!!id && <ComponentCard title="Submitted Documents" className="mt-6">
-          <GenericTable 
-            columnHeaders={documentsHeaders}
-            tableData={
-              fileQueries.map((query) => query.data).filter(Boolean).map(file => ({
-                  ...file,
-                  file_size: formatFileSize(file.file_size),
-                  updated_at: formatDate(file.updated_at, "dd-MMM-yyyy hh:mm A")
-              }))
-            } 
-            onView={(obj) => {
-              const width = 800;
-              const height = 600;
-              const left = (window.screen.width - width) / 2;
-              const top = (window.screen.height - height) / 2;
-
-              window.open(
-                  obj.uri, 
-                  "_blank", 
-                  `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
-              );
-            }} 
-            onEdit={(obj) => {
-              // navigate(`/application-form/${obj.id}`);
-            }} 
-          />
-        </ComponentCard>}
+        }
           
           <div className="flex items-center gap-3 mt-6">
             <Checkbox
