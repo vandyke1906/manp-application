@@ -152,7 +152,7 @@ class ApplicationController extends Controller
         $userId = $request->user()->id;
         $userRole = $request->user()->role;
         $application  = null;
-        if($userRole == Roles::PROPONENTS)
+        if($userRole == hexdec(Roles::PROPONENTS))
             $application = Application::where('id', $id)->where('user_id', $userId)->first();
         else 
             $application = Application::where('id', $id)->first();

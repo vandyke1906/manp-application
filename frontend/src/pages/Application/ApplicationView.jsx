@@ -137,7 +137,7 @@ const ApplicationView = ({title=""}) => {
   if(isLoading) return <Spinner />;
   if(isError) return <SomethingWentWrong />;
 
-  console.info({obj});
+  // console.info({obj});
 
   return (
     <>
@@ -408,6 +408,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
 };
 
 const SubmittedDocumentsCard = ({data = {}}) => {
+  console.info({data});
   return (
     <ComponentCard title="Submitted Documents" className="my-6">
       <GenericTable

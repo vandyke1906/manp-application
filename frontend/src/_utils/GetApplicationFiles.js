@@ -1,11 +1,11 @@
 import { useQueries } from "@tanstack/react-query";
 import { ApiClient } from "./axios";
 const fetchFile = (applicationId, fileName) => {
-    ApiClient.get(`applications-file/${applicationId}/${fileName}`).then(response => response.data).catch(() => null);
-
+    return ApiClient.get(`applications-file/${applicationId}/${fileName}`).then(response => response.data).catch(() => null);
 };
 
 const GetApplicationFiles = (applicationId) => {
+    if(!applicationId) return [];
     const fileNames = [
         "proof_of_capitalization",
         "barangay_clearance",
@@ -15,10 +15,10 @@ const GetApplicationFiles = (applicationId) => {
         "business_permit",
         "authorization_letter"
     ];
-    return useQueries({
+    const queries = useQueries({
         queries: fileNames.map((fileName) => {
             return {
-                queryKey: ["application-file", applicationId, fileName],
+                queryKey: [`application-file-${fileName}`, applicationId, fileName],
                 queryFn: () => fetchFile(applicationId, fileName),
                 enabled: !!applicationId, // Ensures query runs only when `applicationId` is valid
                 staleTime: 0, // Forces fresh fetch
@@ -26,6 +26,10 @@ const GetApplicationFiles = (applicationId) => {
             };
         })
     });
+
+    const successfulQueries = queries.filter(query => query.status === "success");
+    return successfulQueries;
+
 };
 
 export default GetApplicationFiles;
