@@ -12,4 +12,5 @@ interface AuthInterface
     public function refreshToken(array $data);
     public function sendVerificationEmail();
     public function verifyCode();
+    public function verify($id, $hash);
 }

@@ -31,6 +31,7 @@ import ApplicationView from './pages/Application/ApplicationView';
 import { ROLES } from './_utils/helper';
 import ProtectedComponent from './pages/ProtectedComponent';
 import useUserStore from './_utils/store/useUserStore';
+import VerificationLinkPage from './pages/AuthPages/VerificationLinkPage';
 
 function App() {
   const { user } = useUserStore();
@@ -118,6 +119,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify" element={<Verification />} />
+          <Route path="/verification" element={<VerificationLinkPage />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

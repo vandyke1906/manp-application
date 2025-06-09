@@ -54,6 +54,10 @@ Route::get('/download-file/{business_name}/{file_name}', function ($business_nam
 })->name('download-file');
 
 
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
+
+
+//test here
 Route::get('/debug-csrf', function () {
     return response()->json([
         'csrf_token' => request()->cookie('XSRF-TOKEN'),

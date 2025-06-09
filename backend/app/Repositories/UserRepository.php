@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Constants\Roles;
 use Illuminate\Support\Str;
 use App\Jobs\SendVerificationEmail;
+use App\Jobs\SendVerificationLink;
 use Illuminate\Support\Facades\Session;
 
 class UserRepository implements AuthInterface
@@ -29,7 +30,8 @@ class UserRepository implements AuthInterface
         $data["role"] = $role;
         $data["verification_code"] = Str::random(6);
         $user = User::create($data);
-        //dispatch(new SendVerificationEmail($user->email, $user->verification_code));
+        // dispatch(new SendVerificationEmail($user->email, $user->verification_code));
+        dispatch(new SendVerificationLink($user->email, $user));
         return $user;
     }
 
@@ -109,4 +111,29 @@ class UserRepository implements AuthInterface
     public function refreshToken(array $data){}
     public function sendVerificationEmail(){}
     public function verifyCode(){}
+    public function verify($id, $hash){
+        $user = User::findOrFail($id);
+        Log::debug($user);
+        if (!hash_equals(sha1($user->email), $hash)) return null;
+
+        $token = $user->createToken("manp-token")->plainTextToken;
+        $result = (object)[
+            "first_name" => $user->first_name, 
+            "middle_name" => $user->middle_name, 
+            "last_name" => $user->last_name, 
+            "suffix" => $user->suffix, 
+            "full_name" => $user->full_name, 
+            "email" => $user->email, 
+            "role" => $user->role, 
+            "token" => $token,
+            "refreshToken" => ""
+        ];
+        // if ($user->hasVerifiedEmail())
+        //     return $result;
+        // Mark email as verified
+        Log::debug($user);
+        $user->markEmailAsVerified();
+        $user->verified = true;
+        return $result;
+    }
 }

@@ -171,6 +171,32 @@ class AuthController extends Controller
         return ApiResponseClass::sendResponse([], 'Verification email sent.', 200);
     }
 
+    public function verify(Request $request, $id, $hash)
+    {
+        $result = $this->interface->verify($id, $hash);
+        if(!$result)
+            return ApiResponseClass::sendResponse([], 'Invalid verification link.', 403);
+        // else if($result->verified)
+        //      return ApiResponseClass::sendResponse($result, 'Email is already verified.', 200);
+        return ApiResponseClass::sendResponse($result, 'Email verified successfully.', 200);
+        // Find the user by ID
+        // $user = User::findOrFail($id);
+        // Log::debug($user);
+        // // Check if the hash matches the user's email
+        // if (!hash_equals(sha1($user->email), $hash)) {
+        //     return ApiResponseClass::sendResponse([], 'Invalid verification link.', 403);
+        // }
+        // // Check if user is already verified
+        // if ($user->hasVerifiedEmail()) {
+        //     return ApiResponseClass::sendResponse([], 'Email is already verified.', 200);
+        // }
+        // // Mark email as verified
+        // $user->markEmailAsVerified();
+        // $token = $user->createToken("manp-token")->plainTextToken;
+        // return ApiResponseClass::sendResponse([], 'Email verified successfully.', 200);
+    }
+
+
     public function verifyCode(Request $request)
     {        
         $user = User::where('email', $request->email)->first();

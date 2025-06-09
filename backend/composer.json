@@ -68,7 +68,8 @@
         ],
         "dev": [
             "php -S 127.0.0.1:8080 -t public"
-        ]
+        ],
+        "devq": "concurrently \"php artisan queue:work\" \"php -S 127.0.0.1:8080 -t public\""
     },
     "extra": {
         "laravel": {
