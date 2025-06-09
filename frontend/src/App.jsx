@@ -58,7 +58,7 @@ function App() {
             } />
 
             <Route path="/application-view/:id" element={
-              <ProtectedComponent user={user} allowedRoles={[ROLES.RPS_TEAM, ROLES.MANAGER, ROLES.ADMINISTRATOR]}>
+              <ProtectedComponent user={user} allowedRoles={[ROLES.PROPONENTS, ROLES.RPS_TEAM, ROLES.MANAGER, ROLES.ADMINISTRATOR]}>
                 <ApplicationView />
               </ProtectedComponent>
             } />
