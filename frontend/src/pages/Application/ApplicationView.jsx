@@ -129,11 +129,6 @@ const ApplicationView = ({title=""}) => {
     }
   };
 
-  const handleConfirmSubmission = () => {
-    dialogModal.openModal();
-  };
-
-
   if(isLoading) return <Spinner />;
   if(isError) return <SomethingWentWrong />;
 
@@ -157,7 +152,7 @@ const ApplicationView = ({title=""}) => {
           {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             See all
           </button> */}
-          {!obj?.approvals?.length ? <Button onClick={handleConfirmSubmission}>Confirm Submission</Button> : <Button onClick={openModal}>Take Action</Button>}     
+          {showApplicationActionButton({ approvals:obj?.approvals })}
         </div>
       </div>
 
@@ -447,6 +442,15 @@ const ApprovalsCard = ({data = {}}) => {
         }))}/>
     </ComponentCard>
   );
+}
+
+const showApplicationActionButton = ({approvals = []}) => {
+  if(!approvals.length)
+    return <Button onClick={() => dialogModal.openModal()}>Confirm Submission</Button>;
+  else if(!approvals.some((a) => a.status === "completed"))
+    <Button onClick={openModal}>Take Action</Button>;
+  else
+    return null;
 }
 
 export default ApplicationView
