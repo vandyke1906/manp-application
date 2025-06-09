@@ -1,13 +1,8 @@
 import { useQueries } from "@tanstack/react-query";
 import { ApiClient } from "./axios";
-const fetchFile = async (applicationId, fileName) => {
-    try {
-        const response = await ApiClient.get(`applications-file/${applicationId}/${fileName}`);
-        return response.data;
-    } catch (error) {
-        console.error(`Error fetching file: ${fileName}`, error);
-        return null;
-    }
+const fetchFile = (applicationId, fileName) => {
+    ApiClient.get(`applications-file/${applicationId}/${fileName}`).then(response => response.data).catch(() => null);
+
 };
 
 const GetApplicationFiles = (applicationId) => {

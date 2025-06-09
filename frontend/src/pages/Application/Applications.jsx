@@ -71,18 +71,16 @@ const Applications = () => {
                     application_date: formatDate(data.application_date, "dd-MMM-yyyy hh:mm A"),
                     status: getReadableStatus(data.approvals?.[0]?.status)
                 }))}
-                  {...(hasRole(ROLES.PROPONENTS)
-                      ? {
-                          onEdit: (obj) => navigate(`/application-form/${obj.id}`),
-                          onDelete: (obj) => {
-                              setSelectedID(obj?.id);
-                              openModal();
-                          }
-                      }
-                      : {
-                          onView: (obj) => navigate(`/application-view/${obj.id}`)
-                      }
-                  )}
+                onEdit={hasRole(ROLES.PROPONENTS) && result.data?.approvals?.some(obj => obj.status !== "completed") 
+                  ? (obj) => navigate(`/application-form/${obj.id}`) 
+                  : undefined} 
+                onDelete={hasRole(ROLES.PROPONENTS) && result.data?.approvals?.some(obj => obj.status !== "completed") 
+                  ? (obj) => {
+                      setSelectedID(obj?.id);
+                      openModal();
+                    }
+                  : undefined} 
+                onView={(obj) => navigate(`/application-view/${obj.id}`)}
               />
 
           </div>
