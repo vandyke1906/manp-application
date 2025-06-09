@@ -54,15 +54,10 @@ const ApplicationTypeForm = ({title=""}) => {
   const updateMutation = useMutation({
     mutationFn: (data) => ApiClient.put(`application-types/${data?.id || 0}`, data).then((response) => response.data),
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries({ queryKey: ["applicationType"] });
       if(data.success){
-        toast.success(data.message, {
-          position: "bottom-right",
-          onClose: (reason) => {
-            if (!reason) navigate("/application-type");
-          },
-        });
+        navigate("/application-type");
+        toast.success(data.message, { position: "bottom-right" });
       } else {
         toast.error("Application Type Error!", { position: "bottom-right" });
       }

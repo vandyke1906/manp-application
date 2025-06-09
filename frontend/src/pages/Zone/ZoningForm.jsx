@@ -41,7 +41,6 @@ const ZoningForm = ({title=""}) => {
 
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("zonings", data).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["zoning"] });
       if(data.success){

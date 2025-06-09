@@ -25,14 +25,11 @@ export default function VerificationForm() {
 
         ApiBasic.post('/api/verify', credentials, {
         }).then((response) => {
-            console.log('Verify successful!', response.data);
             navigate("/signin");
         }).catch((error) => {
           setLoginError(error.response?.data?.message || 'Verification failed!');
         });
   };
-
-  console.log({email});
 
 
   return (

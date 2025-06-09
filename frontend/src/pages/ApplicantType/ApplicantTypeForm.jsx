@@ -41,14 +41,12 @@ const ApplicantTypeForm = ({title=""}) => {
 
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("applicant-types", data).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["applicant-type"] });
       if(data.success){
         formRef.current.reset();
-        toast.success(data.message, { position: "bottom-right", onClose: (reason) => {
-          if(!reason) navigate("/applicant-type");
-        } });
+        navigate("/applicant-type");
+        toast.success(data.message, { position: "bottom-right" });
       } else {
         toast.error("Applicant type Error!", { position: "bottom-right" });
       }

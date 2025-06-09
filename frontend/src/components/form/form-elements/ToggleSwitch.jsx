@@ -2,9 +2,7 @@ import ComponentCard from "../../common/ComponentCard";
 import Switch from "../switch/Switch";
 
 export default function ToggleSwitch() {
-  const handleSwitchChange = (checked) => {
-    console.log("Switch is now:", checked ? "ON" : "OFF");
-  };
+  const handleSwitchChange = (checked) => { };
   return (
     <ComponentCard title="Toggle switch input">
       <div className="flex gap-4">

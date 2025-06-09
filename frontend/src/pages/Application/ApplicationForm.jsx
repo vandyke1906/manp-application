@@ -141,15 +141,10 @@ const ApplicationForm = ({title=""}) => {
   const updateMutation = useMutation({
     mutationFn: (data) => ApiClient.put(`applications/${data?.id || 0}`, data, { headers: {  'Content-Type': 'multipart/form-data' } }).then((response) => response.data),
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries({ queryKey: ["application"] });
       if(data.success){
-        toast.success(data.message, {
-          position: "bottom-right",
-          onClose: (reason) => {
-            if (!reason) navigate("/applications");
-          },
-        });
+        navigate("/applications");
+        toast.success(data.message, { position: "bottom-right" });
       } else {
         toast.error("Application Error!", { position: "bottom-right" });
       }

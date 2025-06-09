@@ -54,7 +54,6 @@ const BusinessTypeForm = ({title=""}) => {
   const updateMutation = useMutation({
     mutationFn: (data) => ApiClient.put(`business-types/${data?.id || 0}`, data).then((response) => response.data),
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries({ queryKey: ["businessType"] });
       if(data.success){
         toast.success(data.message, {

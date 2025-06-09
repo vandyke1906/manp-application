@@ -21,48 +21,21 @@ export default function SignInForm() {
     const formData = new FormData(event.target); // Creates a FormData object from the form
     const credentials = Object.fromEntries(formData.entries()); // Converts FormData to
 
-    
-      // ApiBasic.get('/sanctum/csrf-cookie', { withCredentials: true })
-      // .then((res) => {
-            ApiBasic.post('/api/login', credentials, { withCredentials: true }).then((response) => {
-              const { success, data } = response.data;
-              if(success){
-                if(data.verified){
-                  setUser(data);
-                  navigate("/");
-                } else {
-                  navigate("/verify");
-                }
-              } else {
-                setLoginError("Invalid credentials.");
-              }
-            }).catch((error) => {
-              setLoginError(error.response?.data?.message || 'Login failed!');
-            });  
-      //     })
-      // .catch(error => console.error('CSRF token request failed', error));
-
-
-        // ApiBasic.post('/api/login', credentials, {
-        // }).then((response) => {
-        //   const { data, success } = response.data;
-        //   if(data){
-        //     if(success){
-        //       setUser(data); 
-        //       if(data?.verified){
-        //         navigate("/");
-        //       }
-        //       else {
-        //         //console.log(data);
-        //         navigate("/verify", { state : { email: data.email || "" } });
-        //       }
-        //     }
-        //   } else {
-        //     navigate("/signin");
-        //   }
-        // }).catch((error) => {
-        //   setLoginError(error.response?.data?.message || 'Login failed!');
-        // });
+      ApiBasic.post('/api/login', credentials, { withCredentials: true }).then((response) => {
+        const { success, data } = response.data;
+        if(success){
+          if(data.verified){
+            setUser(data);
+            navigate("/");
+          } else {
+            navigate("/verify");
+          }
+        } else {
+          setLoginError("Invalid credentials.");
+        }
+      }).catch((error) => {
+        setLoginError(error.response?.data?.message || 'Login failed!');
+      });  
   };
 
 

@@ -18,7 +18,6 @@ const { user, setUser, isSameUser } = useUserStore();
         if(success){
           if(data.verified){
             if(!isSameUser(data)){
-              console.log("data not match. changed!");
               setUser(data);
             }
           } else {

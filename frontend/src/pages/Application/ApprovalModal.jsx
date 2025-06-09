@@ -14,7 +14,6 @@ const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 
 
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("approvals", data).then((response) => response.data),
-    onError:console.log,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["approval"] });
       if(data.success){

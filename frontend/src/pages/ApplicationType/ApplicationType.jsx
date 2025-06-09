@@ -35,13 +35,11 @@ const ApplicationType = () => {
 
   const deleteMutation = useMutation({ 
     mutationFn: ({id}) => ApiClient.delete(`application-types/${id || 0}`).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["applicationTypes"] });
       if(data.success){
-        toast.success(data.data, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
-        } });
+        toast.success(data.data, { position: "bottom-right" });
       } else {
         toast.error("Application Type Error!", { position: "bottom-right" });
       }

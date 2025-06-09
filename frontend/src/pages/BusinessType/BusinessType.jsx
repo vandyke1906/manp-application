@@ -34,13 +34,11 @@ const BusinessType = () => {
 
   const deleteMutation = useMutation({ 
     mutationFn: ({id}) => ApiClient.delete(`business-types/${id || 0}`).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["businessTypes"] });
       if(data.success){
-        toast.success(data?.message, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
-        } });
+        toast.success(data?.message, { position: "bottom-right" });
       } else {
         toast.error("Business Type Error!", { position: "bottom-right" });
       }

@@ -16,7 +16,6 @@ export default function SignUpForm() {
 
   const registerMutation = useMutation({ 
     mutationFn: (data) => ApiBasic.post("/api/register", data).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["register"] });
       if(data.success){

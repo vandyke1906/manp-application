@@ -41,14 +41,11 @@ const CapitalizationForm = ({title=""}) => {
 
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("capitalizations", data).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["capitalization"] });
       if(data.success){
         formRef.current.reset();
-        toast.success(data.message, { position: "bottom-right", onClose: (reason) => {
-          if(!reason) navigate("/capitalization");
-        } });
+        toast.success(data.message, { position: "bottom-right" });
       } else {
         toast.error("capitalization Error!", { position: "bottom-right" });
       }

@@ -36,13 +36,11 @@ const BusinessStatus = () => {
 
   const deleteMutation = useMutation({ 
     mutationFn: ({id}) => ApiClient.delete(`business-statuses/${id || 0}`).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["business-statuses"] });
       if(data.success){
-        toast.success(data?.message, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
-        } });
+        toast.success(data?.message, { position: "bottom-right" });
       } else {
         toast.error("Status of Business Error!", { position: "bottom-right" });
       }

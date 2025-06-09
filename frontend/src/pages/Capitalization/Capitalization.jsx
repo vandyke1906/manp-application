@@ -36,13 +36,11 @@ const Capitalization = () => {
 
   const deleteMutation = useMutation({ 
     mutationFn: ({id}) => ApiClient.delete(`capitalizations/${id || 0}`).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["capitalizations"] });
       if(data.success){
-        toast.success(data?.message, { position: "bottom-right", autoClose: 3000, onClose: (reason) => {
-        } });
+        toast.success(data?.message, { position: "bottom-right" });
       } else {
         toast.error("Capitalization Error!", { position: "bottom-right" });
       }

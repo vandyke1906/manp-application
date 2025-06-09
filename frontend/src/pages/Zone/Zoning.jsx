@@ -36,7 +36,6 @@ const Zoning = () => {
 
   const deleteMutation = useMutation({ 
     mutationFn: ({id}) => ApiClient.delete(`zonings/${id || 0}`).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       closeModal();
       queryClient.invalidateQueries({ queryKey: ["zonings"] });

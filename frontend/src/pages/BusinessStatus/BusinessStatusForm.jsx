@@ -41,14 +41,11 @@ const BusinessStatusForm = ({title=""}) => {
 
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("business-statuses", data).then((response) => response.data),
-    onError:(error) => console.log({error}),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["business-status"] });
       if(data.success){
         formRef.current.reset();
-        toast.success(data.message, { position: "bottom-right", onClose: (reason) => {
-          if(!reason) navigate("/business-status");
-        } });
+        toast.success(data.message, { position: "bottom-right" });
       } else {
         toast.error("Status of Business Error!", { position: "bottom-right" });
       }
