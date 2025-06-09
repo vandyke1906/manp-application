@@ -12,8 +12,9 @@ import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
 import GetApplicationFiles from '../../_utils/GetApplicationFiles';
 import GenericTable from '../../components/tables/GenericTable';
-import { formatDate, formatFileSize } from '../../_utils/helper';
+import { formatDate, formatFileSize, getReadableStatus } from '../../_utils/helper';
 import ApprovalModal from './ApprovalModal';
+import DialogModal from  '../../components/ui/modal/DialogModal';
 import { useModal } from '../../hooks/useModal';
 
 const documentsHeaders = [
@@ -39,8 +40,9 @@ const ApplicationView = ({title=""}) => {
   const [applicantTypes, setApplicantTypes] = useState([]);
 
   const { isOpen, openModal, closeModal } = useModal();
+  const dialogModal = useModal();
 
-  const { isLoading, isError, data: result, isSuccess } = useQuery({ 
+  const { isLoading, isError, data: result, isSuccess, refetch } = useQuery({ 
     queryKey: ["application", id],
     queryFn: () => ApiClient.get(`applications/${id}`).then((response) => {
       return response.data;
@@ -77,6 +79,7 @@ const ApplicationView = ({title=""}) => {
       }
     }
   });
+  
 
   // Mutation for updating
   const updateMutation = useMutation({
@@ -97,6 +100,22 @@ const ApplicationView = ({title=""}) => {
   });
 
 
+  //confirm submission of documents
+  const confirmDocumenSubmission = useMutation({ 
+    mutationFn: (id) => ApiClient.post(`/approvals/${id}/confirm-submission`).then((response) => response.data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["condirm-submission"] });
+      if(data.success){
+        refetch();
+        toast.success(data.message, { position: "bottom-right", delay: 1500});
+      } else {
+        toast.error("Confim document submission error!", { position: "bottom-right" });
+      }
+      dialogModal.closeModal();
+    }
+  });
+
+
   const handleSave = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target); // Creates a FormData object from the form
@@ -108,14 +127,17 @@ const ApplicationView = ({title=""}) => {
     } else {
       createMutation.mutate(data);
     }
+  };
 
+  const handleConfirmSubmission = () => {
+    dialogModal.openModal();
   };
 
 
   if(isLoading) return <Spinner />;
   if(isError) return <SomethingWentWrong />;
 
-  // console.info({obj});
+  console.info({obj});
 
   return (
     <>
@@ -126,7 +148,8 @@ const ApplicationView = ({title=""}) => {
         <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            {obj?.business_name} ({obj?.application_number}) {!!obj?.approvals?.length && <Badge color="warning">{obj.approvals[0].status}</Badge>}
+            {obj?.business_name} ({obj?.application_number})
+            <Badge color="warning">{!!obj?.approvals?.length ? getReadableStatus(obj.approvals[0].status) : getReadableStatus("pending")}</Badge>
           </h3>
         </div>
 
@@ -134,7 +157,7 @@ const ApplicationView = ({title=""}) => {
           {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             See all
           </button> */}
-          <Button onClick={openModal}>Take Action</Button>
+          {!obj?.approvals?.length ? <Button onClick={handleConfirmSubmission}>Confirm Submission</Button> : <Button onClick={openModal}>Take Action</Button>}     
         </div>
       </div>
 
@@ -145,6 +168,13 @@ const ApplicationView = ({title=""}) => {
     </div>
 
     <ApprovalModal closeModal={closeModal} isOpen={isOpen} application_id={id} />
+    <DialogModal 
+      isOpen={dialogModal.isOpen} 
+      closeModal={dialogModal.closeModal} 
+      title="Confirm Submission"
+      description={`Click the "Confirm Submission" button once all required documents have been received and verified in the office. This action updates the approval status to "${getReadableStatus("in_review")}" and moves the application to the next stage for processing.`}
+      onSumbit={() => confirmDocumenSubmission.mutate(id)}
+    />
     
     </>
   )
@@ -312,7 +342,7 @@ const BusinessProjectInfoCard = ({data = {}}) => {
                 Application Date
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {formatDate(data.application_date, "MMMM dd,yyyy hh:mm A")}
+                {formatDate(data.application_date, "MMMM dd, yyyy")}
               </p>
             </div>
 
@@ -411,6 +441,7 @@ const ApprovalsCard = ({data = {}}) => {
         tableData={data.filter(o => !!o.user_id).map(obj => ({
           ...obj,
           full_name: obj.approver_name?.full_name || "",
+          status: getReadableStatus(obj.status),
           approved_at: formatDate(obj.approved_at, "dd-MMM-yyyy hh:mm A")
         }))}/>
     </ComponentCard>

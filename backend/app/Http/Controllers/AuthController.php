@@ -80,9 +80,6 @@ class AuthController extends Controller
                 'password' => $request->password,
             ];
             $result = $this->interface->login($data);
-            
-            Log::debug($result->full_name);
-
             $cookie = null;
             if(isset($result->refreshToken))
                 $cookie = cookie('refresh_token', $result->refreshToken, 60 * 24 * 7, '/', null, true, true); // Secure HttpOnly cookie

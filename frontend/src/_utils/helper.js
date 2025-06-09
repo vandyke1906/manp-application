@@ -55,4 +55,16 @@ const formatDate = (dateString, format = 'dd-MMM-yyyy hh:mm A') => {
     }
 };
 
-export { hasRole, ROLES, STATUS, formatFileSize, formatDate };
+const getReadableStatus = (status) => {
+    const statusMap = {
+        pending: "Pending",
+        in_review: "In Review",
+        approved: "Approved",
+        rejected: "Rejected",
+        completed: "Completed",
+    };
+
+    return statusMap[status] || "Pending"; // Fallback for unexpected values
+}
+
+export { hasRole, ROLES, STATUS, formatFileSize, formatDate, getReadableStatus };

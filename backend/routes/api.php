@@ -38,7 +38,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/capitalizations',CapitalizationController::class);
     Route::apiResource('/business-natures',BusinessNatureController::class);
     Route::apiResource('/business-statuses',BusinessStatusController::class);  
-    Route::apiResource('/approvals',ApprovalController::class);     
+    Route::apiResource('/approvals',ApprovalController::class); 
+    Route::post('/approvals/{id}/confirm-submission', [ApprovalController::class, 'confirmDocumentsSubmission']);    
 });
 
 Route::get('/download-file/{business_name}/{file_name}', function ($business_name, $file_name) {

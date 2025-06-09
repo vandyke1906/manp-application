@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Approval;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
 use Carbon\Carbon;
@@ -34,7 +35,6 @@ class ApprovalController extends Controller
 
     public function store(StoreApprovalRequest $request)
     {
-        
         $details =[
             'application_id' => $request->application_id,
             'comment' => $request->comment,
@@ -50,27 +50,38 @@ class ApprovalController extends Controller
              return ApiResponseClass::sendResponse(new ApprovalResource($obj),'Approval added successfully.',201);
 
         }catch(\Exception $ex){
+            if( $ex->getCode() == 999)
+                 return ApiResponseClass::sendResponse([],$ex->getMessage(),404);
             return ApiResponseClass::rollback($ex);
         }
     }
 
-    public function show(Approval $approval)
-    {
-        //
-    }
+    public function show(Approval $approval){ }
 
-    public function edit(Approval $approval)
-    {
-        //
-    }
+    public function edit(Approval $approval){ }
 
-    public function update(UpdateApprovalRequest $request, Approval $approval)
-    {
-        //
-    }
+    public function update(UpdateApprovalRequest $request, Approval $approval){ }
 
-    public function destroy(Approval $approval)
-    {
-        //
+    public function destroy(Approval $approval) {}
+
+    
+
+   public function confirmDocumentsSubmission(Request $request, $id){
+        $details =[
+            'application_id' => $id,
+            'user_id' => $request->user()->id,
+            'approved_at' => Carbon::now(),
+            'status' => "in_review"
+        ];
+        DB::beginTransaction();
+        try{
+             $isConfirm = $this->interface->confirmSubmission($details);
+             DB::commit();
+             if($isConfirm)
+                return ApiResponseClass::sendResponse([],'Documents received, status updated.',201);
+            return ApiResponseClass::sendResponse([],'Application Error.',404);
+        }catch(\Exception $ex){
+            return ApiResponseClass::rollback($ex);
+        }
     }
 }

@@ -29,16 +29,14 @@ class ApplicationRepository implements ApplicationInterface
             case Roles::PROPONENTS: {
                 return Application::where("user_id", $user->id)
                 ->with(['approvals' => function ($query) {
-                    // $query->orderBy('approved_at', 'asc');
-                    $query->latest('approved_at')->limit(1); 
+                    $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
                 }])->get();
             }
             case Roles::RPS_TEAM:
             case Roles::MANAGER:
             case Roles::ADMINISTRATOR: {
                 return Application::with(['approvals' => function ($query) {
-                    // $query->orderBy('approved_at', 'asc');
-                    $query->latest('approved_at')->limit(1); 
+                    $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
                 }])->get();
             }
             default:
@@ -48,7 +46,7 @@ class ApplicationRepository implements ApplicationInterface
 
     public function getById($id){
         return Application::with(['approvals' => function ($query) {
-            $query->orderBy('approved_at', 'asc');
+            $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
         }, 'approvals.approver_name'])->findOrFail($id);
 
         //return Application::findOrFail($id);

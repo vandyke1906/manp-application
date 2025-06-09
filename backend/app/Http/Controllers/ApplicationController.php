@@ -150,9 +150,13 @@ class ApplicationController extends Controller
     public function getApplicationFile($id, $name, Request $request)
     {
         $userId = $request->user()->id;
+        $userRole = $request->user()->role;
+        $application  = null;
+        if($userRole == Roles::PROPONENTS)
+            $application = Application::where('id', $id)->where('user_id', $userId)->first();
+        else 
+            $application = Application::where('id', $id)->first();
 
-        // Validate if the application belongs to the user
-        $application = Application::where('id', $id)->where('user_id', $userId)->first();
         if (!$application) {
             return ApiResponseClass::sendResponse([], 'Application not found or unauthorized', 404);
         }

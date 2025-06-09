@@ -6,6 +6,8 @@ use App\Models\Application;
 use App\Models\Approval;
 use App\Constants\Roles;
 
+use Illuminate\Support\Facades\Log;
+
 class ApprovalHelper
 {
     // Define the approval sequence
@@ -30,49 +32,34 @@ class ApprovalHelper
         return $approval ? $approval->approving_role : Roles::RPS_TEAM; // Default to RPS if no approvals exist
     }
 
-    /**
-     * Get the next approval role based on the current approver's role.
-     *
-     * @param int $currentRole
-     * @return int|null Next role or null if final step reached
-     */
-    public static function getNextApprovalRole(int $currentRole): ?int
-    {
+    public static function getNextApprovalRole(int $currentRole)
+    {        
         return self::$sequence[$currentRole] ?? null;
     }
 
     public static function processApproval(int $applicationId): void
     {
         // Get the latest approval decision
-        $latestApproval = Approval::where('application_id', $applicationId)
-            ->latest('id')
-            ->first();
-
-        if (!$latestApproval) {
-            return; // No approvals exist, exit early
-        }
+        $latestApproval = Approval::where('application_id', $applicationId)->latest('id')->first();
+        if (!$latestApproval) return;
 
         // Determine next steps based on approval status
         if ($latestApproval->status === 'approved') {
-            $nextRole = self::getNextApprovalRole($latestApproval->approving_role);
-
+            $nextRole = ApprovalHelper::getNextApprovalRole($latestApproval->approving_role);
             if ($nextRole) {
-                // Proceed to next approval step
                 Approval::create([
                     'application_id' => $applicationId,
                     'approving_role' => $nextRole,
                     'status' => 'pending'
                 ]);
             } else {
-                // Final approval step reached, update the last approval as 'approved'
-                $latestApproval->update(['status' => 'finalized']);
+                $latestApproval->update(['status' => 'completed']);
             }
         } elseif ($latestApproval->status === 'rejected') {
-            // Approval rejected—retain current role and set status
             Approval::create([
                 'application_id' => $applicationId,
                 'approving_role' => $latestApproval->approving_role,
-                'status' => 'pending'
+                'status' => 'pending' // Allow re-submission
             ]);
         }
     }

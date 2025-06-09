@@ -25,7 +25,6 @@ class UserRegisterRequest extends FormRequest
             'first_name' => ['required', 'string'],
             'middle_name' => ['required', 'string'],
             'last_name' => ['required', 'string'],
-            'suffix' => ['string'],
             'email' => ['required', 'string', 'email', 'unique:users,email'],
             'password' => ['required', 'string'],
         ];

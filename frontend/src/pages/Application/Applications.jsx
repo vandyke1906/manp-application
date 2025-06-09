@@ -11,7 +11,7 @@ import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
-import { formatDate, hasRole, ROLES } from '../../_utils/helper';
+import { formatDate, getReadableStatus, hasRole, ROLES } from '../../_utils/helper';
 
 const headers = [
   {key: "application_number", value: "Application Number"},
@@ -69,7 +69,7 @@ const Applications = () => {
                   tableData={result.data.map(data => ({
                     ...data,
                     application_date: formatDate(data.application_date, "dd-MMM-yyyy hh:mm A"),
-                    status: data.approvals[0].status
+                    status: getReadableStatus(data.approvals?.[0]?.status)
                 }))}
                   {...(hasRole(ROLES.PROPONENTS)
                       ? {
