@@ -7,6 +7,8 @@ import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { ApiBasic, ApiClient } from "../../_utils/axios";
 import useUserStore from "../../_utils/store/useUserStore";
+import { Modal } from '../../components/ui/modal';
+import { toast } from 'react-toastify';
 
 
 export default function SignInForm() {
@@ -22,13 +24,14 @@ export default function SignInForm() {
     const credentials = Object.fromEntries(formData.entries()); // Converts FormData to
 
       ApiBasic.post('/api/login', credentials, { withCredentials: true }).then((response) => {
-        const { success, data } = response.data;
+        const { success, data, message } = response.data;
         if(success){
           if(data.verified){
             setUser(data);
             navigate("/");
           } else {
-            navigate("/verify");
+            // navigate("/verify");
+             toast.success(data.message || "Account not yet verified!", { position: "bottom-right"});
           }
         } else {
           setLoginError("Invalid credentials.");

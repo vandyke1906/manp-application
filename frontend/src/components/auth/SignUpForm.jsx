@@ -20,11 +20,9 @@ export default function SignUpForm() {
       queryClient.invalidateQueries({ queryKey: ["register"] });
       if(data.success){
         formRef.current.reset();
-        toast.success(data.message, { position: "bottom-right", onClose: (reason) => {
-          if(!reason) navigate("/");
-        } });
+        toast.success(data.message, { position: "bottom-right" });
       } else {
-        toast.error("Register Error!", { position: "bottom-right" });
+        toast.error("Registration Error!", { position: "bottom-right" });
       }
     }
   });
