@@ -29,4 +29,21 @@ class UserRegisterRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'first_name.required' => 'A first name is required',
+            'middle_name.required' => 'A middle name is required',
+            'last_name.required' => 'A last name is required',
+            'email.required' => 'A email is required',
+            'email.email' => 'Invalid email address',
+            'password.required' => 'A password is required',
+        ];
+    }
 }

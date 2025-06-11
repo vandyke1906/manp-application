@@ -26,4 +26,11 @@ class UpdateApplicationTypeRequest extends CommonFormRequest
             'name' => 'required'
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'An application type is required'
+        ];
+    }
 }

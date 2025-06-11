@@ -27,4 +27,11 @@ class StoreZoningRequest extends CommonFormRequest
             'name' => 'required'
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'A zoning name is required'
+        ];
+    }
 }

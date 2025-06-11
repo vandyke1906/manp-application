@@ -23,8 +23,14 @@ class UpdateZoningRequest extends CommonFormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'description' => 'required'
+            'name' => 'required'
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'A zoning name is required'
         ];
     }
 }

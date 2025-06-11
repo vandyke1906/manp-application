@@ -26,4 +26,16 @@ class StoreApplicantTypeRequest extends CommonFormRequest
             'name' => 'required',
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'An applicant type is required'
+        ];
+    }
 }

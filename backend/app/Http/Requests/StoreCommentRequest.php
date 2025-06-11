@@ -27,4 +27,16 @@ class StoreCommentRequest extends CommonFormRequest
             'comment' => 'string'
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'application_id.required' => 'The application is required.',
+            'application_id.integer' => 'The application must be valid.',
+            'application_id.exists' => 'The selected application does not exist in our records.',
+
+            'comment.string' => 'The comment must be a valid string.',
+        ];
+    }
+
 }

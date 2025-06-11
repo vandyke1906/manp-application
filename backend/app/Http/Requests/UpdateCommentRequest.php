@@ -27,4 +27,16 @@ class UpdateCommentRequest extends CommonFormRequest
             'comment' => 'string'
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'application_id.required' => 'Application ID is required.',
+            'application_id.integer' => 'Application ID must be a number.',
+            'application_id.exists' => 'The selected Application ID was not found.',
+
+            'comment.string' => 'Comment must be a valid string.',
+        ];
+    }
+
 }

@@ -26,4 +26,11 @@ class StoreBusinessStatusRequest extends CommonFormRequest
             'name' => 'required',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'A business status name is required'
+        ];
+    }
 }

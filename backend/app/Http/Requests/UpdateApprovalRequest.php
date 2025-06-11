@@ -28,4 +28,11 @@ class UpdateApprovalRequest extends CommonFormRequest
             'status' => ['required', 'string', Rule::in(['pending', 'approved', 'rejected'])]
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'application_id.required' => 'An application is required'
+        ];
+    }
 }

@@ -26,4 +26,11 @@ class StoreBusinessNatureRequest extends CommonFormRequest
             'name' => 'required',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'An nature of business is required'
+        ];
+    }
 }

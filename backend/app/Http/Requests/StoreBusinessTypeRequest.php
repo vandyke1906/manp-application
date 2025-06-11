@@ -26,4 +26,11 @@ class StoreBusinessTypeRequest extends CommonFormRequest
             'name' => 'required'
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'A business type name is required'
+        ];
+    }
 }
