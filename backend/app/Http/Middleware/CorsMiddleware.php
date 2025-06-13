@@ -16,22 +16,35 @@ class CorsMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         //return $next($request);
-        // Handle preflight OPTIONS request
+        $allowedOrigins = [
+            'http://localhost:5173',
+            'https://mountapo-app.netlify.app',
+        ];
+
+        $origin = $request->headers->get('Origin');
+
         if ($request->isMethod('OPTIONS')) {
-            return response()->json([], 200, [
-                'Access-Control-Allow-Origin' => 'http://localhost:5173',
-                'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, X-XSRF-TOKEN, Authorization',
-                'Access-Control-Allow-Credentials' => 'true',
-            ]);
+            if (in_array($origin, $allowedOrigins)) {
+                return response()->json([], 200, [
+                    'Access-Control-Allow-Origin' => $origin,
+                    'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+                    'Access-Control-Allow-Headers' => 'Content-Type, X-XSRF-TOKEN, Authorization',
+                    'Access-Control-Allow-Credentials' => 'true',
+                ]);
+            } else {
+                return response()->json(['message' => 'CORS not allowed.'], 403);
+            }
         }
 
-        // Set CORS headers in all responses
+        // Handle actual request
         $response = $next($request);
-        $response->headers->set('Access-Control-Allow-Origin', 'http://localhost:5173');
-        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-XSRF-TOKEN, Authorization');
-        $response->headers->set('Access-Control-Allow-Credentials', 'true');
+
+        if (in_array($origin, $allowedOrigins)) {
+            $response->headers->set('Access-Control-Allow-Origin', $origin);
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-XSRF-TOKEN, Authorization');
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+        }
 
         return $response;
 

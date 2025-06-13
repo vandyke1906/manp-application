@@ -29,4 +29,6 @@ class StoreApprovalRequest extends CommonFormRequest
             'status' => ['required', 'string', Rule::in(['pending', 'approved', 'rejected'])]
         ];
     }
+
+    
 }

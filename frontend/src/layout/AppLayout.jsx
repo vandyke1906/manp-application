@@ -4,7 +4,7 @@ import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar"
 import { SidebarProvider, useSidebar } from '../context/SidebarContext';
-import { ToastContainer } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
 
 const LayoutContent = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -12,7 +12,7 @@ const LayoutContent = () => {
 
   return (
     <div className="min-h-screen xl:flex">
-      <ToastContainer style={{ zIndex: 200000 }} autoClose={3000} />
+      {/* <ToastContainer style={{ zIndex: 200000 }} autoClose={1500} /> */}
       <div>
         <AppSidebar />
         <Backdrop />

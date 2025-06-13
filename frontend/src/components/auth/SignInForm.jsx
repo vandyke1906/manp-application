@@ -30,13 +30,14 @@ export default function SignInForm() {
             setUser(data);
             navigate("/");
           } else {
-            // navigate("/verify");
              toast.success(data.message || "Account not yet verified!", { position: "bottom-right"});
           }
         } else {
-          setLoginError("Invalid credentials.");
+            toast.success(data.message || "Invalid credentials.", { position: "bottom-right"});
+            setLoginError("Invalid credentials.");
         }
       }).catch((error) => {
+        toast.error(error.response?.data?.message || "Login failed!", { position: "bottom-right"});
         setLoginError(error.response?.data?.message || 'Login failed!');
       });  
   };

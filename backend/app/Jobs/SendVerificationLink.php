@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\URL; // Added import for URL
 use Illuminate\Support\Carbon; // Added import for Carbon
 use Illuminate\Support\Facades\Config; // Added import for Config
 use App\Mail\VerificationEmailLink;
+use Illuminate\Support\Facades\Log;
 
 class SendVerificationLink implements ShouldQueue
 {
@@ -35,6 +36,7 @@ class SendVerificationLink implements ShouldQueue
             ['id' => $this->user->id, 'hash' => sha1($this->user->email)]
         );
         $verificationUrl = env('FRONTEND_URL') . "/verification?redirect=" . urlencode($signedVerificationUrl);
+        Log::info("Verification for $this->email is: $verificationUrl");
         Mail::to($this->email)->send(new VerificationEmailLink($verificationUrl));
     }
 }

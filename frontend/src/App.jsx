@@ -32,11 +32,13 @@ import { ROLES } from './_utils/helper';
 import ProtectedComponent from './pages/ProtectedComponent';
 import useUserStore from './_utils/store/useUserStore';
 import VerificationLinkPage from './pages/AuthPages/VerificationLinkPage';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const { user } = useUserStore();
   return (
     <>
+    <ToastContainer style={{ zIndex: 200000 }} autoClose={1500} />
     <Router>
         <ScrollToTop />
         <Routes>

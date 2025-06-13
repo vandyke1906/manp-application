@@ -20,7 +20,7 @@ export default function SignUpForm() {
       queryClient.invalidateQueries({ queryKey: ["register"] });
       if(data.success){
         formRef.current.reset();
-        toast.success(data.message, { position: "bottom-right" });
+        toast.success(data.message, { position: "bottom-right" , onClose: () => toast.info("Please check your email and verify your account.")});
       } else {
         toast.error("Registration Error!", { position: "bottom-right" });
       }
