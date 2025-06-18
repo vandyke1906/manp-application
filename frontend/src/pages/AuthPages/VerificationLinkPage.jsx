@@ -11,10 +11,8 @@ const VerificationLinkPage = () => {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const redirectURL = params.get("redirect");
-
         if (!redirectURL) {
             navigate("/verification-failed");
-            return;
         }
         axios.get(redirectURL).then((response) => {
                 const { success, data } = response.data;
@@ -25,7 +23,9 @@ const VerificationLinkPage = () => {
                     navigate("/verification-failed");
                 }
             })
-            .catch(() => navigate("/verification-failed"));
+            .catch(() => {
+                navigate("/verification-failed");
+            });
     }, [location, navigate]);
 
 
