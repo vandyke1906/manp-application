@@ -7,7 +7,10 @@ const MultiSelect = ({
   defaultSelected = [],
   onChange,
   disabled = false,
-  isRequired = false
+  isRequired = false,
+  success = true,
+  error = false,
+  hint,
 }) => {
   const [selectedOptions, setSelectedOptions] = useState(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);
@@ -151,6 +154,20 @@ const MultiSelect = ({
             </div>
           )}
         </div>
+
+        {hint && (
+          <p
+            className={`mt-1.5 text-xs ${
+              error
+                ? "text-error-500"
+                : success
+                ? "text-success-500"
+                : "text-gray-500"
+            }`}
+          >
+            {hint}
+          </p>
+        )}
       </div>
     </div>
   );

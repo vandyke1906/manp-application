@@ -35,6 +35,7 @@ const ApplicationForm = ({title=""}) => {
   const { id } = useParams();
   const formRef = useRef(null);
   const [obj, setObj] = useState({});
+  const [objFormError, setObjFormError] = useState(null);
   const [applicantTypes, setApplicantTypes] = useState([]);
 
   const { isLoading, isError, data: result, error, isSuccess } = useQuery({ 
@@ -121,18 +122,24 @@ const ApplicationForm = ({title=""}) => {
       setObj(result?.data);
     }
   }, [isSuccess, result]);
+
   
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("applications", data, { headers: {  'Content-Type': 'multipart/form-data' } }).then((response) => response.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["application"] });
       if(data.success){
+        setObjFormError(null);
         formRef.current.reset();
         toast.success(data.message, { position: "bottom-right", onClose: (reason) => {
           if(!reason) navigate("/applications");
         } });
-      } else {
-        toast.error("Business Type Error!", { position: "bottom-right" });
+      }
+       else {
+        if(data?.data){
+          setObjFormError(data?.data);
+        }
+        toast.error("Application Error!", { position: "bottom-right" });
       }
     }
   });
@@ -143,9 +150,13 @@ const ApplicationForm = ({title=""}) => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["application"] });
       if(data.success){
+        setObjFormError(null);
         navigate("/applications");
         toast.success(data.message, { position: "bottom-right" });
       } else {
+        if(data?.data){
+          setObjFormError(data?.data);
+        }
         toast.error("Application Error!", { position: "bottom-right" });
       }
     },
@@ -191,7 +202,6 @@ const ApplicationForm = ({title=""}) => {
                       id="fname"
                       name="fname"
                       placeholder="Enter your first name"
-                      isRequired={true}
                       defaultValue={userProfileQuery?.data?.data?.first_name || ""}
                       disabled={true}
                     />
@@ -206,7 +216,6 @@ const ApplicationForm = ({title=""}) => {
                       id="mname"
                       name="mname"
                       placeholder="Enter your Middle name"
-                      isRequired={true}
                       defaultValue={userProfileQuery?.data?.data?.middle_name || ""}
                       disabled={true}
                     />
@@ -220,7 +229,6 @@ const ApplicationForm = ({title=""}) => {
                       id="lname"
                       name="lname"
                       placeholder="Enter your last name"
-                      isRequired={true}
                       defaultValue={userProfileQuery?.data?.data?.last_name || ""}
                       disabled={true}
                     />
@@ -247,8 +255,9 @@ const ApplicationForm = ({title=""}) => {
                     <Input 
                       type="text" id="mobile" name="mobile_number" 
                       placeholder="Mobile Number" 
-                      isRequired={true}
                       defaultValue={userProfileQuery?.data?.data?.mobile_number || ""}
+                      hint={objFormError?.mobile_number.join(", ")}
+                      error={!!objFormError?.mobile_number}
                     />
                   </div>
 
@@ -268,7 +277,6 @@ const ApplicationForm = ({title=""}) => {
                     <Input type="email" id="email" 
                       name="emai_address" 
                       placeholder="Email Address" 
-                      isRequired={true} 
                       defaultValue={userProfileQuery?.data?.data?.email || ""}
                       disabled={true}
                     />
@@ -280,8 +288,9 @@ const ApplicationForm = ({title=""}) => {
                     <TextArea id="address" rows={3} 
                       name="address" 
                       placeholder="address" 
-                      isRequired={true}
                       defaultValue={userProfileQuery?.data?.data?.address || ""}
+                      hint={objFormError?.address.join(", ")}
+                      error={!!objFormError?.address}
                     />
                 </div>
               </div>
@@ -297,8 +306,9 @@ const ApplicationForm = ({title=""}) => {
                         name="application_type_id"
                         placeholder="Select Application Type"
                         className="dark:bg-dark-900"
-                        isRequired={true}
                         defaultValue={obj?.application_type_id || ""}
+                        hint={objFormError?.application_type_id.join(", ")}
+                        error={!!objFormError?.application_type_id}
                       />
                     </div>
 
@@ -308,8 +318,9 @@ const ApplicationForm = ({title=""}) => {
                         name="application_date"
                         label="Application Date"
                         placeholder="Select a date"
-                        isRequired={true}
                         defaultDate={obj?.application_date || ""}
+                        hint={objFormError?.application_date.join(", ")}
+                        error={!!objFormError?.application_date}
                       />
                     </div>
                   </div>
@@ -317,7 +328,15 @@ const ApplicationForm = ({title=""}) => {
 
                   <div>
                     <Label htmlFor="business_name">Business Name<span className="text-error-500">*</span></Label>
-                    <Input type="text" id="business_name" name="business_name" placeholder="Name of Business" defaultValue={obj?.business_name || ""} />
+                    <Input 
+                      type="text" 
+                      id="business_name" 
+                      name="business_name"
+                       placeholder="Name of Business" 
+                       defaultValue={obj?.business_name || ""}
+                      hint={objFormError?.business_name.join(", ")}
+                      error={!!objFormError?.business_name}
+                       />
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -329,23 +348,33 @@ const ApplicationForm = ({title=""}) => {
                         placeholder="Select Option"
                         className="dark:bg-dark-900"
                         defaultValue={obj?.business_nature_id || ""} 
+                        hint={objFormError?.business_nature_id.join(", ")}
+                        error={!!objFormError?.business_nature_id}
                       />
                     </div>
 
                     <div className="sm:col-span-2">
                       <MultipleSelect
                         label="Type of Applicant"
-                        isRequired={true}
                         options={applicantTypeOptions}
                         onChange={(values) => setApplicantTypes(values)}
-                        defaultSelected={obj?.applicant_type_id || []}
+                        defaultSelected={obj?.applicant_type_id || []} 
+                        hint={objFormError?.applicant_type_id.join(", ")}
+                        error={!!objFormError?.applicant_type_id}
                       />
                     </div>
                   </div>
 
                   <div>
                       <Label htmlFor="business_address">Business Address<span className="text-error-500">*</span></Label>
-                      <TextArea id="business_address" rows={3} name="business_address" placeholder="Business Address" defaultValue={obj?.business_address} isRequired={true} />
+                      <TextArea 
+                        id="business_address" 
+                        rows={3} name="business_address" 
+                        placeholder="Business Address" 
+                        defaultValue={obj?.business_address} 
+                        hint={objFormError?.business_address.join(", ")}
+                        error={!!objFormError?.business_address}
+                      />
                   </div>
 
                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -357,8 +386,9 @@ const ApplicationForm = ({title=""}) => {
                         name="business_status_id"
                         placeholder="Select Business Status"
                         className="dark:bg-dark-900"
-                        isRequired={true}
                         defaultValue={obj?.business_status_id || ""}
+                        hint={objFormError?.business_status_id.join(", ")}
+                        error={!!objFormError?.business_status_id}
                       />
                     </div>
 
@@ -370,8 +400,9 @@ const ApplicationForm = ({title=""}) => {
                         name="capitalization_id"
                         placeholder="Select Capitalization"
                         className="dark:bg-dark-900"
-                        isRequired={true}
                         defaultValue={obj?.capitalization_id || ""}
+                        hint={objFormError?.capitalization_id.join(", ")}
+                        error={!!objFormError?.capitalization_id}
                       />
                     </div>
                   </div>
@@ -381,8 +412,8 @@ const ApplicationForm = ({title=""}) => {
                       <TextArea id="business_description" rows={6} name="business_description" 
                         placeholder="Brief Description of the Business" 
                         defaultValue={obj?.business_description}
-                        hint="Example for Development Projects: The planned project is an inland resort within 1,000 sqm of land beside the road at Sitio Paradise, Brgy. Kapatagan, Digos City, Davao del Sur. The total project footprint is 500 sqm which will include 1 admin building, 1 function hall, 1 swimming pool, and 5 villas/rooms. The projected capacity of the resort is 50 persons per night and 75 day-tour visitors. (Important Note: Please include the size of total land area, and the total area of facilities as the project footprint)"
-                        isRequired={true}
+                        hint={objFormError?.business_description ? objFormError?.business_description.join(", ") : "Example for Development Projects: The planned project is an inland resort within 1,000 sqm of land beside the road at Sitio Paradise, Brgy. Kapatagan, Digos City, Davao del Sur. The total project footprint is 500 sqm which will include 1 admin building, 1 function hall, 1 swimming pool, and 5 villas/rooms. The projected capacity of the resort is 50 persons per night and 75 day-tour visitors. (Important Note: Please include the size of total land area, and the total area of facilities as the project footprint)"}
+                        error={!!objFormError?.business_description}
                        />
                   </div>
               </div>
@@ -424,37 +455,93 @@ const ApplicationForm = ({title=""}) => {
               <div className="space-y-6">
                   <div>
                       <Label htmlFor="proof_of_capitalization">Duly Signed Proof of Capitalization from the LGU<span className="text-error-500">*</span></Label>
-                      <FileInput type="file" id="proof_of_capitalization" name="proof_of_capitalization" placeholder="Duly Signed Proof of Capitalization from the LGU" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
+                      <FileInput 
+                        type="file" 
+                        id="proof_of_capitalization" 
+                        name="proof_of_capitalization" 
+                        placeholder="Duly Signed Proof of Capitalization from the LGU"  
+                        accept="image/*,application/pdf"
+                        hint={objFormError?.proof_of_capitalization ? objFormError?.proof_of_capitalization.join(", ") : "Only PDF or image files (SVG, PNG, JPG, or GIF)"}
+                        error={!!objFormError?.proof_of_capitalization}
+                      />
                   </div>
 
                   <div>
                       <Label htmlFor="barangay_clearance">Barangay Clearance or Resolution Where the Project<span className="text-error-500">*</span></Label>
-                      <FileInput type="file" id="barangay_clearance" name="barangay_clearance" placeholder="Barangay Clearance or Resolution Where the Project" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
+                      <FileInput 
+                        type="file" 
+                        id="barangay_clearance" 
+                        name="barangay_clearance" 
+                        placeholder="Barangay Clearance or Resolution Where the Project"  
+                        accept="image/*,application/pdf" 
+                        hint={objFormError?.barangay_clearance ? objFormError?.barangay_clearance.join(", ") : "Only PDF or image files (SVG, PNG, JPG, or GIF)"}
+                        error={!!objFormError?.barangay_clearance}
+                      />
                   </div>
 
                   <div>
                       <Label htmlFor="birth_certificate_or_id">Birth Certificate or Valid ID of Proponent<span className="text-error-500">*</span></Label>
-                      <FileInput type="file" id="birth_certificate_or_id" name="birth_certificate_or_id" placeholder="Birth Certificate or Valid ID of Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
+                      <FileInput 
+                        type="file" 
+                        id="birth_certificate_or_id" 
+                        name="birth_certificate_or_id" 
+                        placeholder="Birth Certificate or Valid ID of Proponent"  
+                        accept="image/*,application/pdf" 
+                        hint={objFormError?.birth_certificate_or_id ? objFormError?.birth_certificate_or_id.join(", ") : "Only PDF or image files (SVG, PNG, JPG, or GIF)"}
+                        error={!!objFormError?.birth_certificate_or_id}
+                      />
                   </div>
 
                     <div>
                       <Label htmlFor="ncip_document">Document Secured from the NCIP<span className="text-error-500">*</span></Label>
-                      <FileInput type="file" id="ncip_document" name="ncip_document" placeholder="Document Secured from the NCIP" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
+                      <FileInput 
+                        type="file" 
+                        id="ncip_document" 
+                        name="ncip_document" 
+                        placeholder="Document Secured from the NCIP"  
+                        accept="image/*,application/pdf" 
+                        hint={objFormError?.ncip_document ? objFormError?.ncip_document.join(", ") : "Only PDF or image files (SVG, PNG, JPG, or GIF)"}
+                        error={!!objFormError?.ncip_document}
+                      />
                   </div>
 
                   <div>
                       <Label htmlFor="fpic_certification">Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process<span className="text-error-500">*</span></Label>
-                      <FileInput type="file" id="fpic_certification" name="fpic_certification" placeholder="Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
+                      <FileInput 
+                        type="file" 
+                        id="fpic_certification" 
+                        name="fpic_certification" 
+                        placeholder="Certification from the Barangay IPS Head/ Tribal Chieftain that the Proponent is Complying with the FPIC Process"  
+                        accept="image/*,application/pdf" 
+                        hint={objFormError?.fpic_certification ? objFormError?.fpic_certification.join(", ") : "Only PDF or image files (SVG, PNG, JPG, or GIF)"}
+                        error={!!objFormError?.fpic_certification}
+                      />
                   </div>
 
                   <div>
                       <Label htmlFor="business_permit">DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)<span className="text-error-500">*</span></Label>
-                      <FileInput type="file" id="business_permit" name="business_permit" placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf" isRequired={true} />
+                      <FileInput 
+                        type="file" 
+                        id="business_permit" 
+                        name="business_permit" 
+                        placeholder="DTI Certificate/ SEC Certificate/ Mayor's Business Permit (for Old)"  
+                        accept="image/*,application/pdf" 
+                        hint={objFormError?.business_permit ? objFormError?.business_permit.join(", ") : "Only PDF or image files (SVG, PNG, JPG, or GIF)"}
+                        error={!!objFormError?.business_permit}
+                      />
                   </div>
 
                     <div>
                       <Label htmlFor="authorization_letter">Authorization Letter duly Signed by the Proponent</Label>
-                      <FileInput type="file" id="authorization_letter" name="authorization_letter" placeholder="Authorization Letter duly Signed by the Proponent" defaultValue={obj?.name} hint="Only PDF or image files (SVG, PNG, JPG, or GIF)" accept="image/*,application/pdf"/>
+                      <FileInput 
+                        type="file" 
+                        id="authorization_letter" 
+                        name="authorization_letter" 
+                        placeholder="Authorization Letter duly Signed by the Proponent"  
+                        accept="image/*,application/pdf"
+                        hint={objFormError?.authorization_letter ? objFormError?.authorization_letter.join(", ") : "Only PDF or image files (SVG, PNG, JPG, or GIF)"}
+                        error={!!objFormError?.authorization_letter}
+                      />
                   </div>
               </div>
           </ComponentCard>
