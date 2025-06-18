@@ -35,6 +35,8 @@ const ApplicationForm = ({title=""}) => {
   const { id } = useParams();
   const formRef = useRef(null);
   const [obj, setObj] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
   const [objFormError, setObjFormError] = useState(null);
   const [applicantTypes, setApplicantTypes] = useState([]);
 
@@ -165,16 +167,22 @@ const ApplicationForm = ({title=""}) => {
 
   const handleSave = (event) => {
     event.preventDefault();
+    if(isSubmitting) return;
+    if(!isAccepted) {
+      toast.warn("Please check terms and conditions to submit the application!", { position: "bottom-right" });
+      return false;
+    }
     const formData = new FormData(event.target); // Creates a FormData object from the form
     const data = Object.fromEntries(formData.entries()); // Converts FormData to
     data.applicant_type_id = applicantTypes;
     // Call the correct mutation based on whether an `id` exists
+    setIsSubmitting(true);
     if (id) {
       updateMutation.mutate({ id, ...data }); // Include `id` for the update call
     } else {
       createMutation.mutate(data);
     }
-
+    setIsSubmitting(false);
   };
 
 
@@ -550,8 +558,8 @@ const ApplicationForm = ({title=""}) => {
           <div className="flex items-center gap-3 mt-6">
             <Checkbox
               className="w-5 h-5"
-              checked={true}
-               onChange={() => {}}
+              checked={isAccepted}
+               onChange={(value) => setIsAccepted(value)}
             />
             <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
               By checking this box, I confirm that all information provided in this form is complete, accurate, and truthful to the best of my knowledge. I acknowledge that any misrepresentation or false information may result in the deferral or cancellation of my application or clearance issued. By proceeding, I also agree to the {" "}
@@ -573,7 +581,7 @@ const ApplicationForm = ({title=""}) => {
               </Button>
             </div>
             <div>
-              <Button size="sm" variant="primary" type="submit">
+              <Button size="sm" variant="primary" type="submit" disabled={isSubmitting}>
                 Submit Application
               </Button>
             </div>
