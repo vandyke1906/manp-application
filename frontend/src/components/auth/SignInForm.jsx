@@ -26,7 +26,7 @@ export default function SignInForm() {
     const credentials = Object.fromEntries(formData.entries()); // Converts FormData to
 
     setIsSubmitting(true);
-    ApiBasic.post('/api/login', credentials, { withCredentials: true }).then((response) => {
+    ApiBasic.post('/api/login', credentials).then((response) => {
       const { success, data, message } = response.data;
       if(success){
         if(data.verified){
@@ -153,10 +153,10 @@ export default function SignInForm() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Checkbox checked={isChecked} onChange={setIsChecked} />
+                    {/* <Checkbox checked={isChecked} onChange={setIsChecked} />
                     <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
                       Keep me logged in
-                    </span>
+                    </span> */}
                   </div>
                   <Link
                     to="/reset-password"
@@ -181,6 +181,13 @@ export default function SignInForm() {
                   className="text-green-500 hover:text-green-600 dark:text-green-400"
                 >
                   Sign Up
+                </Link>
+                {" | "}
+                <Link
+                  to="/verify"
+                  className="text-green-500 hover:text-green-600 dark:text-green-400"
+                >
+                  Verify
                 </Link>
               </p>
             </div>

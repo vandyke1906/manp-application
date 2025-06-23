@@ -9,9 +9,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useModal } from '../../hooks/useModal';
 import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
+import Badge from '../../components/ui/badge/Badge';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
-import { formatDate, getReadableStatus, hasRole, ROLES } from '../../_utils/helper';
+import { formatDate, getReadableStatus, hasRole, ROLES, STATUS } from '../../_utils/helper';
 
 const headers = [
   {key: "application_number", value: "Application Number"},
@@ -51,6 +52,20 @@ const Applications = () => {
   if(isLoading) return <Spinner />;
   if(isError) return <SomethingWentWrong />;
 
+  const getStatusBadge = (status) => {
+    let color = "info";
+    switch(status){
+      case "pending": color = "warning"; break;
+      case "in_review": color = "primary"; break;
+      case "approved": color = "success"; break;
+      case "rejected": color = "error"; break;
+      case "cancelled": color = "warning"; break;
+    }
+    return <Badge color={color}>
+      {getReadableStatus(status)}
+    </Badge>
+  };
+
   return (
     <>
         <PageMeta
@@ -64,24 +79,33 @@ const Applications = () => {
               {/* {hasRole(ROLES.PROPONENTS) && <Button size="sm" variant="primary" onClick={() => { navigate("/application-form") }}>New Application</Button>} */}
               <Button size="sm" variant="primary" onClick={() => { navigate("/application-form") }}>New Application</Button>
               
+              
               <GenericTable 
-                  columnHeaders={headers} 
-                  tableData={result.data.map(data => ({
-                    ...data,
-                    application_date: formatDate(data.application_date, "dd-MMM-yyyy hh:mm A"),
-                    status: getReadableStatus(data.approvals?.[0]?.status)
+                columnHeaders={headers} 
+                tableData={result?.data?.map(data => ({
+                  ...data,
+                  application_date: formatDate(data.application_date, "dd-MMM-yyyy hh:mm A"),
+                  status: getStatusBadge(data.approvals?.[0]?.status)
                 }))}
-                onEdit={hasRole(ROLES.PROPONENTS) && result.data?.approvals?.some(obj => obj.status !== "completed") 
-                  ? (obj) => navigate(`/application-form/${obj.id}`) 
-                  : undefined} 
-                onDelete={hasRole(ROLES.PROPONENTS) && result.data?.approvals?.some(obj => obj.status !== "completed") 
-                  ? (obj) => {
-                      setSelectedID(obj?.id);
-                      openModal();
-                    }
-                  : undefined} 
-                onView={(obj) => navigate(`/application-view/${obj.id}`)}
+                onEdit={(row) =>
+                  hasRole(ROLES.PROPONENTS) && !row.approvals?.some(obj => obj.status !== 'completed') && !row.deleted_at
+                    ? () => navigate(`/application-form/${row.id}`)
+                    : undefined
+                }
+                onDelete={(row) =>
+                  hasRole(ROLES.PROPONENTS) && !row.approvals?.some(obj => obj.status !== "completed") && !row.deleted_at
+                    ? (obj) => {
+                        setSelectedID(obj?.id);
+                        openModal();
+                      }
+                    : undefined
+                }
+                onView={(row) => navigate(`/application-view/${row.id}`)}
+                totalPages={1}
+                onPrevious={() => {}}
+                onNext={() => {}}
               />
+
 
           </div>
         </ComponentCard>

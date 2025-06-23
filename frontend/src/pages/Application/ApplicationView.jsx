@@ -11,8 +11,8 @@ import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
 import GetApplicationFiles from '../../_utils/GetApplicationFiles';
-import GenericTable from '../../components/tables/GenericTable';
-import { formatDate, formatFileSize, getReadableStatus } from '../../_utils/helper';
+import BasicTable from '../../components/tables/BasicTable';
+import { formatDate, formatFileSize, getReadableStatus, hasRole, ROLES } from '../../_utils/helper';
 import ApprovalModal from './ApprovalModal';
 import DialogModal from  '../../components/ui/modal/DialogModal';
 import { useModal } from '../../hooks/useModal';
@@ -30,6 +30,19 @@ const approvalHeaders = [
   {key: "status", value: "Status"},
   {key: "approved_at", value: "Action Date"}
 ];
+
+const getStatusBadge = (status) => {
+  let color = "info";
+  switch(status){
+    case "pending": color = "primary"; break;
+    case "approved": color = "success"; break;
+    case "rejected": color = "error"; break;
+    case "cancelled": color = "warning"; break;
+  }
+  return <Badge color={color}>
+    {getReadableStatus(status)}
+  </Badge>
+};
 
 const ApplicationView = ({title=""}) => {
   const navigate = useNavigate();
@@ -132,8 +145,6 @@ const ApplicationView = ({title=""}) => {
   if(isLoading) return <Spinner />;
   if(isError) return <SomethingWentWrong />;
 
-  // console.info({obj});
-
   return (
     <>
       <PageMeta title="View Application"  description=""/>
@@ -144,7 +155,8 @@ const ApplicationView = ({title=""}) => {
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             {obj?.business_name} ({obj?.application_number})
-            <Badge color="warning">{!!obj?.approvals?.length ? getReadableStatus(obj.approvals[0].status) : getReadableStatus("pending")}</Badge>
+             &nbsp;&nbsp;
+             {!!obj?.approvals?.length ? getStatusBadge(obj.approvals[0].status) : getStatusBadge("pending")}
           </h3>
         </div>
 
@@ -152,7 +164,7 @@ const ApplicationView = ({title=""}) => {
           {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             See all
           </button> */}
-          {showApplicationActionButton({ approvals:obj?.approvals })}
+          {!hasRole(ROLES.PROPONENTS) && showApplicationActionButton({ approvals:obj?.approvals, modal: dialogModal, openModal })}
         </div>
       </div>
 
@@ -402,16 +414,15 @@ const BusinessProjectInfoCard = ({data = {}}) => {
  );
 };
 
-const SubmittedDocumentsCard = ({data = {}}) => {
-  console.info({data});
+const SubmittedDocumentsCard = ({data}) => {
   return (
     <ComponentCard title="Submitted Documents" className="my-6">
-      <GenericTable
+      <BasicTable
         columnHeaders={documentsHeaders}
-        tableData={data.map((query) => query.data).filter(Boolean).map(file => ({
-          ...file,
-          file_size: formatFileSize(file.file_size),
-          updated_at: formatDate(file.updated_at, "dd-MMM-yyyy hh:mm A")
+        tableData={data?.files?.filter(obj => obj.data).map(({ data }) => ({
+            ...data,
+            file_size: formatFileSize(data.file_size),
+            updated_at: formatDate(data.updated_at, "dd-MMM-yyyy hh:mm A")
         }))}
         onView={(obj) => {
           const width = 800;
@@ -432,21 +443,21 @@ const SubmittedDocumentsCard = ({data = {}}) => {
 const ApprovalsCard = ({data = {}}) => {
   return (
     <ComponentCard title="Approvals" className="my-6">
-      <GenericTable
+      <BasicTable
         columnHeaders={approvalHeaders}
         tableData={data.filter(o => !!o.user_id).map(obj => ({
           ...obj,
           full_name: obj.approver_name?.full_name || "",
-          status: getReadableStatus(obj.status),
+          status: getStatusBadge(obj.status),
           approved_at: formatDate(obj.approved_at, "dd-MMM-yyyy hh:mm A")
         }))}/>
     </ComponentCard>
   );
 }
 
-const showApplicationActionButton = ({approvals = []}) => {
+const showApplicationActionButton = ({approvals = [], modal, openModal}) => {
   if(!approvals.length)
-    return <Button onClick={() => dialogModal.openModal()}>Confirm Submission</Button>;
+    return <Button onClick={() => modal?.openModal()}>Confirm Submission</Button>;
   else if(!approvals.some((a) => a.status === "completed"))
     <Button onClick={openModal}>Take Action</Button>;
   else

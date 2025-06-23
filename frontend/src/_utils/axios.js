@@ -1,12 +1,14 @@
 import axios from 'axios';
 
+// const BASE_API = 'https://manp-recording-backend.onrender.com/api';
+// const BASE_URL = 'https://manp-recording-backend.onrender.com';
+
 const BASE_API = 'http://localhost:8080/api';
 const BASE_URL = 'http://localhost:8080';
 
 const ApiClient = axios.create({
   baseURL: BASE_API, // Laravel API base URL
-  headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-  withCredentials: true
+  // headers: { 'Content-Type': 'application/json' },
 });
 
 // Automatically add the Bearer token to requests
@@ -33,11 +35,7 @@ ApiClient.interceptors.request.use((config) => {
 
 const ApiBasic = axios.create({
   baseURL: BASE_URL, // Laravel API base URL
-  withCredentials: true,
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  },
+  // headers: { 'Content-Type': 'application/json' },
 });
 
 // Response interceptor to handle token expiration
@@ -64,15 +62,14 @@ ApiClient.interceptors.response.use(
 
 // Function to refresh token
 const refreshToken = () => {
-    return axios.post(`${BASE_API}/auth/refresh`, {}, { withCredentials: true }).then((response) => {
+    return axios.post(`${BASE_API}/auth/refresh`, {}).then((response) => {
       const newToken = response.data.token;
       const userData = JSON.parse(localStorage.getItem("user")) || {};
-      console.info({newToken});
       userData.token = newToken;
       localStorage.setItem("user", JSON.stringify(userData));
       return newToken;
     }).catch((error) => {
-        console.error("Refresh token error:", error);
+        // console.error("Refresh token error:", error);
         // localStorage.removeItem("user");
         // window.location.href = '/signin';
         //throw error;

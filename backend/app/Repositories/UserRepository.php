@@ -70,11 +70,6 @@ class UserRepository implements AuthInterface
             $refreshToken = $user->createToken('refresh_token')->plainTextToken;// Set refresh token in HttpOnly cookie
             $result = null;
             if(isset($user->email_verified_at)){
-
-                // Auth::login($user);
-                // Session::put('user_id', $user->id);
-                // session()->save(); // Force session write
-
                 $result = (object)[
                     "first_name" => $user->first_name, 
                     "middle_name" => $user->middle_name, 
@@ -113,7 +108,6 @@ class UserRepository implements AuthInterface
     public function verifyCode(){}
     public function verify($id, $hash){
         $user = User::findOrFail($id);
-        Log::debug($user);
         if (!hash_equals(sha1($user->email), $hash)) return null;
 
         $token = $user->createToken("manp-token")->plainTextToken;
@@ -131,7 +125,6 @@ class UserRepository implements AuthInterface
         // if ($user->hasVerifiedEmail())
         //     return $result;
         // Mark email as verified
-        Log::debug($user);
         $user->markEmailAsVerified();
         $user->verified = true;
         return $result;

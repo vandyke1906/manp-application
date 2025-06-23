@@ -6,29 +6,35 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { ApiBasic } from "../../_utils/axios";
-import useUserStore from "../../_utils/store/useUserStore";
+import { toast } from 'react-toastify';
+// import useUserStore from "../../_utils/store/useUserStore";
 
 
 export default function VerificationForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const { email = "" } = location.state || {}; 
-  const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-  const [loginError, setLoginError] = useState(null);
-  const { setUser } = useUserStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  // const { setUser } = useUserStore();
 
   const handleVerification = (e) => {
     event.preventDefault();
+    if(isSubmitting) return;
+    setIsSubmitting(true);
     const formData = new FormData(event.target); // Creates a FormData object from the form
     const credentials = Object.fromEntries(formData.entries()); // Converts FormData to
 
-        ApiBasic.post('/api/verify', credentials, {
+        ApiBasic.post('/api/request-verification-link', credentials, {
         }).then((response) => {
-            navigate("/signin");
+            // navigate("/signin");
+            const { message, success  } = response?.data || {};
+            if(success)
+              toast.success(message, { position: "bottom-right" });
+            else
+              toast.error(message, { position: "bottom-right" ,});
         }).catch((error) => {
-          setLoginError(error.response?.data?.message || 'Verification failed!');
-        });
+            toast.error(error.response?.data?.message || "Verification Error!", { position: "bottom-right" });
+        }).finally(() => setIsSubmitting(false));
   };
 
 
@@ -50,12 +56,12 @@ export default function VerificationForm() {
               Verification
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and verification code to activate account!
+              Enter your email and request a verification link to activate account!
             </p>
           </div>
           <div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
-              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
+              {/* <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="20"
                   height="20"
@@ -94,16 +100,16 @@ export default function VerificationForm() {
                   <path d="M15.6705 1.875H18.4272L12.4047 8.75833L19.4897 18.125H13.9422L9.59717 12.4442L4.62554 18.125H1.86721L8.30887 10.7625L1.51221 1.875H7.20054L11.128 7.0675L15.6705 1.875ZM14.703 16.475H16.2305L6.37054 3.43833H4.73137L14.703 16.475Z" />
                 </svg>
                 Sign in with X
-              </button>
+              </button> */}
             </div>
             <div className="relative py-3 sm:py-5">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="p-2 text-gray-400 bg-white dark:bg-gray-900 sm:px-5 sm:py-2">
+                {/* <span className="p-2 text-gray-400 bg-white dark:bg-gray-900 sm:px-5 sm:py-2">
                   Or
-                </span>
+                </span> */}
               </div>
             </div>
             <form onSubmit={handleVerification}>
@@ -114,7 +120,7 @@ export default function VerificationForm() {
                   </Label>
                   <Input placeholder="info@gmail.com" name="email" type="email" isRequired={true} defaultValue={email} />
                 </div>
-                <div>
+                {/* <div>
                   <Label>
                     Verification Code <span className="text-error-500">*</span>{" "}
                   </Label>
@@ -126,10 +132,10 @@ export default function VerificationForm() {
                       isRequired={true} 
                     />
                   </div>
-                </div>
+                </div> */}
                 <div>
-                  <Button className="w-full" size="sm" type="submit">
-                    Verify
+                  <Button className="w-full" size="sm" type="submit" disabled={isSubmitting}>
+                    Request Verification Link
                   </Button>
                 </div>
               </div>

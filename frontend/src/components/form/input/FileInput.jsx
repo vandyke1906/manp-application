@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CloseLineIcon } from "../../../icons";
 
-const FileInput = ({ className, onChange, hint, success = false, error = false, isRequired = false, name }) => {
+const FileInput = ({ className, onChange, hint, success = false, error = false, isRequired = false, name, accept="*" }) => {
   const [clear, setClear] = useState(false);
   return (
     <div className="relative">  
@@ -12,6 +12,7 @@ const FileInput = ({ className, onChange, hint, success = false, error = false, 
         onChange={onChange}
         required={isRequired}
         name={name}
+        accept={accept}
         />
         {hint && (
           <p

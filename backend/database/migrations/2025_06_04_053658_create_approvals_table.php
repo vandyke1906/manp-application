@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
             $table->unsignedInteger('approving_role');
             $table->text('comment')->nullable(); 
-            $table->enum('status', ['pending', 'approved', 'rejected', 'in_review', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'in_review', 'completed', 'cancelled'])->default('pending');
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
         });

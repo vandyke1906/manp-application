@@ -42,6 +42,7 @@ return new class extends Migration
             $table->foreignIdFor(BusinessType::class)->nullable();
             $table->foreignIdFor(Zoning::class)->nullable();
             $table->timestamps();
+            $table->softDeletes();     // Adds deleted_at
         });
     }
 

@@ -25,7 +25,7 @@ class ApiResponseClass
         throw new HttpResponseException(response()->json(["message"=> $message], 500));
     }
 
-    public static function sendResponse($result , $message ,$code=200, $success = true, $cookie = null){
+    public static function sendResponse($result , $message ,$code=200, $success = true){
         $response=[
             'success' => $success,
             'data'    => $result
@@ -33,8 +33,6 @@ class ApiResponseClass
         if(!empty($message)){
             $response['message'] =$message;
         }
-        if($cookie)
-             return response()->json($response, $code)->withCookie($cookie);
         return response()->json($response, $code);
     }
 }

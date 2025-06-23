@@ -14,6 +14,7 @@ import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 
 import { ApiClient } from '../../_utils/axios';
+import { hasRole, ROLES } from '../../_utils/helper';
 
 const headers = [
   {key: "id", value: "ID"},
@@ -64,15 +65,28 @@ const Capitalization = () => {
               }}>
                 New Capitalization
               </Button>
-              <GenericTable columnHeaders={headers} tableData={result.data} 
-                onEdit={(obj) => {
-                  navigate(`/capitalization/update/${obj.id}`);
-                }} 
-                onDelete={(obj) => {
-                  setSelectedID(obj?.id);
-                  openModal();
-                }} 
+
+              <GenericTable
+                columnHeaders={headers}
+                tableData={result.data.map(row => ({
+                  ...row,
+                }))}
+                onEdit={(row) => hasRole(ROLES.MANAGER | ROLES.ADMINISTRATOR)
+                  ? () => navigate(`/capitalization/update/${row.id}`)
+                  : undefined
+                }
+                onDelete={(row) => hasRole(ROLES.MANAGER | ROLES.ADMINISTRATOR)
+                  ? () => {
+                      setSelectedID(row.id);
+                      openModal();
+                    }
+                  : undefined
+                }
+                totalPages={1}
+                onPrevious={() => {}}
+                onNext={() => {}}
               />
+
         </ComponentCard>
     </div>
 

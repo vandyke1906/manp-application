@@ -19,6 +19,7 @@ use App\Constants\Roles;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationEmail;
+use App\Jobs\SendVerificationLink;
 
 
 class AuthController extends Controller
@@ -80,11 +81,11 @@ class AuthController extends Controller
                 'password' => $request->password,
             ];
             $result = $this->interface->login($data);
-            $cookie = null;
-            if(isset($result->refreshToken))
-                $cookie = cookie('refresh_token', $result->refreshToken, 60 * 24 * 7, '/', null, true, true); // Secure HttpOnly cookie
+            // $cookie = null;
+            // if(isset($result->refreshToken))
+            //     $cookie = cookie('refresh_token', $result->refreshToken, 60 * 24 * 7, '/', null, true, true); // Secure HttpOnly cookie
             if($result->verified){
-                return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 200, $cookie);
+                return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 200);
             } else {
                 return ApiResponseClass::sendResponse(new AuthResource($result),'Required verification.', 201);
             }
@@ -145,8 +146,6 @@ class AuthController extends Controller
 
     public function refreshToken(Request $request)
     {
-        Log::info('Incoming refresh token request.');
-        Log::info('Cookies:', ['cookies' => $request->cookies->all()]);
         $user = $request->user();
         if ($user) {
             $user->currentAccessToken()->delete();
@@ -171,29 +170,30 @@ class AuthController extends Controller
         return ApiResponseClass::sendResponse([], 'Verification email sent.', 200);
     }
 
+    public function sendVerificationLink(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        // $user = User::where('email', $request->email)->whereNull('email_verified_at')->first();
+        if (!$user) {
+            return ApiResponseClass::sendResponse([], 'User not found.', 200, false);
+        }
+        if(is_null($user->email_verified_at)){
+        dispatch(new SendVerificationLink($user->email, $user));
+        return ApiResponseClass::sendResponse([], 'Verification link sent. Please check your email', 200);
+        }
+        return ApiResponseClass::sendResponse([], 'User already verified. Continue sign in.', 200);
+        // $verification_code = Str::random(6);
+        // $user->update(['verification_code' => $verification_code]);
+        // Mail::to($user->email)->send(new VerificationEmail($verification_code));
+        // return ApiResponseClass::sendResponse([], 'Verification email sent.', 200);
+    }
+
     public function verify(Request $request, $id, $hash)
     {
         $result = $this->interface->verify($id, $hash);
         if(!$result)
             return ApiResponseClass::sendResponse([], 'Invalid verification link.', 403);
-        // else if($result->verified)
-        //      return ApiResponseClass::sendResponse($result, 'Email is already verified.', 200);
         return ApiResponseClass::sendResponse($result, 'Email verified successfully.', 200);
-        // Find the user by ID
-        // $user = User::findOrFail($id);
-        // Log::debug($user);
-        // // Check if the hash matches the user's email
-        // if (!hash_equals(sha1($user->email), $hash)) {
-        //     return ApiResponseClass::sendResponse([], 'Invalid verification link.', 403);
-        // }
-        // // Check if user is already verified
-        // if ($user->hasVerifiedEmail()) {
-        //     return ApiResponseClass::sendResponse([], 'Email is already verified.', 200);
-        // }
-        // // Mark email as verified
-        // $user->markEmailAsVerified();
-        // $token = $user->createToken("manp-token")->plainTextToken;
-        // return ApiResponseClass::sendResponse([], 'Email verified successfully.', 200);
     }
 
 

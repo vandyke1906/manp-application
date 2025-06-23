@@ -26,7 +26,7 @@ class StoreApplicationRequest extends CommonFormRequest
             'application_date' => ['required', 'date'],
             'mobile_number' => ['required', 'string'],
             'address' => ['required', 'string'],
-            'applicant_type_id' => ['required', 'array'],
+            'applicant_type_id.*' => ['required', 'integer', 'exists:applicant_types,id'],
             'application_type_id' => 'required',
             'business_name' => ['required', 'string'],
             'business_address' => ['required', 'string'],
@@ -59,7 +59,9 @@ class StoreApplicationRequest extends CommonFormRequest
             'address.string' => 'The address must be a string.',
 
             'applicant_type_id.required' => 'Please select at least one applicant type.',
-            'applicant_type_id.array' => 'The applicant type must be an array.',
+            'applicant_type_id.*.integer' => 'Each applicant type must be valid.',
+            'applicant_type_id.*.exists' => 'One or more selected applicant types are invalid.',
+
 
             'application_type_id.required' => 'The application type is required.',
 

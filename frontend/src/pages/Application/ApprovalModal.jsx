@@ -57,7 +57,7 @@ const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 
             <div>
                 <Label htmlFor="status">Status</Label>
                  <Select
-                  options={Object.entries(STATUS).map(([value, label]) => ({ value, label })).filter(s => s.value != "pending")}
+                  options={Object.entries(STATUS).map(([value, label]) => ({ value, label })).filter(s => !["pending", "cancelled"].includes(s.value))}
                   name="status"
                   placeholder="Select Status"
                   className="dark:bg-dark-900"

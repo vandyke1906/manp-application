@@ -11,7 +11,8 @@ import { Modal } from '../../components/ui/modal';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
+import { hasRole, ROLES } from '../../_utils/helper';
 
 const headers = [
   {key: "id", value: "ID"},
@@ -66,16 +67,28 @@ const Proponent = () => {
               }}>
                 New Proponent
               </Button>
-              
-              <GenericTable columnHeaders={headers} tableData={result.data} 
-                onEdit={(obj) => {
-                  navigate(`/proponent/update/${obj.id}`);
-                }} 
-                onDelete={(obj) => {
-                  setSelectedID(obj?.id);
-                  openModal();
-                }} 
+
+              <GenericTable
+                columnHeaders={headers}
+                tableData={result.data.map(row => ({
+                  ...row,
+                }))}
+                onEdit={(row) => hasRole(ROLES.MANAGER | ROLES.ADMINISTRATOR)
+                  ? () => navigate(`/proponent/update/${row.id}`)
+                  : undefined
+                }
+                onDelete={(row) => hasRole(ROLES.MANAGER | ROLES.ADMINISTRATOR)
+                  ? () => {
+                      setSelectedID(row.id);
+                      openModal();
+                    }
+                  : undefined
+                }
+                totalPages={1}
+                onPrevious={() => {}}
+                onNext={() => {}}
               />
+
           </div>
         </ComponentCard>
     </div>

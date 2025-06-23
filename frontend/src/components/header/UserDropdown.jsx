@@ -22,7 +22,6 @@ export default function UserDropdown() {
   const handleSignOut = () => {
     ApiClient.post('logout', {}).then(() => {
     }).catch((error) => {
-      console.error({error});
     }).finally(() => {
         clearUser();
         navigate("/signin");
@@ -67,10 +66,10 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Ronie Penara
+            {user.full_name}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            ronie.penara.denr-manp@google.com
+            {user.email}
           </span>
         </div>
 

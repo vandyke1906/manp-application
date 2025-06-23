@@ -8,7 +8,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use App\Http\Middleware\CorsMiddleware;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-
+use Illuminate\Http\Request;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,9 +28,11 @@ return Application::configure(basePath: dirname(__DIR__))
     //     ]);
     // })
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->statefulApi();
-        $middleware->prepend(EnsureFrontendRequestsAreStateful::class);
         $middleware->prepend(CorsMiddleware::class); // ✅ Ensure it is globally applied
+        $middleware->trustProxies(
+            at: '*',
+            headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -12,9 +12,11 @@ const ROLES = {
 };
 
 const STATUS = {
+    in_review: "In Review",
     pending: "Pending",
     approved: "Approved",
     rejected: "Rejected",
+    cancelled: "Cancelled",
 };
 
 const formatFileSize = (bytes)  => {
@@ -62,6 +64,7 @@ const getReadableStatus = (status) => {
         approved: "Approved",
         rejected: "Rejected",
         completed: "Completed",
+        cancelled: "Cancelled",
     };
 
     return statusMap[status] || "Pending"; // Fallback for unexpected values

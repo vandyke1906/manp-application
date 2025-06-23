@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 use App\Models\Application;
+use App\Models\Approval;
 use App\Interfaces\ApplicationInterface;
 
 use App\Constants\Roles;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ApplicationRepository implements ApplicationInterface
@@ -14,20 +16,9 @@ class ApplicationRepository implements ApplicationInterface
     }
 
     public function index($user){
-        // switch($user->role){
-        //     case Roles::PROPONENTS: {
-        //         return Application::where("user_id", $user->id)->get();
-        //     }
-        //     case Roles::RPS_TEAM: 
-        //     case Roles::MANAGER: 
-        //     case Roles::ADMINISTRATOR: {
-        //         return Application::all();
-        //     }
-        //     default: return [];
-        // }
         switch ($user->role) {
             case Roles::PROPONENTS: {
-                return Application::where("user_id", $user->id)
+                return Application::withTrashed()->where("user_id", $user->id)
                 ->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
                 }])->get();
@@ -44,16 +35,29 @@ class ApplicationRepository implements ApplicationInterface
         }
     }
 
-    public function getById($id){
-        return Application::with(['approvals' => function ($query) {
-            $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
-        }, 'approvals.approver_name'])->findOrFail($id);
+    public function getById($id, $user=null){
+        if(!$user){
+            return Application::with(['approvals' => function ($query) {
+                $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+            }, 'approvals.approver_name'])->findOrFail($id);
+        }
 
-        //return Application::findOrFail($id);
-
-        // return Application::with(['approvals' => function ($query) {
-        //     $query->orderBy('approved_at', 'asc'); // Ensures approvals appear in sequenc
-        // }])->findOrFail($id);
+        switch ($user->role) {
+            case Roles::PROPONENTS: {
+                return Application::withTrashed()->with(['approvals' => function ($query) {
+                    $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+                }, 'approvals.approver_name'])->where('id', $id)->where('user_id', $user->id)->firstOrFail();
+            }
+            case Roles::RPS_TEAM:
+            case Roles::MANAGER:
+            case Roles::ADMINISTRATOR: {
+                return Application::with(['approvals' => function ($query) {
+                    $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+                }, 'approvals.approver_name'])->findOrFail($id);
+            }
+            default:
+                return [];
+        }
     }
 
     public function store(array $data){ 
@@ -68,6 +72,19 @@ class ApplicationRepository implements ApplicationInterface
     }
     
     public function delete($id){
-        Application::destroy($id);
+        $application = Application::findOrFail($id);
+        if($application){
+            $application->delete(); // This triggers soft delete if the model uses SoftDeletes
+            //Approval::where('application_id',$id)->get();
+             Approval::create([
+                'application_id' => $id,
+                'approving_role' => Roles::PROPONENTS,
+                'user_id' => $application->user_id,
+                'status' => 'cancelled', // Allow re-submission
+                'approved_at' => Carbon::now(),
+            ]);
+            return true;
+        }
+        return false;
     }
 }

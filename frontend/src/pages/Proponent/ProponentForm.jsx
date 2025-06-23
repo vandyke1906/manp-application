@@ -75,7 +75,6 @@ const ProponentForm = ({title=""}) => {
     mutationFn: (data) => ApiClient.put(`proponents/${data?.id || 0}`, data).then((response) => response.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["proponent"] });
-      console.info({data});
       if(data.success){
         toast.success(data.message, {
           position: "bottom-right",

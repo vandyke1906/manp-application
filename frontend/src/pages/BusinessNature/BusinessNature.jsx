@@ -14,6 +14,7 @@ import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 
 import { ApiClient } from '../../_utils/axios';
+import { hasRole, ROLES } from '../../_utils/helper';
 
 const headers = [
   {key: "id", value: "ID"},
@@ -64,14 +65,25 @@ const BusinessNature = () => {
               }}>
                 New Nature of Business
               </Button>
-              <GenericTable columnHeaders={headers} tableData={result.data} 
-                onEdit={(obj) => {
-                  navigate(`/business-nature/update/${obj.id}`);
-                }} 
-                onDelete={(obj) => {
-                  setSelectedID(obj?.id);
-                  openModal();
-                }} 
+              <GenericTable
+                columnHeaders={headers}
+                tableData={result?.data?.map(data => ({
+                  ...data
+                }))}
+                onEdit= {(row) => 
+                  hasRole(ROLES.MANAGER | ROLES.ADMINISTRATOR)
+                  ? () => navigate(`/business-nature/update/${row.id}`) : undefined
+                }
+                onDelete= {(row) => hasRole(ROLES.MANAGER | ROLES.ADMINISTRATOR)
+                  ? () => {
+                      setSelectedID(row.id);
+                      openModal();
+                    }
+                  : undefined
+                }
+                totalPages={1}
+                onPrevious={() => {}}
+                onNext={() => {}}
               />
         </ComponentCard>
     </div>

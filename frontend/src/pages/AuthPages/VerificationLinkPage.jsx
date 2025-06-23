@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import useUserStore from "../../_utils/store/useUserStore";
+import axios from "axios";
 
 const VerificationLinkPage = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const VerificationLinkPage = () => {
         if (!redirectURL) {
             navigate("/verification-failed");
         }
-        axios.get(redirectURL).then((response) => {
+        axios.get(redirectURL, { maxRedirects: 0 }).then((response) => {
                 const { success, data } = response.data;
                 if (success) {
                      setUser(data);

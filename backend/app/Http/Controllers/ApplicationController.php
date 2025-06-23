@@ -76,8 +76,11 @@ class ApplicationController extends Controller
             'ncip_document' => $request->ncip_document,
             'fpic_certification' => $request->fpic_certification,
             'business_permit' => $request->business_permit, 
-            'authorization_letter' => $request->authorization_letter, 
         ];
+        if ($request->hasFile('authorization_letter')) {
+            $application_files['authorization_letter'] = $request->authorization_letter;
+        }
+
         DB::beginTransaction();
         try{
             $application = $this->interface->store($application_data);
@@ -105,7 +108,7 @@ class ApplicationController extends Controller
                     ];
                     $this->application_files_interface->store($data_file);
                 } else {
-                    echo "Error uploading $key\n";
+                    Log::warning("Error uploading $key");
                 }
             }
 
@@ -125,9 +128,10 @@ class ApplicationController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $application = $this->interface->getById($id);
+        $user = $request->user();
+        $application = $this->interface->getById($id, $user);
         if($application){
             $applicant_types = $this->applicant_application_interface->getByApplicationId($id);
             $application_type_ids = [];
@@ -153,7 +157,7 @@ class ApplicationController extends Controller
         $userRole = $request->user()->role;
         $application  = null;
         if($userRole == hexdec(Roles::PROPONENTS))
-            $application = Application::where('id', $id)->where('user_id', $userId)->first();
+            $application = Application::withTrashed()->where('id', $id)->where('user_id', $userId)->first();
         else 
             $application = Application::where('id', $id)->first();
 
@@ -172,7 +176,7 @@ class ApplicationController extends Controller
         // $filePath = "private/application_files/{$folder_business}/{$application_file->file_name}";
 
         // Generate a **signed URL** that expires after a set duration
-        $signedUrl = URL::temporarySignedRoute('download-file', now()->addMinutes(30), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
+        $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
         return response()->json([
             'uri' => $signedUrl,
             'file_type' => $application_file->file_type,
@@ -204,8 +208,9 @@ class ApplicationController extends Controller
 
     public function destroy($id)
     {
-        $this->interface->delete($id);
-        return ApiResponseClass::sendResponse($id, 'Application deleted successfully.',201);
+        if($this->interface->delete($id))
+            return ApiResponseClass::sendResponse($id, 'Application deleted successfully.',201);
+        return ApiResponseClass::sendResponse([], 'Failed to delete application.',201, false);
     }
 
     function humanReadable($string) {
