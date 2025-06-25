@@ -2,65 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\application_files;
+use App\Models\ApplicationFiles;
+use Illuminate\Http\Request;
 use App\Http\Requests\Storeapplication_filesRequest;
 use App\Http\Requests\Updateapplication_filesRequest;
 
+use App\Classes\ApiResponseClass;
+use App\Interfaces\ApplicationFilesInterface;
+use \Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 class ApplicationFilesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+    private ApplicationFilesInterface $interface;
+
+    public function __construct(ApplicationFilesInterface $obj){
+        $this->interface = $obj;
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(){ }
+    public function create(){ }
+    public function store(Storeapplication_filesRequest $request){ }
+    public function show($id, Request $request) { }
+    public function edit($id, Request $request) { }
+    
+    public function update(Updateapplication_filesRequest $request, $id)
     {
-        //
-    }
+        $key = collect($request->allFiles())->keys()->first();
+        $file = $request->file($key);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Storeapplication_filesRequest $request)
-    {
-        //
-    }
+        if (!$file || !$file->isValid()) {
+            return ApiResponseClass::sendResponse([], 'No valid file uploaded.', 422, false);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(application_files $application_files)
-    {
-        //
+        if ($file instanceof UploadedFile && !$file->getError()) {
+            $mimeType = $file->getClientMimeType();
+            $folder_business = Str::slug($request->business_name);
+            $extension = $file->getClientOriginalExtension();
+            $fileName = "{$key}.{$extension}";
+            $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
+            $data_file = [
+                'file_name' => $fileName,
+                'file_size' => $file->getSize(),
+                'file_type' => $mimeType,
+                'file_path' => $filePath,
+            ];
+            $this->interface->update($data_file, $id);
+            return ApiResponseClass::sendResponse([],'Application file updated.',201);
+        } else {
+            Log::warning("Error uploading $key");
+            return ApiResponseClass::sendResponse([], 'Upload Failed',500, false);
+        }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(application_files $application_files)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Updateapplication_filesRequest $request, application_files $application_files)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(application_files $application_files)
-    {
-        //
-    }
+    public function destroy($id, Request $request){ }
 }

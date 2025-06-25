@@ -13,4 +13,6 @@ interface AuthInterface
     public function sendVerificationEmail();
     public function verifyCode();
     public function verify($id, $hash);
+    public function sendResetPassword($email);
+    public function resetPassword($email, $hash, $password);
 }

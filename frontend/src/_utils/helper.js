@@ -17,6 +17,7 @@ const STATUS = {
     approved: "Approved",
     rejected: "Rejected",
     cancelled: "Cancelled",
+    for_survey: "For Survey",
 };
 
 const formatFileSize = (bytes)  => {

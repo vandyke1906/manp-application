@@ -182,10 +182,6 @@ class AuthController extends Controller
         return ApiResponseClass::sendResponse([], 'Verification link sent. Please check your email', 200);
         }
         return ApiResponseClass::sendResponse([], 'User already verified. Continue sign in.', 200);
-        // $verification_code = Str::random(6);
-        // $user->update(['verification_code' => $verification_code]);
-        // Mail::to($user->email)->send(new VerificationEmail($verification_code));
-        // return ApiResponseClass::sendResponse([], 'Verification email sent.', 200);
     }
 
     public function verify(Request $request, $id, $hash)
@@ -222,7 +218,27 @@ class AuthController extends Controller
             return ApiResponseClass::sendResponse([], 'User not found', 404, false);
         return ApiResponseClass::sendResponse($user, 'Success', 200);
     }
+    public function sendResetPassword(Request $request){
+        $request->validate(['email' => 'required|email']);
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            $this->interface->sendResetPassword($request->email);
+            return response()->json(['success' => true, 'message' => 'Reset password link sent!']);
+        }
+        return response()->json(['success' => false, 'message' => 'Invalid Email.'], 400);
+    }
+    public function resetPassword(Request $request, $email, $hash){
+        if (!$request->hasValidSignature()) {
+            return response()->json(['message' => 'Invalid or expired link.'], 403);
+        }
+        $request->validate(['password' => 'required|string|min:8|confirmed']);
+        
+        $result = $this->interface->resetPassword($email, $hash, $request->password);
+        if($result)
+            return ApiResponseClass::sendResponse([], 'Password updated!', 200);
+        return ApiResponseClass::sendResponse([], 'Invalid token.', 403);
 
+    }
     public function store(Request $request){}
     public function show(string $id){}
     public function edit(string $id){}

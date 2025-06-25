@@ -33,6 +33,8 @@ import ProtectedComponent from './pages/ProtectedComponent';
 import useUserStore from './_utils/store/useUserStore';
 import VerificationLinkPage from './pages/AuthPages/VerificationLinkPage';
 import { ToastContainer } from 'react-toastify';
+import ForgotPassword from './pages/AuthPages/ForgotPassword';
+import ResetPassword from './pages/AuthPages/ResetPassword';
 
 function App() {
   const { user } = useUserStore();
@@ -122,6 +124,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify" element={<Verification />} />
           <Route path="/verification" element={<VerificationLinkPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

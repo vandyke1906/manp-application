@@ -1,9 +1,10 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Modal } from '../../components/ui/modal';
 import Button from '../../components/ui/button/Button';
 import Label from '../../components/form/Label';
 import Select from '../../components/form/Select';
 import TextArea from '../../components/form/input/TextArea';
+import DatePicker from '../../components/form/DatePicker';
 import { STATUS } from '../../_utils/helper';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ApiClient } from '../../_utils/axios';
@@ -11,6 +12,7 @@ import { ApiClient } from '../../_utils/axios';
 const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 0}) => {
   const formRef = useRef(null);
   const queryClient = useQueryClient();
+  const [status, setStatus] = useState("pending");
 
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("approvals", data).then((response) => response.data),
@@ -40,7 +42,6 @@ const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 
     // }
   };
 
-
   return (
     <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
       <form ref={formRef} onSubmit={handleSave}>
@@ -49,11 +50,6 @@ const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 
             <h4 className="mb-6 text-2xl font-semibold text-gray-800 dark:text-white/90">
               Approval Action
             </h4>
-
-            <div>
-                <Label htmlFor="comment">Comment</Label>
-                <TextArea id="comment" rows={6} name="comment" placeholder="comment" />
-            </div>
             <div>
                 <Label htmlFor="status">Status</Label>
                  <Select
@@ -62,7 +58,23 @@ const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 
                   placeholder="Select Status"
                   className="dark:bg-dark-900"
                   isRequired={true}
+                  onChange={(value) => setStatus(value)}
                 />
+            </div>
+            {status == "for_survey" && <div>
+                 <DatePicker
+                    id="survey_date"
+                    name="survey_date"
+                    label="Survey Date"
+                    placeholder="Select a date"
+                    // defaultDate={obj?.application_date || ""}
+                    // hint={objFormError?.application_date?.join(", ") ?? ""}
+                    // error={!!objFormError?.application_date}
+                  />
+            </div>}
+            <div>
+                <Label htmlFor="comment">Comment</Label>
+                <TextArea id="comment" rows={12} name="comment" placeholder="comment" />
             </div>
 
             <div>

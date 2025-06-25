@@ -34,9 +34,25 @@ class Application extends Model
         'zoning_id',
     ];
 
+    protected $appends = ['current_approver_role'];
+
     public function approvals()
     {
         return $this->hasMany(Approval::class, 'application_id');
     }
+
+    public function getCurrentApproverRoleAttribute()
+    {
+        return $this->approvals()
+            ->where('status', 'pending')
+            ->orderBy('created_at') // or use another sequencing strategy
+            ->value('approving_role'); // make sure this is the correct column
+    }
+
+    public function files()
+    {
+        return $this->hasMany(ApplicationFiles::class);
+    }
+
 
 }

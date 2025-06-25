@@ -8,29 +8,29 @@ import { ApiBasic } from "../../_utils/axios";
 import { toast } from 'react-toastify';
 
 
-export default function VerificationForm() {
+export default function ForgotPasswordForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const { email = "" } = location.state || {}; 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleVerification = (e) => {
+  const handleForgotPassword = (e) => {
     event.preventDefault();
     if(isSubmitting) return;
     setIsSubmitting(true);
     const formData = new FormData(event.target); // Creates a FormData object from the form
     const credentials = Object.fromEntries(formData.entries()); // Converts FormData to
 
-        ApiBasic.post('/api/request-verification-link', credentials, {
+        ApiBasic.post('/api/request-password-reset', credentials, {
         }).then((response) => {
             // navigate("/signin");
             const { message, success  } = response?.data || {};
             if(success)
-              toast.success(message, { position: "bottom-right" });
+              toast.success(message, { position: "bottom-right", onClose: () => navigate("/signin") });
             else
               toast.error(message, { position: "bottom-right" ,});
         }).catch((error) => {
-            toast.error(error.response?.data?.message || "Verification Error!", { position: "bottom-right" });
+            toast.error(error.response?.data?.message || "Reset Password Error!", { position: "bottom-right" });
         }).finally(() => setIsSubmitting(false));
   };
 
@@ -50,10 +50,10 @@ export default function VerificationForm() {
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Verification
+              Reset Password
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and request a verification link to activate account!
+              Forgot your password? Enter your email and we’ll send you a reset link.
             </p>
           </div>
           <div>
@@ -67,7 +67,7 @@ export default function VerificationForm() {
               <div className="relative flex justify-center text-sm">
               </div>
             </div>
-            <form onSubmit={handleVerification}>
+            <form onSubmit={handleForgotPassword}>
               <div className="space-y-6">
                 <div>
                   <Label>
@@ -77,7 +77,7 @@ export default function VerificationForm() {
                 </div>
                 <div>
                   <Button className="w-full" size="sm" type="submit" disabled={isSubmitting}>
-                    Request Verification Link
+                    Submit
                   </Button>
                 </div>
               </div>

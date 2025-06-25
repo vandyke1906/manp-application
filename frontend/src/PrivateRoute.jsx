@@ -16,26 +16,26 @@ const { data, isSuccess, isError, isFetching } = useQuery({
   queryKey: ["auth-check", location.pathname], // refetches on route change
   queryFn: () =>
     ApiClient.get("/auth/check").then((res) => res.data),
-  retry: false, // don't retry on failure
-  refetchOnWindowFocus: false, // optional: avoid refetching on tab focus
-  staleTime: 0, // always refetch on key change
-  onSuccess: ({ success, data }) => {
-    if (success) {
-      if (data.verified) {
-        if (!isSameUser(data)) {
-          setUser(data);
+    retry: false, // don't retry on failure
+    refetchOnWindowFocus: false, // optional: avoid refetching on tab focus
+    staleTime: 0, // always refetch on key change
+    onSuccess: ({ success, data }) => {
+      if (success) {
+        if (data.verified) {
+          if (!isSameUser(data)) {
+            setUser(data);
+          }
+        } else {
+          navigate("/verify");
         }
       } else {
-        navigate("/verify");
+        navigate("/signin");
       }
-    } else {
+    },
+    onError: () => {
       navigate("/signin");
-    }
-  },
-  onError: () => {
-    navigate("/signin");
-  },
-});
+    },
+  });
 
 
     if (isFetching) return <Spinner />;

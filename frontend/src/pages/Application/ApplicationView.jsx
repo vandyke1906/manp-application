@@ -10,12 +10,12 @@ import { toast } from 'react-toastify';
 import Spinner from '../../components/spinner/Spinner';
 import SomethingWentWrong from '../../components/SomethingWentWrong';
 import { ApiClient } from '../../_utils/axios';
-import GetApplicationFiles from '../../_utils/GetApplicationFiles';
 import BasicTable from '../../components/tables/BasicTable';
 import { formatDate, formatFileSize, getReadableStatus, hasRole, ROLES } from '../../_utils/helper';
 import ApprovalModal from './ApprovalModal';
 import DialogModal from  '../../components/ui/modal/DialogModal';
 import { useModal } from '../../hooks/useModal';
+import useUserStore from '../../_utils/store/useUserStore';
 
 const documentsHeaders = [
   {key: "file_name", value: "File Name"},
@@ -44,11 +44,13 @@ const getStatusBadge = (status) => {
   </Badge>
 };
 
+
 const ApplicationView = ({title=""}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { id } = useParams();
   const formRef = useRef(null);
+  const { user } = useUserStore();
   const [obj, setObj] = useState({});
   const [applicantTypes, setApplicantTypes] = useState([]);
 
@@ -68,16 +70,13 @@ const ApplicationView = ({title=""}) => {
     queryFn: () => ApiClient.get(`/users/profile`).then((response) => response.data),
   });
 
-  const fileQueries = GetApplicationFiles(id);
-
-
   // Use useEffect to update the state when the query is successful
   useEffect(() => {
     if (isSuccess && result) {
       setObj(result?.data);
     }
   }, [isSuccess, result]);
-  
+
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("applications", data, { headers: {  'Content-Type': 'multipart/form-data' } }).then((response) => response.data),
     onSuccess: (data) => {
@@ -92,7 +91,6 @@ const ApplicationView = ({title=""}) => {
       }
     }
   });
-  
 
   // Mutation for updating
   const updateMutation = useMutation({
@@ -108,6 +106,20 @@ const ApplicationView = ({title=""}) => {
         });
       } else {
         toast.error("Application Error!", { position: "bottom-right" });
+      }
+    },
+  });
+
+
+  // Mutation for updating application file
+  const uploadFileMutation = useMutation({
+    mutationFn: ({data, id}) => ApiClient.post(`application-files/${id || 0}`, data).then((response) => response.data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["application-file"] });
+      if(data.success){
+        toast.success(data.message, { position: "bottom-right" });
+      } else {
+        toast.error("Application file upload error!", { position: "bottom-right" });
       }
     },
   });
@@ -164,13 +176,13 @@ const ApplicationView = ({title=""}) => {
           {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             See all
           </button> */}
-          {!hasRole(ROLES.PROPONENTS) && showApplicationActionButton({ approvals:obj?.approvals, modal: dialogModal, openModal })}
+          {!hasRole(ROLES.PROPONENTS) && showApplicationActionButton({ isCurrentApprover: obj?.current_approver_role === user?.role, approvals:obj?.approvals, modal: dialogModal, openModal })}
         </div>
       </div>
 
       <ProponentInfoCard data={obj} />
       <BusinessProjectInfoCard data={obj} />
-      <SubmittedDocumentsCard data={fileQueries} />
+      <SubmittedDocumentsCard files={obj?.files || []} mutation={uploadFileMutation} />
       <ApprovalsCard data={obj?.approvals || []} />
     </div>
 
@@ -414,15 +426,35 @@ const BusinessProjectInfoCard = ({data = {}}) => {
  );
 };
 
-const SubmittedDocumentsCard = ({data}) => {
+const SubmittedDocumentsCard = ({files = [], mutation}) => {
+  const handleUploadClick = (mutation, name, fileId) => {
+  const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*,application/pdf';
+
+
+    input.onchange = (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append(name, file);
+      mutation.mutate({data: formData, id: fileId});
+    };
+
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
+  };
+
   return (
     <ComponentCard title="Submitted Documents" className="my-6">
       <BasicTable
         columnHeaders={documentsHeaders}
-        tableData={data?.files?.filter(obj => obj.data).map(({ data }) => ({
-            ...data,
-            file_size: formatFileSize(data.file_size),
-            updated_at: formatDate(data.updated_at, "dd-MMM-yyyy hh:mm A")
+        tableData={files.map((file) => ({
+            ...file,
+            file_size: formatFileSize(file.file_size),
+            updated_at: formatDate(file.updated_at, "dd-MMM-yyyy hh:mm A")
         }))}
         onView={(obj) => {
           const width = 800;
@@ -435,7 +467,12 @@ const SubmittedDocumentsCard = ({data}) => {
             "_blank",
             `noopener,noreferrer,width=${width},height=${height},resizable=yes,left=${left},top=${top}`
           );
-        } } />
+        }}
+        onEdit={
+          hasRole(ROLES.PROPONENTS)
+            ? (obj) => handleUploadClick(mutation, obj.title, obj.file_id) : undefined
+        }
+      />
     </ComponentCard>
   );
 };
@@ -455,11 +492,11 @@ const ApprovalsCard = ({data = {}}) => {
   );
 }
 
-const showApplicationActionButton = ({approvals = [], modal, openModal}) => {
+const showApplicationActionButton = ({isCurrentApprover, approvals = [], modal, openModal}) => {
   if(!approvals.length)
     return <Button onClick={() => modal?.openModal()}>Confirm Submission</Button>;
-  else if(!approvals.some((a) => a.status === "completed"))
-    <Button onClick={openModal}>Take Action</Button>;
+  else if(isCurrentApprover && !approvals.some((a) => a.status === "completed"))
+    return <Button onClick={openModal}>Take Action</Button>;
   else
     return null;
 }

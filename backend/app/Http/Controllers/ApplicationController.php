@@ -141,10 +141,24 @@ class ApplicationController extends Controller
             $application->applicant_type_id = $application_type_ids;
 
             $application_files = $this->application_files_interface->getByApplicationId($id);
+
+            $attachedFiles = [];
+            $folder_business = Str::slug($application->business_name);
              foreach ($application_files as $file) {
-                $folder_business = Str::slug($application->business_name);
-                $application[$file->name] = "{$folder_business}/{$file->file_name}";
+                // Log::warning($file);
+                $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $file->file_name ]);
+                $attachedFiles[] = [
+                    'uri' => $signedUrl,
+                    'file_id' => $file->id,
+                    'title' => $file->name,
+                    'name' => $this->humanReadable($file->name),
+                    'file_type' => $file->file_type,
+                    'file_size' => $file->file_size,
+                    'file_name' => $file->file_name,
+                    'updated_at' => $file->	updated_at,
+                ];
             }
+            $application->files = $attachedFiles; // Now safe to assign
             return ApiResponseClass::sendResponse($application,'',200);
         }
         return ApiResponseClass::sendResponse([], 'Invalid Application.', 401, false);
@@ -179,6 +193,8 @@ class ApplicationController extends Controller
         $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
         return response()->json([
             'uri' => $signedUrl,
+            'file_id' => $application_file->id,
+            'title' => $application_file->name,
             'file_type' => $application_file->file_type,
             'file_size' => $application_file->file_size,
             'file_name' => $application_file->file_name,

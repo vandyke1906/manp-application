@@ -10,7 +10,6 @@ import { EyeIcon, PencilIcon, TrashBinIcon } from '../../icons';
 import Button from '../ui/button/Button';
 
 const BasicTable = ({tableData = {}, columnHeaders = [], onEdit, onDelete, onView }) => {
-
   const renderData = ({row, header}) => {
     const data = row[header.key];
     if(header.value.toLowerCase() === "action")

@@ -11,6 +11,7 @@ use App\Constants\Roles;
 use Illuminate\Support\Str;
 use App\Jobs\SendVerificationEmail;
 use App\Jobs\SendVerificationLink;
+use App\Jobs\SendResetPassword;
 use Illuminate\Support\Facades\Session;
 
 class UserRepository implements AuthInterface
@@ -66,8 +67,8 @@ class UserRepository implements AuthInterface
                 throw new \ErrorException('Invalid Credentials.');
             }
             
-            $token = $user->createToken('manp-token')->plainTextToken;
-            $refreshToken = $user->createToken('refresh_token')->plainTextToken;// Set refresh token in HttpOnly cookie
+            $token =tap($user->createToken('manp-token'), fn($t) => $t->accessToken->update(['expires_at' => now()->addDay()]))->plainTextToken;
+            $refreshToken = tap($user->createToken('refresh_token'), fn($t) => $t->accessToken->update(['expires_at' => now()->addDays(7)]))->plainTextToken;
             $result = null;
             if(isset($user->email_verified_at)){
                 $result = (object)[
@@ -105,6 +106,19 @@ class UserRepository implements AuthInterface
     public function authCheck(array $data){}
     public function refreshToken(array $data){}
     public function sendVerificationEmail(){}
+    public function sendResetPassword($email){
+        dispatch(new SendResetPassword($email));
+        return true;
+    }
+    public function resetPassword($email, $hash, $password){
+        $user = User::where('email', $email)->firstOrFail();
+        if ($hash !== sha1($user->email)) {
+            return false;
+        }
+        $user->forceFill(['password' => Hash::make($password),'remember_token' => Str::random(60)])->save();
+        event(new \Illuminate\Auth\Events\PasswordReset($user));
+        return true;
+    }
     public function verifyCode(){}
     public function verify($id, $hash){
         $user = User::findOrFail($id);
