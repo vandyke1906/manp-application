@@ -37,6 +37,7 @@ class ApprovalController extends Controller
     {
         $details =[
             'application_id' => $request->application_id,
+            'survey_date' => $request->survey_date,
             'comment' => $request->comment,
             'status' => $request->status,
             'user_id' => $request->user()->id,

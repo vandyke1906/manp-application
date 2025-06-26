@@ -66,6 +66,7 @@ const getReadableStatus = (status) => {
         rejected: "Rejected",
         completed: "Completed",
         cancelled: "Cancelled",
+        for_survey: "For Survey",
     };
 
     return statusMap[status] || "Pending"; // Fallback for unexpected values

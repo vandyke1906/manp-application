@@ -60,6 +60,7 @@ const Applications = () => {
       case "approved": color = "success"; break;
       case "rejected": color = "error"; break;
       case "cancelled": color = "warning"; break;
+      case "for_survey": color = "warning"; break;
     }
     return <Badge color={color}>
       {getReadableStatus(status)}

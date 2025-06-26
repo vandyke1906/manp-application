@@ -38,6 +38,7 @@ const getStatusBadge = (status) => {
     case "approved": color = "success"; break;
     case "rejected": color = "error"; break;
     case "cancelled": color = "warning"; break;
+    case "for_survey": color = "warning"; break;
   }
   return <Badge color={color}>
     {getReadableStatus(status)}
@@ -76,6 +77,13 @@ const ApplicationView = ({title=""}) => {
       setObj(result?.data);
     }
   }, [isSuccess, result]);
+
+  useEffect(() => {
+  if (isError) {
+    navigate("/applications");
+  }
+}, [isError, navigate]);
+
 
   const createMutation = useMutation({ 
     mutationFn: (data) => ApiClient.post("applications", data, { headers: {  'Content-Type': 'multipart/form-data' } }).then((response) => response.data),
@@ -493,6 +501,7 @@ const ApprovalsCard = ({data = {}}) => {
 }
 
 const showApplicationActionButton = ({isCurrentApprover, approvals = [], modal, openModal}) => {
+  console.info({approvals, isCurrentApprover});
   if(!approvals.length)
     return <Button onClick={() => modal?.openModal()}>Confirm Submission</Button>;
   else if(isCurrentApprover && !approvals.some((a) => a.status === "completed"))

@@ -55,7 +55,8 @@ class ApprovalHelper
             } else {
                 $latestApproval->update(['status' => 'completed']);
             }
-        } elseif ($latestApproval->status === 'rejected') {
+        // } elseif ($latestApproval->status === 'rejected') {
+        } elseif (in_array($latestApproval->status, ['rejected', 'for_survey'])) {
             Approval::create([
                 'application_id' => $applicationId,
                 'approving_role' => $latestApproval->approving_role,

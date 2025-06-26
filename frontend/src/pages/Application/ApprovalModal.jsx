@@ -21,6 +21,7 @@ const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 
       if(data.success){
         formRef.current.reset();
         closeModal();
+        queryClient.invalidateQueries({ queryKey: ["application", application_id] });
         toast.success(data.message, { position: "bottom-right" });
       } else {
         toast.error("Approval Error!", { position: "bottom-right" });
@@ -53,7 +54,7 @@ const ApprovalModal = ({closeModal = () => {}, isOpen = false, application_id = 
             <div>
                 <Label htmlFor="status">Status</Label>
                  <Select
-                  options={Object.entries(STATUS).map(([value, label]) => ({ value, label })).filter(s => !["pending", "cancelled"].includes(s.value))}
+                  options={Object.entries(STATUS).map(([value, label]) => ({ value, label })).filter(s => !["pending", "cancelled", "in_review"].includes(s.value))}
                   name="status"
                   placeholder="Select Status"
                   className="dark:bg-dark-900"
