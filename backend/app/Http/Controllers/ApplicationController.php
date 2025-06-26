@@ -16,6 +16,7 @@ use App\Constants\Roles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use App\Interfaces\ApplicationInterface;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Resources\ApplicationResource;
 
 
@@ -91,10 +92,10 @@ class ApplicationController extends Controller
             }
 
             //application files
+            $folder_business = Str::slug($request->business_name);
             foreach ($application_files as $key => $file) {
                 if ($file instanceof UploadedFile && !$file->getError()) {
                     $mimeType = $file->getClientMimeType();
-                    $folder_business = Str::slug($request->business_name);
                     $extension = $file->getClientOriginalExtension();
                     $fileName = "{$key}.{$extension}";
                     $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
@@ -112,6 +113,30 @@ class ApplicationController extends Controller
                 }
             }
 
+            // Generate PDF summary
+           // Generate PDF with static or custom data
+            $pdf = Pdf::loadView('documents.sapa_application_template', [
+                'title' => 'Standalone Summary',
+                'date' => now()->format('F j, Y'),
+            ]);
+
+            // Store the PDF
+            $pdfFileName = 'SAPA_Application_Form.pdf';
+            $pdfFilePath = "application_files/{$folder_business}/{$pdfFileName}";
+            Storage::put($pdfFilePath, $pdf->output());
+
+            // Save metadata like other files
+            $data_file = [
+                'application_id' => $application->id,
+                'name' => 'summary',
+                'file_name' => $pdfFileName,
+                'file_size' => Storage::size($pdfFilePath),
+                'file_type' => 'application/pdf',
+                'file_path' => $pdfFilePath,
+            ];
+            $this->application_files_interface->store($data_file);
+            // Generate PDF summary
+
             //intial empty approval
             Approval::create([
                 'application_id' => $application->id,
@@ -124,6 +149,7 @@ class ApplicationController extends Controller
             return ApiResponseClass::sendResponse([],'Application added successfully.',201);
 
         }catch(\Exception $ex){
+            Log::error($ex->getMessage());
             return ApiResponseClass::rollback($ex);
         }
     }

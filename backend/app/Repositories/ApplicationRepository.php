@@ -4,6 +4,8 @@ namespace App\Repositories;
 use App\Models\Application;
 use App\Models\Approval;
 use App\Interfaces\ApplicationInterface;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 use App\Constants\Roles;
 use Carbon\Carbon;
@@ -64,6 +66,7 @@ class ApplicationRepository implements ApplicationInterface
         $lastApplication = Application::latest()->first();
         $nextId = $lastApplication ? $lastApplication->id + 1 : 1;
         $data["application_number"] = 'APP' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+        
         return Application::create($data);
     }
 

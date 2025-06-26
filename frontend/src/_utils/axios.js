@@ -21,17 +21,17 @@ ApiClient.interceptors.request.use((config) => {
   return config;
 }, (error) => Promise.reject(error));
 
-// // Capture 401 errors and redirect to sign-in
-// ApiClient.interceptors.response.use(
-//   (response) => response, 
-//   (error) => {
-//     if (error.response?.status === 401) {
-//       localStorage.removeItem("user"); // Clear stored user session
-//       window.location.href = '/signin'; // Redirect to the sign-in page
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+// Capture 401 errors and redirect to sign-in
+ApiClient.interceptors.response.use(
+  (response) => response, 
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("user"); // Clear stored user session
+      window.location.href = '/signin'; // Redirect to the sign-in page
+    }
+    return Promise.reject(error);
+  }
+);
 
 const ApiBasic = axios.create({
   baseURL: BASE_URL, // Laravel API base URL

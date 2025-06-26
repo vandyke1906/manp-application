@@ -150,7 +150,8 @@ const ApplicationForm = ({title=""}) => {
         }
         toast.error("Application Error!", { position: "bottom-right" });
       }
-    }
+    },
+    onError: () =>  toast.error("Application Failed! Please contact administrator.", { position: "bottom-right" })
   });
 
   // Mutation for updating
